@@ -1,0 +1,37 @@
+# Doxyfile - Configuration for Doxygen
+# Implementation details are not published by default.
+# ENABLED_SECTIONS      += BENCHTEST_IMPL
+
+DOXYFILE_ENCODING      = UTF-8
+INPUT_ENCODING         = UTF-8
+PROJECT_NAME           = "Embedis"
+PROJECT_BRIEF          = "Embedded Dictionary Server"
+OUTPUT_LANGUAGE        = English
+TAB_SIZE               = 4
+INPUT                  = doc src LICENSE.txt
+IMAGE_PATH             = images
+RECURSIVE              = YES
+USE_MDFILE_AS_MAINPAGE = mainpage.md
+EXAMPLE_PATH           = doc
+USE_MATHJAX            = NO
+CITE_BIB_FILES         = doc/cite.bib
+GENERATE_LATEX         = NO
+EXTRA_PACKAGES         = amsmath
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+HTML_TIMESTAMP         = NO
+HAVE_DOT               = NO
+SHOW_USED_FILES        = NO
+SOURCE_BROWSER         = NO
+VERBATIM_HEADERS       = NO
+CLASS_DIAGRAMS         = NO
+CLASS_GRAPH            = NO
+COLLABORATION_GRAPH    = YES
+CASE_SENSE_NAMES       = NO
+ALPHABETICAL_INDEX     = NO
+MACRO_EXPANSION        = YES
+SORT_BY_SCOPE_NAME     = YES
+SORT_MEMBER_DOCS       = NO
+SORT_BRIEF_DOCS        = NO
+ALWAYS_DETAILED_SEC    = NO
+HIDE_FRIEND_COMPOUNDS  = YES

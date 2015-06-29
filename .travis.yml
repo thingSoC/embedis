@@ -1,0 +1,24 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+before_install:
+  - cmake --version
+  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  - if [ "$CXX" == "g++" ]; then sudo apt-get update -qq; fi
+install:
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+before_script:
+  - if [ "$CXX" == "g++-4.8" ]; then cmake -DCMAKE_BUILD_TYPE=Release .; fi
+  # travis-ci clang is missing gold plugin so build without optimizer
+  - if [ "$CXX" == "clang++" ]; then cmake .; fi
+script:
+  - make all && CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+after_script:
+  - cat Testing/Temporary/LastTest.log
+branches:
+  only:
+    - master
+os:
+  - linux
