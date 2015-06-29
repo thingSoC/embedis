@@ -1,0 +1,2 @@
+# embedis
+ Embedded Dictionary Server
