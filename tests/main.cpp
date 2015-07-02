@@ -1,4 +1,22 @@
-#include <benchtest.hpp>
+/*  Embedis - Embedded Dictionary Server
+    Copyright (C) 2015 Pattern Agents, LLC
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "benchtest.hpp"
+#include "main.h"
 #include "embedis.h"
 
 int main() {
@@ -6,13 +24,16 @@ int main() {
     return testing::run();
 }
 
+// Helper for functional testing of Embedis commands.
+// This mock uses strings instead of a serial port.
+
 static std::string result;
 
-extern "C" void embedis_out(char data) {
+void embedis_out(char data) {
     result.append(1, data);
 }
 
-static std::string embedis(const char* cmd) {
+std::string embedis(const char* cmd) {
     char last1 = 0, last2 = 0;
     result.clear();
     while (*cmd) {
@@ -30,179 +51,22 @@ static std::string embedis(const char* cmd) {
 
 
 
-TEST(Protocol, WithExtraSapces){
+// This is a mock NVRAM which is simply stored in RAM.
 
-    embedis_reset();
+#define FAKE_NVRAM_SIZE 128
 
-    EXPECT_EQ(
-              embedis("GET vendor"),
-              "+AE9RB\r\n"
-              );
+static char fake_nvram[FAKE_NVRAM_SIZE];
 
-    EXPECT_EQ(
-              embedis("  GET vendor"),
-              "+AE9RB\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET   vendor"),
-              "+AE9RB\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET vendor  "),
-              "+AE9RB\r\n"
-              );
-
+size_t embedis_nvram_size() {
+    return FAKE_NVRAM_SIZE;
 }
 
-
-TEST(Protocol, Caps){
-
-    embedis_reset();
-
-    EXPECT_EQ(
-              embedis("get vendor"),
-              "+AE9RB\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET vendor"),
-              "+AE9RB\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GeT vendor"),
-              "+AE9RB\r\n"
-              );
-
+size_t embedis_nvram_fetch(size_t pos) {
+    if (pos >= FAKE_NVRAM_SIZE) throw;
+    return fake_nvram[pos];
 }
 
-TEST(Protocol, Overflow){
-
-    embedis_reset();
-
-    std::string s;
-
-    // The 1 is for the trailing zero
-    s.append(EMBEDIS_COMMAND_BUF_SIZE-1, 'X');
-    EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR unknown command\r\n"
-              );
-
-    // This one should overflow
-    s.append(1, 'X');
-    EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR buffer overflow\r\n"
-              );
-
-    s.clear();
-    for (int i = 0; i < EMBEDIS_COMMAND_MAX_ARGS; i++) {
-        s.append("Z ");
-    }
-    EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR unknown command\r\n"
-              );
-
-    s.append("Z ");
-    EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR bad argument count\r\n"
-              );
-
-    s.append("Z Z Z Z");
-    EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR bad argument count\r\n"
-              );
-
-
-}
-
-
-TEST(DictROM, Basics){
-
-    embedis_reset();
-
-    EXPECT_EQ(
-              embedis("GET vendor"),
-              "+AE9RB\r\n"
-              ) << "Retrieve ROM value";;
-
-    EXPECT_EQ(
-              embedis("SET vendor blah"),
-              "-ERROR\r\n"
-              ) << "ROM values are read-only";
-
-    EXPECT_EQ(
-              embedis("DEL vendor"),
-              "-ERROR\r\n"
-              ) << "ROM values are read-only";
-
-
-}
-
-TEST(DictNVRAM, Basics){
-
-    embedis_reset();
-
-    EXPECT_EQ(
-              embedis("SET foo1 bar1"),
-              "+OK\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("SET foo bar"),
-              "+OK\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("SET foo2 bar2"),
-              "+OK\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("SET foo good"),
-              "+OK\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("SET foo3 bar3"),
-              "+OK\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET foo"),
-              "$4\r\ngood\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("DEL foo"),
-              "+OK\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET foo"),
-              "$-1\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET foo1"),
-              "$4\r\nbar1\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET foo2"),
-              "$4\r\nbar2\r\n"
-              );
-
-    EXPECT_EQ(
-              embedis("GET foo3"),
-              "$4\r\nbar3\r\n"
-              );
-
-
+void embedis_nvram_store(size_t pos, char value) {
+    if (pos >= FAKE_NVRAM_SIZE) throw;
+    fake_nvram[pos] = value;
 }

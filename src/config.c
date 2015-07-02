@@ -44,7 +44,7 @@ const embedis_dict_config embedis_dict_keys[] = {
     // Only the number is stored in NVRAM instead of the whole key.
     // In this example, two bytes are stored instead of 22.
     // Valid range is from 1 to 32767.
-    {"asset_identification", 1000, &embedis_nvram_key},
+    {"asset_identification", (void*)1000, &embedis_nvram_key},
     // The default hander allows storage of any arbitraty key-value data.
     {0, 0, &embedis_nvram_key}
 };

@@ -42,6 +42,7 @@ void embedis_GET(int argc, const char* argv[]) {
     (*dict->handle->get)(argc, argv, dict->id);
 }
 
+
 void embedis_SET(int argc, const char* argv[]) {
     const embedis_dict_config* dict;
     if (argc != 3) {
@@ -50,6 +51,7 @@ void embedis_SET(int argc, const char* argv[]) {
     dict = find_dict_config(argc, argv);
     (*dict->handle->set)(argc, argv, dict->id);
 }
+
 
 void embedis_DEL(int argc, const char* argv[]) {
     const embedis_dict_config* dict;
@@ -60,32 +62,34 @@ void embedis_DEL(int argc, const char* argv[]) {
     (*dict->handle->del)(argc, argv, dict->id);
 }
 
+
 void embedis_dict_error(int argc, const char* argv[], const void* id) {
     embedis_response_error(0);
 }
+
 
 void embedis_dict_rom(int argc, const char* argv[], const void* id) {
     const char* value = id;
     embedis_response_simple(value);
 }
 
+/*  NVRAM key-value data is stored starting at the last location.
+    This allows it to, for example, share an EEPROM with another
+    system like Device Tree.
 
+    The following structure repeats until key_id_or_len is 0.
 
-/*
+      key_id_or_len: 2 bytes
+      -1...-32767 = well-known key
+      1...32768 = key length
 
- key_id_or_len: 2 bytes
- -1...-32767 = well-known key
- 1...32768 = key length
- 0 = end, no more keys
- 
- key_name: not zero terminated
+      key_name: not zero terminated!
+      well-known keys are not stored.
 
- value_len: 2 bytes
- 0...65535 = value length
- 
- key_value: not zero terminated
+      value_len: 2 bytes
+      0...65535 = value length
 
- 
+      key_value: not zero terminated
  */
 
 
@@ -180,8 +184,6 @@ static int dict(const char* key_name, int key_id_or_len, const char* value, size
         }
         on_key = 1;
         found_key = 0;
-
-
     }
 
     if (value) {
@@ -226,15 +228,13 @@ static int dict(const char* key_name, int key_id_or_len, const char* value, size
         return 1;
     }
 
-
     return 0;
 }
 
 
-
 void embedis_dict_GET(int argc, const char* argv[], const void* id) {
     size_t value_len, value_pos;
-    int key_id_or_len = id;
+    int key_id_or_len = (int)id;
 
     if (key_id_or_len) {
         key_id_or_len = -key_id_or_len;
@@ -255,9 +255,10 @@ void embedis_dict_GET(int argc, const char* argv[], const void* id) {
     }
 }
 
+
 void embedis_dict_SET(int argc, const char* argv[], const void* id) {
     size_t value_len = argv[3] - argv[2] - 1;
-    int key_id_or_len = id;
+    int key_id_or_len = (int)id;
 
     if (key_id_or_len) {
         key_id_or_len = -key_id_or_len;
@@ -272,8 +273,9 @@ void embedis_dict_SET(int argc, const char* argv[], const void* id) {
     }
 }
 
+
 void embedis_dict_DEL(int argc, const char* argv[], const void* id) {
-    int key_id_or_len = id;
+    int key_id_or_len = (int)id;
     if (key_id_or_len) {
         key_id_or_len = -key_id_or_len;
     } else {
@@ -282,5 +284,3 @@ void embedis_dict_DEL(int argc, const char* argv[], const void* id) {
     dict(argv[1], key_id_or_len, 0, 0, 0);
     embedis_response_error(EMBEDIS_OK);
 }
-
-

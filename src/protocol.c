@@ -26,7 +26,6 @@ const char* EMBEDIS_BUFFER_OVERFLOW = "buffer overflow";
 const char* EMBEDIS_ARGS_ERROR = "bad argument count";
 const char* EMBEDIS_STORAGE_OVERFLOW = "storage overflow";
 
-// Foo
 void embedis_response_newline() {
     embedis_out('\r');
     embedis_out('\n');
@@ -137,30 +136,30 @@ void embedis_in(char data) {
 
     if (command.state == 0) {
         switch (data) {
-            case '+':
-            case '-':
-            case ':':
-            case '$':
-            case '*':
-//                state = data; // TODO
+        case '+':
+        case '-':
+        case ':':
+        case '$':
+        case '*':
+            //                state = data; // TODO
+            return;
+        case '\r':
+        case '\n':
+            // nop
+            return;
+        default:
+            if (command.pos != 0) {
+                embedis_reset();
+                embedis_response_error(EMBEDIS_SYNTAX_ERROR);
                 return;
-            case '\r':
-            case '\n':
-                // nop
-                return;
-            default:
-                if (command.pos != 0) {
-                    embedis_reset();
-                    embedis_response_error(EMBEDIS_SYNTAX_ERROR);
-                    return;
-                }
-                command.state = ' ';
-                break;
+            }
+            command.state = ' ';
+            break;
         }
     }
 
 
-//    if (command.state == 0 && command.pos == 0) command.state = ' ';
+    //    if (command.state == 0 && command.pos == 0) command.state = ' ';
 
 
     if (command.state == ' ') {
@@ -209,14 +208,13 @@ void embedis_in(char data) {
             }
             return;
         }
-        
+
         if (command.pos < EMBEDIS_COMMAND_BUF_SIZE) {
             command.buf[command.pos] = data;
             command.pos++;
         }
-        
+
         return;
     }
 
 }
-

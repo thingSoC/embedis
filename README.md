@@ -6,6 +6,18 @@ If you just want to use the Embedis server, begin with the [main documentation]
 
 ## Development Environment
 
+The git repository includes a submodule for the testing framework and a
+branch 'gh-pages' for the generated documentation. Here's the recommended
+commands to use:
+
+```
+git clone {origin_url} embedis
+cd embedis
+git submodule init
+git submodule update
+git clone {origin_url} html --branch gh-pages
+```
+
 You'll need a few tools to build the tests and documentation. These are
 common tools available for all operating systems so you shouldn't have
 too much trouble getting them installed.
