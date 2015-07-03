@@ -41,50 +41,80 @@ extern const char* EMBEDIS_BUFFER_OVERFLOW;
 extern const char* EMBEDIS_ARGS_ERROR;
 extern const char* EMBEDIS_STORAGE_OVERFLOW;
 
-void embedis_response_newline();
+
+typedef struct embedis_state embedis_state;
+
+typedef struct embedis_dictionary {
+    const char* name;
+    void (*select)(embedis_state* state);
+    void (*keys)(embedis_state* state);
+    void (*get)(embedis_state* state);
+    void (*set)(embedis_state* state);
+    void (*del)(embedis_state* state);
+} embedis_dictionary;
+
+typedef struct embedis_dictionary_key {
+    const char* name;
+    short int id;
+} embedis_dictionary_key;
+
+typedef struct embedis_command {
+    const char* name;
+    void (*call)(embedis_state* state);
+} embedis_command;
+
+struct embedis_state {
+    const char* argv[EMBEDIS_COMMAND_MAX_ARGS+1];
+    const embedis_dictionary* dictionary;
+    size_t argc;
+};
+
+// protocol.c
+
+void embedis_init();
+void embedis_reset();
+void embedis_capitalize_arg(embedis_state* state, size_t arg);
+void embedis_in(char data);
+
+void embedis_emit_newline();
 void embedis_response_error(const char* message);
 void embedis_response_simple(const char* message);
 void embedis_response_string_length(size_t length);
 void embedis_response_string(const char* message, size_t length);
 void embedis_response_null();
 
-void embedis_reset();
-void embedis_in(char data);
+// dict.c
+
+void embedis_SELECT(embedis_state* state);
+void embedis_KEYS(embedis_state* state);
+void embedis_GET(embedis_state* state);
+void embedis_SET(embedis_state* state);
+void embedis_DEL(embedis_state* state);
+
+void embedis_rom_SELECT(embedis_state* state);
+void embedis_rom_KEYS(embedis_state* state);
+void embedis_rom_GET(embedis_state* state);
+void embedis_rom_SET(embedis_state* state);
+void embedis_rom_DEL(embedis_state* state);
+
+void embedis_eeprom_SELECT(embedis_state* state);
+void embedis_eeprom_KEYS(embedis_state* state);
+void embedis_eeprom_GET(embedis_state* state);
+void embedis_eeprom_SET(embedis_state* state);
+void embedis_eeprom_DEL(embedis_state* state);
+
+// Application must provide implementations of these
+
 void embedis_out(char data);
 
-size_t embedis_nvram_size();
-size_t embedis_nvram_fetch(size_t pos);
-void embedis_nvram_store(size_t pos, char value);
+size_t embedis_eeprom_size();
+size_t embedis_eeprom_fetch(size_t pos);
+void embedis_eeprom_store(size_t pos, char value);
 
-void embedis_GET(int argc, const char* argv[]);
-void embedis_SET(int argc, const char* argv[]);
-void embedis_DEL(int argc, const char* argv[]);
-void embedis_dict_error(int argc, const char* argv[], const void* id);
-void embedis_dict_rom(int argc, const char* argv[], const void* id);
-void embedis_dict_GET(int argc, const char* argv[], const void* id);
-void embedis_dict_SET(int argc, const char* argv[], const void* id);
-void embedis_dict_DEL(int argc, const char* argv[], const void* id);
-
-
-typedef struct embedis_command {
-    const char* name;
-    void (*call)(int argc, const char* argv[]);
-} embedis_command;
-
-typedef struct embedis_dict_handler {
-    void (*get)(int argc, const char* argv[], const void* id);
-    void (*set)(int argc, const char* argv[], const void* id);
-    void (*del)(int argc, const char* argv[], const void* id);
-} embedis_dict_handler;
-
-typedef struct embedis_dict_config {
-    const char* name;
-    const void* id;
-    const embedis_dict_handler* handle;
-} embedis_dict_config;
-
+extern const embedis_dictionary embedis_dictionaries[];
 extern const embedis_command embedis_commands[];
-extern const embedis_dict_config embedis_dict_keys[];
+extern const char* embedis_dictionary_rom[];
+extern const embedis_dictionary_key embedis_dictionary_keys[];
 
 #ifdef __cplusplus
 }

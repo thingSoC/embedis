@@ -20,94 +20,94 @@
 #include "embedis.h"
 
 
-TEST(Protocol, WithExtraSapces){
+TEST(Protocol, WithExtraSapces) {
 
-    embedis_reset();
-
-    EXPECT_EQ(
-              embedis("GET vendor"),
-              "+AE9RB\r\n"
-              );
+    embedis_init();
 
     EXPECT_EQ(
-              embedis("  GET vendor"),
-              "+AE9RB\r\n"
-              );
+        embedis("GET vendor"),
+        "+AE9RB\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("GET   vendor"),
-              "+AE9RB\r\n"
-              );
+        embedis("  GET vendor"),
+        "+AE9RB\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("GET vendor  "),
-              "+AE9RB\r\n"
-              );
+        embedis("GET   vendor"),
+        "+AE9RB\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("GET vendor  "),
+        "+AE9RB\r\n"
+    );
 
 }
 
 
-TEST(Protocol, Caps){
+TEST(Protocol, Caps) {
 
-    embedis_reset();
-
-    EXPECT_EQ(
-              embedis("get vendor"),
-              "+AE9RB\r\n"
-              );
+    embedis_init();
 
     EXPECT_EQ(
-              embedis("GET vendor"),
-              "+AE9RB\r\n"
-              );
+        embedis("get vendor"),
+        "+AE9RB\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("GeT vendor"),
-              "+AE9RB\r\n"
-              );
+        embedis("GET vendor"),
+        "+AE9RB\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("GeT vendor"),
+        "+AE9RB\r\n"
+    );
 
 }
 
-TEST(Protocol, Overflow){
+TEST(Protocol, Overflow) {
 
-    embedis_reset();
+    embedis_init();
 
     std::string s;
 
     // The 1 is for the trailing zero
     s.append(EMBEDIS_COMMAND_BUF_SIZE-1, 'X');
     EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR unknown command\r\n"
-              );
+        embedis(s.c_str()),
+        "-ERROR unknown command\r\n"
+    );
 
     // This one should overflow
     s.append(1, 'X');
     EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR buffer overflow\r\n"
-              );
+        embedis(s.c_str()),
+        "-ERROR buffer overflow\r\n"
+    );
 
     s.clear();
     for (int i = 0; i < EMBEDIS_COMMAND_MAX_ARGS; i++) {
         s.append("Z ");
     }
     EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR unknown command\r\n"
-              );
+        embedis(s.c_str()),
+        "-ERROR unknown command\r\n"
+    );
 
     s.append("Z ");
     EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR bad argument count\r\n"
-              );
+        embedis(s.c_str()),
+        "-ERROR bad argument count\r\n"
+    );
 
     s.append("Z Z Z Z");
     EXPECT_EQ(
-              embedis(s.c_str()),
-              "-ERROR bad argument count\r\n"
-              );
+        embedis(s.c_str()),
+        "-ERROR bad argument count\r\n"
+    );
 
 
 }

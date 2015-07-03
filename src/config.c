@@ -10,41 +10,37 @@
 // the pointers, plus the zero, to obtain the exact length.
 // e.g. ptrdiff_t argv1len = argv[2] - argv[1] - 1;
 
-static void embedis_command_missing(int argc, const char* argv[]) {
+static void embedis_command_missing(embedis_state* state) {
     // This default handler can be specialized to support dynamic commands.
-    // Normally, it just returns an error is the command isn't found.
+    // Normally, it just returns an error if the command isn't found.
     embedis_response_error(EMBEDIS_UNKNOWN_COMMAND);
 }
 
 // Adjust this call table to support the desired command set.
 // Commands must be upercase or they will not be found.
 const embedis_command embedis_commands[] = {
+    {"SELECT", embedis_SELECT},
+    {"KEYS", embedis_KEYS},
     {"GET", embedis_GET},
     {"SET", embedis_SET},
     {"DEL", embedis_DEL},
     {0, embedis_command_missing}
 };
 
-// Dictionary handlers for values stored in NVRAM.
-const embedis_dict_handler embedis_nvram_key = {
-    embedis_dict_GET, embedis_dict_SET, embedis_dict_DEL
+const embedis_dictionary embedis_dictionaries[] = {
+    {"ROM", embedis_rom_SELECT, embedis_rom_KEYS, embedis_rom_GET, embedis_rom_SET, embedis_rom_DEL},
+    {"EEPROM", embedis_eeprom_SELECT, embedis_eeprom_KEYS, embedis_eeprom_GET, embedis_eeprom_SET, embedis_eeprom_DEL}
 };
 
-// Dictionary handlers for values stored in ROM.
-// Note that SET and DEL default to returning an error.
-const embedis_dict_handler embedis_rom_key = {
-    embedis_dict_rom, embedis_dict_error, embedis_dict_error
+const char* embedis_dictionary_rom[] = {
+    "vendor", "AE9RB",
+    0
 };
 
-// Dictionary key configuration.
-const embedis_dict_config embedis_dict_keys[] = {
-    // Example for read-only data stored in ROM.
-    {"vendor", "AE9RB", &embedis_rom_key},
-    // Example for an entry stored in NVRAM with an assigned number (1000).
-    // Only the number is stored in NVRAM instead of the whole key.
-    // In this example, two bytes are stored instead of 22.
-    // Valid range is from 1 to 32767.
-    {"asset_identification", (void*)1000, &embedis_nvram_key},
-    // The default hander allows storage of any arbitraty key-value data.
-    {0, 0, &embedis_nvram_key}
+// This list maps keys to a numeric value (0-23767).
+// It is used to conserve space on an EEPROM by
+// storing the number instead of a string and length.
+const embedis_dictionary_key embedis_dictionary_keys[] = {
+    {"asset_identification", 1000},
+    {0,0}
 };

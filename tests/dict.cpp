@@ -20,86 +20,152 @@
 #include "embedis.h"
 
 
-TEST(DictROM, Basics){
+TEST(DictROM, Select) {
 
-    embedis_reset();
-
-    EXPECT_EQ(
-              embedis("GET vendor"),
-              "+AE9RB\r\n"
-              ) << "Retrieve ROM value";;
+    embedis_init();
 
     EXPECT_EQ(
-              embedis("SET vendor blah"),
-              "-ERROR\r\n"
-              ) << "ROM values are read-only";
+        embedis("SELECT ROM"),
+        "+OK\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("DEL vendor"),
-              "-ERROR\r\n"
-              ) << "ROM values are read-only";
+        embedis("GET vendor"),
+        "+AE9RB\r\n"
+    );
 
+    EXPECT_EQ(
+        embedis("SELECT EEPROM"),
+        "+OK\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("DEL vendor"),
+        "+OK\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("SELECT rom"),
+        "+OK\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("GET vendor"),
+        "+AE9RB\r\n"
+    );
 
 }
 
-TEST(DictNVRAM, Basics){
 
-    embedis_reset();
 
-    EXPECT_EQ(
-              embedis("SET foo1 bar1"),
-              "+OK\r\n"
-              );
+TEST(DictROM, Basics) {
+
+    embedis_init();
 
     EXPECT_EQ(
-              embedis("SET foo bar"),
-              "+OK\r\n"
-              );
+        embedis("SELECT ROM"),
+        "+OK\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("SET foo2 bar2"),
-              "+OK\r\n"
-              );
+        embedis("GET vendor"),
+        "+AE9RB\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("SET foo good"),
-              "+OK\r\n"
-              );
+        embedis("SET vendor blah"),
+        "-ERROR\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("SET foo3 bar3"),
-              "+OK\r\n"
-              );
+        embedis("DEL vendor"),
+        "-ERROR\r\n"
+    );
+
+}
+
+TEST(DictEEPROM, Basics) {
+    std::string s;
+
+    embedis_init();
 
     EXPECT_EQ(
-              embedis("GET foo"),
-              "$4\r\ngood\r\n"
-              );
+        embedis("SELECT EEPROM"),
+        "+OK\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("DEL foo"),
-              "+OK\r\n"
-              );
+        embedis("SET foo1 bar1"),
+        "+OK\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("GET foo"),
-              "$-1\r\n"
-              );
+        embedis("SET foo bar"),
+        "+OK\r\n"
+    );
+
+    s = "SET ";
+    s += embedis_dictionary_keys[0].name;
+    s += " bar2";
+    EXPECT_EQ(
+        embedis(s.c_str()),
+        "+OK\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("GET foo1"),
-              "$4\r\nbar1\r\n"
-              );
+        embedis("SET foo good"),
+        "+OK\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("GET foo2"),
-              "$4\r\nbar2\r\n"
-              );
+        embedis("SET foo3 bar3"),
+        "+OK\r\n"
+    );
 
     EXPECT_EQ(
-              embedis("GET foo3"),
-              "$4\r\nbar3\r\n"
-              );
+        embedis("GET foo"),
+        "$4\r\ngood\r\n"
+    );
 
+    EXPECT_EQ(
+        embedis("DEL foo"),
+        "+OK\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("GET foo"),
+        "$-1\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("GET foo1"),
+        "$4\r\nbar1\r\n"
+    );
+
+    s = "GET ";
+    s += embedis_dictionary_keys[0].name;
+    EXPECT_EQ(
+        embedis(s.c_str()),
+        "$4\r\nbar2\r\n"
+    );
+
+    EXPECT_EQ(
+        embedis("GET foo3"),
+        "$4\r\nbar3\r\n"
+    );
+
+    s = "DEL ";
+    s += embedis_dictionary_keys[0].name;
+    EXPECT_EQ(
+        embedis(s.c_str()),
+        "+OK\r\n"
+    );
+
+    s = "GET ";
+    s += embedis_dictionary_keys[0].name;
+    EXPECT_EQ(
+        embedis(s.c_str()),
+        "$-1\r\n"
+    );
 
 }

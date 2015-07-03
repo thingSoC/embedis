@@ -50,23 +50,22 @@ std::string embedis(const char* cmd) {
 }
 
 
+// This is a mock EEPROM which is simply stored in RAM.
 
-// This is a mock NVRAM which is simply stored in RAM.
+#define FAKE_EEPROM_SIZE 128
 
-#define FAKE_NVRAM_SIZE 128
+static char fake_eeprom[FAKE_EEPROM_SIZE];
 
-static char fake_nvram[FAKE_NVRAM_SIZE];
-
-size_t embedis_nvram_size() {
-    return FAKE_NVRAM_SIZE;
+size_t embedis_eeprom_size() {
+    return FAKE_EEPROM_SIZE;
 }
 
-size_t embedis_nvram_fetch(size_t pos) {
-    if (pos >= FAKE_NVRAM_SIZE) throw;
-    return fake_nvram[pos];
+size_t embedis_eeprom_fetch(size_t pos) {
+    if (pos >= FAKE_EEPROM_SIZE) throw;
+    return fake_eeprom[pos];
 }
 
-void embedis_nvram_store(size_t pos, char value) {
-    if (pos >= FAKE_NVRAM_SIZE) throw;
-    fake_nvram[pos] = value;
+void embedis_eeprom_store(size_t pos, char value) {
+    if (pos >= FAKE_EEPROM_SIZE) throw;
+    fake_eeprom[pos] = value;
 }
