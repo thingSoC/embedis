@@ -20,6 +20,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Embedis
    </div>
@@ -84,6 +85,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
@@ -92,10 +95,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="embedis_8h.html">embedis.h</a>&quot;</code><br/>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structembedis__prototol__state.html">embedis_prototol_state</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ac938bff9ebb1bfef15ead12a7f61cf51"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac938bff9ebb1bfef15ead12a7f61cf51"></a>
+typedef struct <br class="typebreak"/>
+<a class="el" href="structembedis__prototol__state.html">embedis_prototol_state</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_prototol_state</b></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab14a5dcd91397397e853ddfc0325d52d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab14a5dcd91397397e853ddfc0325d52d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_response_newline</b> ()</td></tr>
+<tr class="memitem:a4ae7c0870a13af5e6a77dff2151d0978"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ae7c0870a13af5e6a77dff2151d0978"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_emit_newline</b> ()</td></tr>
 <tr class="memitem:a7a917d62fa7cdd7098e6313b836423d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a917d62fa7cdd7098e6313b836423d4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_response_error</b> (const char *message)</td></tr>
 <tr class="memitem:a325cf10fe5f711ef2e6059bed53616ed"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a325cf10fe5f711ef2e6059bed53616ed"></a>
@@ -106,8 +119,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_response_stri
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_response_string</b> (const char *message, size_t length)</td></tr>
 <tr class="memitem:a08ea0f3cdadfe75f6c1ce93bbbe7f006"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08ea0f3cdadfe75f6c1ce93bbbe7f006"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_response_null</b> ()</td></tr>
+<tr class="memitem:a8188ecb89d1911672591f03d674d7c04"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8188ecb89d1911672591f03d674d7c04"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_init</b> ()</td></tr>
 <tr class="memitem:a05ae2bac2eb170bb106a089cbf6c69d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05ae2bac2eb170bb106a089cbf6c69d1"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_reset</b> ()</td></tr>
+<tr class="memitem:a4e372c38bcfa6e250b8ba1c31efa2035"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e372c38bcfa6e250b8ba1c31efa2035"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_capitalize_arg</b> (<a class="el" href="structembedis__state.html">embedis_state</a> *state, size_t arg)</td></tr>
 <tr class="memitem:a790448466c5433efdbc40bfed439a0e8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a790448466c5433efdbc40bfed439a0e8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_in</b> (char data)</td></tr>
 </table><table class="memberdecls">
