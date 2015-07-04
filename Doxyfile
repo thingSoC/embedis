@@ -6,6 +6,7 @@ DOXYFILE_ENCODING      = UTF-8
 INPUT_ENCODING         = UTF-8
 PROJECT_NAME           = "Embedis"
 PROJECT_BRIEF          = "Embedded Dictionary Server"
+PROJECT_LOGO           = "doc/img/logo.png"
 OUTPUT_LANGUAGE        = English
 TAB_SIZE               = 4
 INPUT                  = doc src LICENSE.txt
