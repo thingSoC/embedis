@@ -6,5 +6,6 @@ var searchData=
   ['embedis_5fdictionary_5fkey',['embedis_dictionary_key',['../structembedis__dictionary__key.html',1,'']]],
   ['embedis_5fprototol_5fstate',['embedis_prototol_state',['../structembedis__prototol__state.html',1,'']]],
   ['embedis_5fstate',['embedis_state',['../structembedis__state.html',1,'']]],
-  ['embedis_20documentation',['Embedis Documentation',['../index.html',1,'']]]
+  ['embedis_20documentation',['Embedis Documentation',['../index.html',1,'']]],
+  ['embedis_20command_20definitions',['Embedis Command Definitions',['../group__main__commands.html',1,'']]]
 ];
