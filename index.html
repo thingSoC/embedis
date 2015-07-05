@@ -82,21 +82,83 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="main_intro"></a>
 Introduction</h1>
-<dl class="section user"><dt></dt><dd>Embedis is a library for creating embedded dictionary servers. <br/>
+<dl class="section user"><dt></dt><dd>Embedis is an open source library for creating simple embedded dictionary servers. <br/>
  Embedis is used for embedding key-value dictionaries into the <br/>
- Flash, FRAM, NVSRAM, EEPROM, and SDcard memory systems of small embedded computing platforms.<br/>
+ SRAM, FLASH, FRAM, NVSRAM, EEPROM, or SDcard memory systems <br/>
+ of small, limited resource, embedded computing platforms, <br/>
+ such as the Arduino(AVR), Teensy(Cortex-M4), PSoC(Cortex-M0/3), <br/>
+ and others. <br/>
  </dd></dl>
 <dl class="section user"><dt></dt><dd></dd></dl>
 <h1><a class="anchor" id="main_background"></a>
 Background</h1>
-<dl class="section user"><dt></dt><dd>We found ourselves repeating a lot of work developing simple persistant storage libraries across a number of different projects and platforms. <br/>
- Embedis was developed to provide a very simple interface for storing and retrieving data from pins, sensors, interfaces, and other I/O devices, in simple and efficient way. <br/>
+<dl class="section user"><dt></dt><dd>I needed to support several different persistant memory store types, <br/>
+ for a number of "Internet of Things", and small embedded system projects. <br/>
+ These types include the internal processor/SoC based SRAM, FLASH, EEPROM, <br/>
+ and Scratchpad SRAM memories, as well as externally attached FLASH, EEPROM, <br/>
+ FRAM, NVSRAM and SDCard memories. <br/>
+ </dd></dl>
+<dl class="section user"><dt></dt><dd>Embedis was developed to provide a simple interface for storing and retrieving data <br/>
+ from pins, sensors, interfaces, and other I/O devices, <br/>
+ across a number of different embedded platforms and IDEs. <br/>
  </dd></dl>
 <dl class="section user"><dt></dt><dd></dd></dl>
 <h1><a class="anchor" id="main_theory"></a>
-Theory of Operation</h1>
-<dl class="section user"><dt></dt><dd>Yada-yada-yada <br/>
- </dd></dl>
+Embedis CLI Overview</h1>
+<dl class="section user"><dt></dt><dd>The Embedis command line interface (CLI) uses familiar SET/GET/DEL commands <br/>
+ for storing, retriving, and deleting key-value pairs in the persistant memory stores. <br/>
+ For example :<br/>
+ <blockquote class="doxtable">
+<p>&gt;set mykey somevalue<br/>
+ OK<br/>
+ &gt;get mykey<br/>
+ "somevalue"<br/>
+ &gt;del mykey<br/>
+ OK<br/>
+</p>
+<p></p>
+</blockquote>
+</dd></dl>
+<dl class="section user"><dt></dt><dd>Different memory types are selected using their device name, for example :<br/>
+ <blockquote class="doxtable">
+<p>&gt;select EEPROM<br/>
+ OK<br/>
+ &gt;set mykey somevalue (written to the internal EEPROM Memory)<br/>
+ OK<br/>
+ &gt;select FLASH<br/>
+ OK<br/>
+ &gt;set mykey somevalue (written to the internal FLASH Memory)<br/>
+ OK<br/>
+ &gt;select S25FL127S<br/>
+ OK<br/>
+ &gt;set mykey somevalue (written to external S25FL127S FLASH Memory)<br/>
+ OK<br/>
+</p>
+<p></p>
+</blockquote>
+</dd></dl>
+<dl class="section user"><dt></dt><dd>A list of keys can be retrieved using the KEYS command for the selected memory : <blockquote class="doxtable">
+<p>&gt;select EEPROM<br/>
+ OK<br/>
+ &gt;keys<br/>
+ $5 mykey &gt;get mykey<br/>
+ "somevalue"<br/>
+</p>
+<p></p>
+</blockquote>
+</dd></dl>
+<dl class="section user"><dt></dt><dd>Access to hardware drivers is accomplished similarly using the READ/WRITE commands <br/>
+ <blockquote class="doxtable">
+<p>&gt; write /led/0 0<br/>
+ OK<br/>
+ &gt; read /led/0<br/>
+ +0<br/>
+ &gt; write /led/0 1<br/>
+ OK<br/>
+</p>
+<p></p>
+</blockquote>
+</dd></dl>
 <dl class="section user"><dt></dt><dd></dd></dl>
 </div></div><!-- contents -->
 <!-- start footer part -->
