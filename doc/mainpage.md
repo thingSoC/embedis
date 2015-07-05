@@ -58,8 +58,8 @@ A list of keys can be retrieved using the KEYS command for the selected memory :
 > \>select EEPROM\n
 > OK\n
 > \>keys\n
-> $5
-> mykey
+> $5\n
+> mykey\n
 > \>get mykey\n
 > "somevalue"\n
 
