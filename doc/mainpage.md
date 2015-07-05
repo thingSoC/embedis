@@ -1,4 +1,3 @@
- 
 \brief		Embedis : Embedded Dictionary Server Documentation
 \details	A library for embedding a key-value dictionary in Flash, FRAM, NVSRAM, and EEPROM. 
 \author		Dave Turnbull
@@ -74,7 +73,8 @@ Access to hardware drivers is accomplished similarly using the READ/WRITE comman
 
 
 \par
-\defgroup main_api API Definitions
+
+\defgroup main_commands Embedis Command Definitions
 @{
 @}
 
