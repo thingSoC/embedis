@@ -1,4 +1,16 @@
 /* Example program for Arduino */
+/**
+  ******************************************************************************
+  *
+  * @file        embedis.ino
+  * @author      Dave Turnbull
+  * @version     0.0.1
+  * @date        2015-06-29
+  * @copyright   PatternAgents, LLC
+  * @brief       Embedis Example Sketch for the Arduino IDE
+  *     
+  ******************************************************************************
+  */
 
 #include "embedis.h"
 #include <EEPROM.h>
