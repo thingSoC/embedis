@@ -39,22 +39,22 @@ extern "C" {
 #endif
 
 #ifndef EMBEDIS_COMMAND_BUF_SIZE
-#define EMBEDIS_COMMAND_BUF_SIZE (128)
+#define EMBEDIS_COMMAND_BUF_SIZE (128) /**< Embedis Command buffer Size in Bytes */
 #endif
 
 #ifndef EMBEDIS_COMMAND_MAX_ARGS
-#define EMBEDIS_COMMAND_MAX_ARGS (8)
+#define EMBEDIS_COMMAND_MAX_ARGS (8)   /**< Embedis Command Argc size */
 #endif
 
-extern const char* EMBEDIS_OK;
-extern const char* EMBEDIS_UNKNOWN_COMMAND;
-extern const char* EMBEDIS_SYNTAX_ERROR;
-extern const char* EMBEDIS_BUFFER_OVERFLOW;
-extern const char* EMBEDIS_ARGS_ERROR;
-extern const char* EMBEDIS_STORAGE_OVERFLOW;
+extern const char* EMBEDIS_OK;               /**< Embedis OK Flag */
+extern const char* EMBEDIS_UNKNOWN_COMMAND;  /**< Embedis Unknown Command Flag */
+extern const char* EMBEDIS_SYNTAX_ERROR;     /**< Embedis Syntax Error Flag */
+extern const char* EMBEDIS_BUFFER_OVERFLOW;  /**< Embedis Buffer Overflow Flag */
+extern const char* EMBEDIS_ARGS_ERROR;       /**< Embedis Argument Error Flag */
+extern const char* EMBEDIS_STORAGE_OVERFLOW; /**< Embedis Storage Overflow Flag */
 
 
-typedef struct embedis_state embedis_state;
+typedef struct embedis_state embedis_state;  /**< Embedis CLI State */
 
 typedef struct embedis_dictionary {
     const char* name;
