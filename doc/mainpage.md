@@ -25,7 +25,7 @@ Embedis was developed to provide a simple interface for storing and retrieving d
 from pins, sensors, interfaces, and other I/O devices, \n
 across a number of different embedded platforms and IDEs. \n
 \par
-\section	main_theory Embedis CLI Overview 
+\section	main_overview Embedis CLI Overview 
 \par
 The Embedis command line interface (CLI) uses familiar SET/GET/DEL commands \n
 for storing, retriving, and deleting key-value pairs in the persistant memory stores. \n
@@ -74,6 +74,8 @@ Access to hardware drivers is accomplished similarly using the READ/WRITE comman
 
 \par
 
+\section	main_installation Embedis Install Instructions 
+\par
 \defgroup main_commands Embedis Command Definitions
 @{
 @}
