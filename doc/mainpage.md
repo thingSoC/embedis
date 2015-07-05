@@ -1,6 +1,6 @@
 \brief		Embedis : Embedded Dictionary Server Documentation
 \details	A library for embedding a key-value dictionary in Flash, FRAM, NVSRAM, and EEPROM. 
-\author		Dave Turnbull
+\author		Dave Turnbull, Tom Moxon
 \date		2015-06-29
 \copyright	PatternAgents, LLC
 \mainpage	Embedis Documentation
