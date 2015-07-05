@@ -63,6 +63,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -109,15 +110,12 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a55fa10485e6e7f8ea38d93e015c59de2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a55fa10485e6e7f8ea38d93e015c59de2"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_COMMAND_BUF_SIZE</b>&#160;&#160;&#160;(128)</td></tr>
-<tr class="memitem:a12c37625248ac064f625c556c08a615f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12c37625248ac064f625c556c08a615f"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_COMMAND_MAX_ARGS</b>&#160;&#160;&#160;(8)</td></tr>
+<tr class="memitem:a55fa10485e6e7f8ea38d93e015c59de2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#a55fa10485e6e7f8ea38d93e015c59de2">EMBEDIS_COMMAND_BUF_SIZE</a>&#160;&#160;&#160;(128)</td></tr>
+<tr class="memitem:a12c37625248ac064f625c556c08a615f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#a12c37625248ac064f625c556c08a615f">EMBEDIS_COMMAND_MAX_ARGS</a>&#160;&#160;&#160;(8)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:acbcc8ef06f4a19ec3145cbb5456956eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acbcc8ef06f4a19ec3145cbb5456956eb"></a>
-typedef struct <a class="el" href="structembedis__state.html">embedis_state</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_state</b></td></tr>
+<tr class="memitem:acbcc8ef06f4a19ec3145cbb5456956eb"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structembedis__state.html">embedis_state</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#acbcc8ef06f4a19ec3145cbb5456956eb">embedis_state</a></td></tr>
 <tr class="memitem:ab6ca115b81155749a04e169fae73349e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab6ca115b81155749a04e169fae73349e"></a>
 typedef struct <a class="el" href="structembedis__dictionary.html">embedis_dictionary</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_dictionary</b></td></tr>
 <tr class="memitem:a4e45ddedf1714ede2e12ea6ba5ab0266"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e45ddedf1714ede2e12ea6ba5ab0266"></a>
@@ -134,8 +132,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_init</b> ()</
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_reset</b> ()</td></tr>
 <tr class="memitem:a4e372c38bcfa6e250b8ba1c31efa2035"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e372c38bcfa6e250b8ba1c31efa2035"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_capitalize_arg</b> (<a class="el" href="structembedis__state.html">embedis_state</a> *state, size_t arg)</td></tr>
-<tr class="memitem:a790448466c5433efdbc40bfed439a0e8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a790448466c5433efdbc40bfed439a0e8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_in</b> (char data)</td></tr>
+<tr class="memitem:a790448466c5433efdbc40bfed439a0e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#a790448466c5433efdbc40bfed439a0e8">embedis_in</a> (char data)</td></tr>
 <tr class="memitem:a4ae7c0870a13af5e6a77dff2151d0978"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ae7c0870a13af5e6a77dff2151d0978"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_emit_newline</b> ()</td></tr>
 <tr class="memitem:a7a917d62fa7cdd7098e6313b836423d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a917d62fa7cdd7098e6313b836423d4"></a>
@@ -189,18 +186,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_eeprom_store<
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a73f72644912b9c479ae4aea6a5ca491d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a73f72644912b9c479ae4aea6a5ca491d"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_OK</b></td></tr>
-<tr class="memitem:a185275283951956132f85b74577f35e0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a185275283951956132f85b74577f35e0"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_UNKNOWN_COMMAND</b></td></tr>
-<tr class="memitem:a41d46a45f3bdf14bb005b43818f4ec8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a41d46a45f3bdf14bb005b43818f4ec8e"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_SYNTAX_ERROR</b></td></tr>
-<tr class="memitem:adda489ad10ba24ea771c7093a601e92c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adda489ad10ba24ea771c7093a601e92c"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_BUFFER_OVERFLOW</b></td></tr>
-<tr class="memitem:adc53dd753a28250dab4694e50edfc3d8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc53dd753a28250dab4694e50edfc3d8"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_ARGS_ERROR</b></td></tr>
-<tr class="memitem:a42062b96ebaddab548c438d429bf58ee"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42062b96ebaddab548c438d429bf58ee"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>EMBEDIS_STORAGE_OVERFLOW</b></td></tr>
+<tr class="memitem:a73f72644912b9c479ae4aea6a5ca491d"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#a73f72644912b9c479ae4aea6a5ca491d">EMBEDIS_OK</a></td></tr>
+<tr class="memitem:a185275283951956132f85b74577f35e0"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#a185275283951956132f85b74577f35e0">EMBEDIS_UNKNOWN_COMMAND</a></td></tr>
+<tr class="memitem:a41d46a45f3bdf14bb005b43818f4ec8e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#a41d46a45f3bdf14bb005b43818f4ec8e">EMBEDIS_SYNTAX_ERROR</a></td></tr>
+<tr class="memitem:adda489ad10ba24ea771c7093a601e92c"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#adda489ad10ba24ea771c7093a601e92c">EMBEDIS_BUFFER_OVERFLOW</a></td></tr>
+<tr class="memitem:adc53dd753a28250dab4694e50edfc3d8"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#adc53dd753a28250dab4694e50edfc3d8">EMBEDIS_ARGS_ERROR</a></td></tr>
+<tr class="memitem:a42062b96ebaddab548c438d429bf58ee"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="embedis_8h.html#a42062b96ebaddab548c438d429bf58ee">EMBEDIS_STORAGE_OVERFLOW</a></td></tr>
 <tr class="memitem:aa81e1c7a12cbe85337f9df07cf5ce6ca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa81e1c7a12cbe85337f9df07cf5ce6ca"></a>
 const <a class="el" href="structembedis__dictionary.html">embedis_dictionary</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_dictionaries</b> []</td></tr>
 <tr class="memitem:ad4d1d061068898cd2473405a96e1dced"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4d1d061068898cd2473405a96e1dced"></a>
@@ -216,7 +207,149 @@ const <a class="el" href="structembedis__dictionary__key.html">embedis_dictionar
 <dl class="section version"><dt>Version</dt><dd>0.0.1 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>2015-06-29 </dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>PatternAgents, LLC</dd></dl>
-</div></div><!-- contents -->
+</div><h2>Macro Definition Documentation</h2>
+<a class="anchor" id="a55fa10485e6e7f8ea38d93e015c59de2"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define EMBEDIS_COMMAND_BUF_SIZE&#160;&#160;&#160;(128)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis Command buffer Size in Bytes </p>
+
+</div>
+</div>
+<a class="anchor" id="a12c37625248ac064f625c556c08a615f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define EMBEDIS_COMMAND_MAX_ARGS&#160;&#160;&#160;(8)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis Command Argc size </p>
+
+</div>
+</div>
+<h2>Typedef Documentation</h2>
+<a class="anchor" id="acbcc8ef06f4a19ec3145cbb5456956eb"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structembedis__state.html">embedis_state</a> <a class="el" href="structembedis__state.html">embedis_state</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis CLI State </p>
+
+</div>
+</div>
+<h2>Function Documentation</h2>
+<a class="anchor" id="a790448466c5433efdbc40bfed439a0e8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void embedis_in </td>
+          <td>(</td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>&lt; Embedis Command Argc size</p>
+<p>&lt; Embedis Command buffer Size in Bytes</p>
+<p>&lt; Embedis Command buffer Size in Bytes</p>
+<p>&lt; Embedis Command Argc size</p>
+<p>&lt; Embedis Command buffer Size in Bytes </p>
+
+</div>
+</div>
+<h2>Variable Documentation</h2>
+<a class="anchor" id="a73f72644912b9c479ae4aea6a5ca491d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* EMBEDIS_OK</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis OK Flag </p>
+
+</div>
+</div>
+<a class="anchor" id="a185275283951956132f85b74577f35e0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* EMBEDIS_UNKNOWN_COMMAND</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis Unknown Command Flag </p>
+
+</div>
+</div>
+<a class="anchor" id="a41d46a45f3bdf14bb005b43818f4ec8e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* EMBEDIS_SYNTAX_ERROR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis Syntax Error Flag </p>
+
+</div>
+</div>
+<a class="anchor" id="adda489ad10ba24ea771c7093a601e92c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* EMBEDIS_BUFFER_OVERFLOW</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis Buffer Overflow Flag </p>
+
+</div>
+</div>
+<a class="anchor" id="adc53dd753a28250dab4694e50edfc3d8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* EMBEDIS_ARGS_ERROR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis Argument Error Flag </p>
+
+</div>
+</div>
+<a class="anchor" id="a42062b96ebaddab548c438d429bf58ee"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* EMBEDIS_STORAGE_OVERFLOW</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Embedis Storage Overflow Flag </p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
