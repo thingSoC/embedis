@@ -38,14 +38,61 @@
 extern "C" {
 #endif
 
+/** @addtogroup embedis embedis
+  * @{
+  */
+
+/*-----------------------------------------------------------------------------*/
+/* Exported Types                                                              */
+/*-----------------------------------------------------------------------------*/
+/** @defgroup embedis_Exported_Types
+  * @{
+  */
+
+/**
+  * Close the Doxygen embedis__Exported_Types group.
+  * @}
+  */
+
+/*-----------------------------------------------------------------------------*/
+/* Exported Constants                                                          */
+/*-----------------------------------------------------------------------------*/
+/** @defgroup embedis_Exported_Constants
+  * @{
+  */
+
 #ifndef EMBEDIS_COMMAND_BUF_SIZE
-#define EMBEDIS_COMMAND_BUF_SIZE (128) /**< Embedis Command buffer Size in Bytes */
+#define EMBEDIS_COMMAND_BUF_SIZE (128)
 #endif
 
 #ifndef EMBEDIS_COMMAND_MAX_ARGS
-#define EMBEDIS_COMMAND_MAX_ARGS (8)   /**< Embedis Command Argc size */
+#define EMBEDIS_COMMAND_MAX_ARGS (8)
 #endif
 
+
+/**
+  * Close the Doxygen embedis_Exported_Constants group.
+  * @}
+  */
+
+/*-----------------------------------------------------------------------------*/
+/* Exported Macros                                                             */
+/*-----------------------------------------------------------------------------*/
+/** @defgroup embedis_Exported_Macros
+  * @{
+  */
+
+/**
+  * Close the Doxygen embedis_Exported_Macros group.
+  * @}
+  */
+
+/*-----------------------------------------------------------------------------*/
+/* Exported Variable Declarations                                              */
+/*-----------------------------------------------------------------------------*/
+/** @defgroup embedis_Exported_Variables
+  * @{
+  */
 extern const char* EMBEDIS_OK;               /**< Embedis OK Flag */
 extern const char* EMBEDIS_UNKNOWN_COMMAND;  /**< Embedis Unknown Command Flag */
 extern const char* EMBEDIS_SYNTAX_ERROR;     /**< Embedis Syntax Error Flag */
@@ -81,6 +128,19 @@ struct embedis_state {
     size_t argc;
 };
 
+/** Platform Globals */
+
+/**
+  * Close the Doxygen embedis_Exported_Variables group.
+  * @}
+  */
+
+/*-----------------------------------------------------------------------------*/
+/* Exported Function Declarations                                              */
+/*-----------------------------------------------------------------------------*/
+/** @defgroup embedis_Exported_Functions
+  * @{
+  */
 // protocol.c
 
 void embedis_init();
@@ -128,8 +188,18 @@ extern const embedis_command embedis_commands[];
 extern const char* embedis_dictionary_rom[];
 extern const embedis_dictionary_key embedis_dictionary_keys[];
 
+/**
+  * Close the Doxygen embedis_Exported_Functions group.
+  * @}
+  */
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /*EMBEDIS_H*/
+/*-----------------------------------------------------------------------------*/
+/**
+  * Close the Doxygen embedis group.
+  *    @}
+*/
