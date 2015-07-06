@@ -15,7 +15,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "benchtest.hpp"
 #include "main.h"
 #include "embedis.h"
 
@@ -33,14 +32,13 @@ void embedis_out(char data) {
     result.append(1, data);
 }
 
-std::string embedis(const char* cmd) {
+std::string embedis(std::string cmd) {
     char last1 = 0, last2 = 0;
     result.clear();
-    while (*cmd) {
-        embedis_in(*cmd);
+    for (size_t i = 0; i < cmd.length(); i++) {
+        embedis_in(cmd[i]);
         last1 = last2;
-        last2 = *cmd;
-        cmd++;
+        last2 = cmd[i];
     }
     if (last1 != '\r' && last2 != '\n') {
         embedis_in('\r');
@@ -50,11 +48,37 @@ std::string embedis(const char* cmd) {
 }
 
 
+// Testing predicates
+
+testing::AssertionResult embedisOK(const char* cmd_expr, std::string cmd) {
+    std::string result = embedis(cmd);
+    if (result.empty() || result[0] != '+') {
+        return testing::AssertionFailure() << cmd_expr <<
+               " expected to succeed. Result was: " << result;
+    }
+    return testing::AssertionSuccess();
+}
+
+testing::AssertionResult embedisFAIL(const char* cmd_expr, std::string cmd) {
+    std::string result = embedis(cmd);
+    if (result.empty() || result[0] != '-') {
+        return testing::AssertionFailure() << cmd_expr <<
+               " expected to fail. Result was: " << result;
+    }
+    return testing::AssertionSuccess();
+}
+
+
+
 // This is a mock EEPROM which is simply stored in RAM.
 
 #define FAKE_EEPROM_SIZE 128
 
 static char fake_eeprom[FAKE_EEPROM_SIZE];
+
+void fake_eeprom_erase() {
+    for (size_t i = 0; i < FAKE_EEPROM_SIZE; i++) fake_eeprom[i] = 255;
+}
 
 size_t embedis_eeprom_size() {
     return FAKE_EEPROM_SIZE;

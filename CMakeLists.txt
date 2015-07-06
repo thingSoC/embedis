@@ -35,8 +35,8 @@ include_directories(src tests benchtest/include)
 
 ### testing
 
-file(GLOB_RECURSE SRC_TEST_EMBEDIS "tests/*.cpp")
-add_executable(test_embedis ${SRC_TEST_EMBEDIS} ${INCLUDE_BENCHTEST} ${EMBEDIS_HEADERS} ${EMBEDIS_SRC})
+file(GLOB_RECURSE TEST_EMBEDIS_SRC "tests/*.c*"  "tests/*.h*")
+add_executable(test_embedis ${TEST_EMBEDIS_SRC} ${INCLUDE_BENCHTEST} ${EMBEDIS_HEADERS} ${EMBEDIS_SRC})
 add_test(NAME run_test_embedis COMMAND test_embedis)
 
 ### documentation

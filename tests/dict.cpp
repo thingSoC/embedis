@@ -15,7 +15,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <benchtest.hpp>
 #include "main.h"
 #include "embedis.h"
 
@@ -23,31 +22,20 @@
 TEST(DictROM, Select) {
 
     embedis_init();
+    fake_eeprom_erase();
 
-    EXPECT_EQ(
-        embedis("SELECT ROM"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SELECT ROM");
 
     EXPECT_EQ(
         embedis("GET vendor"),
         "+AE9RB\r\n"
     );
 
-    EXPECT_EQ(
-        embedis("SELECT EEPROM"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SELECT EEPROM");
 
-    EXPECT_EQ(
-        embedis("DEL vendor"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "DEL vendor");
 
-    EXPECT_EQ(
-        embedis("SELECT rom"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SELECT rom");
 
     EXPECT_EQ(
         embedis("GET vendor"),
@@ -62,25 +50,16 @@ TEST(DictROM, Basics) {
 
     embedis_init();
 
-    EXPECT_EQ(
-        embedis("SELECT ROM"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SELECT ROM");
 
     EXPECT_EQ(
         embedis("GET vendor"),
         "+AE9RB\r\n"
     );
 
-    EXPECT_EQ(
-        embedis("SET vendor blah"),
-        "-ERROR\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisFAIL, "SET vendor blah");
 
-    EXPECT_EQ(
-        embedis("DEL vendor"),
-        "-ERROR\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisFAIL, "DEL vendor");
 
 }
 
@@ -88,49 +67,30 @@ TEST(DictEEPROM, Basics) {
     std::string s;
 
     embedis_init();
+    fake_eeprom_erase();
 
-    EXPECT_EQ(
-        embedis("SELECT EEPROM"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SELECT EEPROM");
 
-    EXPECT_EQ(
-        embedis("SET foo1 bar1"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SET foo1 bar1");
 
-    EXPECT_EQ(
-        embedis("SET foo bar"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SET foo bar");
 
     s = "SET ";
     s += embedis_dictionary_keys[0].name;
     s += " bar2";
-    EXPECT_EQ(
-        embedis(s.c_str()),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, s);
 
-    EXPECT_EQ(
-        embedis("SET foo good"),
-        "+OK\r\n"
-    );
 
-    EXPECT_EQ(
-        embedis("SET foo3 bar3"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "SET foo good");
+
+    EXPECT_PRED_FORMAT1(embedisOK, "SET foo3 bar3");
 
     EXPECT_EQ(
         embedis("GET foo"),
         "$4\r\ngood\r\n"
     );
 
-    EXPECT_EQ(
-        embedis("DEL foo"),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, "DEL foo");
 
     EXPECT_EQ(
         embedis("GET foo"),
@@ -156,10 +116,7 @@ TEST(DictEEPROM, Basics) {
 
     s = "DEL ";
     s += embedis_dictionary_keys[0].name;
-    EXPECT_EQ(
-        embedis(s.c_str()),
-        "+OK\r\n"
-    );
+    EXPECT_PRED_FORMAT1(embedisOK, s);
 
     s = "GET ";
     s += embedis_dictionary_keys[0].name;
@@ -167,5 +124,42 @@ TEST(DictEEPROM, Basics) {
         embedis(s.c_str()),
         "$-1\r\n"
     );
+
+
+}
+
+TEST(DictEEPROM, KEYS) {
+    std::string s;
+
+    embedis_init();
+    fake_eeprom_erase();
+
+    EXPECT_PRED_FORMAT1(embedisOK, "SELECT EEPROM");
+
+    EXPECT_EQ(
+        embedis("KEYS"),
+        "*0\r\n"
+    );
+
+    EXPECT_PRED_FORMAT1(embedisOK, "SET foo bar");
+
+    EXPECT_EQ(
+        embedis("KEYS"),
+        "*1\r\n$3\r\nfoo\r\n"
+    );
+
+    s = "SET ";
+    s += embedis_dictionary_keys[0].name;
+    s += " bar2";
+    EXPECT_PRED_FORMAT1(embedisOK, s);
+
+    s = "*2\r\n$3\r\nfoo\r\n+";
+    s += embedis_dictionary_keys[0].name;
+    s += "\r\n";
+    EXPECT_EQ(
+        embedis("KEYS"),
+        s
+    );
+
 
 }

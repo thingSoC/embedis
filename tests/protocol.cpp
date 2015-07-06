@@ -15,7 +15,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <benchtest.hpp>
 #include "main.h"
 #include "embedis.h"
 

@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 /**
   ******************************************************************************
   *
@@ -23,7 +24,7 @@
   * @date        2015-06-29
   * @copyright   PatternAgents, LLC
   * @brief       The Embedis Dictionary Server Protocol
-  *     
+  *
   ******************************************************************************
   */
 
@@ -38,10 +39,35 @@ const char* EMBEDIS_BUFFER_OVERFLOW = "buffer overflow";
 const char* EMBEDIS_ARGS_ERROR = "bad argument count";
 const char* EMBEDIS_STORAGE_OVERFLOW = "storage overflow";
 
+
 void embedis_emit_newline() {
     embedis_out('\r');
     embedis_out('\n');
 }
+
+
+void embedis_emit_integer(int i) {
+    size_t j, k;
+    if (i < 0) {
+        i = -i;
+        embedis_out('-');
+    }
+    for (j = 1; i / (j*10); j *= 10) {}
+    while (j) {
+        k = i / j;
+        embedis_out('0' + k);
+        i -= k * j;
+        j /= 10;
+    }
+}
+
+
+void embedis_emit_size(char kind, size_t length) {
+    embedis_out(kind);
+    embedis_emit_integer(length);
+    embedis_emit_newline();
+}
+
 
 void embedis_response_error(const char* message) {
     const char* errstr = "-ERROR";
@@ -63,6 +89,7 @@ void embedis_response_error(const char* message) {
     embedis_emit_newline();
 }
 
+
 void embedis_response_simple(const char* message) {
     embedis_out('+');
     while(*message) {
@@ -72,28 +99,16 @@ void embedis_response_simple(const char* message) {
     embedis_emit_newline();
 }
 
-void embedis_response_string_length(size_t length) {
-    size_t i, j, k;
-    for (i = 1; length / (i*10); i *= 10) {}
-    j = length;
-    embedis_out('$');
-    while (i) {
-        k = j / i;
-        embedis_out('0' + k);
-        j -= k * i;
-        i /= 10;
-    }
-    embedis_emit_newline();
-}
 
 void embedis_response_string(const char* message, size_t length) {
-    size_t i;
-    embedis_response_string_length(length);
+    size_t i = 0;
+    embedis_emit_size('$', length);
     for (i = 0; i < length; i++) {
         embedis_out(message[i]);
     }
     embedis_emit_newline();
 }
+
 
 void embedis_response_null() {
     const char* nullstr = "$-1";
@@ -115,7 +130,7 @@ typedef struct embedis_prototol_state {
 static embedis_prototol_state command;
 
 
-// Initialize everything. Call at program start.
+// Initialize everything. Call once at program start.
 void embedis_init() {
     command.state.dictionary = &embedis_dictionaries[0];
     embedis_reset();
@@ -132,6 +147,7 @@ void embedis_reset() {
 }
 
 
+// Utility to capitalize an argument.
 void embedis_capitalize_arg(embedis_state* state, size_t arg) {
     embedis_prototol_state* cmd = (embedis_prototol_state*)state;
     if (arg >= command.state.argc) return;
@@ -145,6 +161,7 @@ void embedis_capitalize_arg(embedis_state* state, size_t arg) {
 }
 
 
+// Main command dispatcher.
 static void embedis_dispatch() {
     const embedis_command* cmd = &embedis_commands[0];
     size_t i;
@@ -161,6 +178,7 @@ static void embedis_dispatch() {
 }
 
 
+// Process characters received over connection.
 void embedis_in(char data) {
 
     if (command.mode == 0) {

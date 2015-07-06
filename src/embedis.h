@@ -23,7 +23,7 @@
   * @date        2015-06-29
   * @copyright   PatternAgents, LLC
   * @brief       The main include file for the Embedis Dictionary Server
-  *     
+  *
   ******************************************************************************
   */
 
@@ -93,13 +93,13 @@ extern "C" {
 /** @defgroup embedis_Exported_Variables
   * @{
   */
+
 extern const char* EMBEDIS_OK;               /**< Embedis OK Flag */
 extern const char* EMBEDIS_UNKNOWN_COMMAND;  /**< Embedis Unknown Command Flag */
 extern const char* EMBEDIS_SYNTAX_ERROR;     /**< Embedis Syntax Error Flag */
 extern const char* EMBEDIS_BUFFER_OVERFLOW;  /**< Embedis Buffer Overflow Flag */
 extern const char* EMBEDIS_ARGS_ERROR;       /**< Embedis Argument Error Flag */
 extern const char* EMBEDIS_STORAGE_OVERFLOW; /**< Embedis Storage Overflow Flag */
-
 
 typedef struct embedis_state embedis_state;  /**< Embedis CLI State */
 
@@ -149,9 +149,10 @@ void embedis_capitalize_arg(embedis_state* state, size_t arg);
 void embedis_in(char data);
 
 void embedis_emit_newline();
+void embedis_emit_integer(int i);
+void embedis_emit_size(char kind, size_t length);
 void embedis_response_error(const char* message);
 void embedis_response_simple(const char* message);
-void embedis_response_string_length(size_t length);
 void embedis_response_string(const char* message, size_t length);
 void embedis_response_null();
 

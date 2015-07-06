@@ -24,7 +24,7 @@
   * @date        2015-06-29
   * @copyright   PatternAgents, LLC
   * @brief       The Embedis Dictionary Server Configuration
-  *     
+  *
   ******************************************************************************
   */
 
@@ -67,7 +67,7 @@ const char* embedis_dictionary_rom[] = {
     0
 };
 
-// This list maps keys to a numeric value (0-23767).
+// This list maps keys to a numeric value (1-32767).
 // It is used to conserve space on an EEPROM by
 // storing the number instead of a string and length.
 const embedis_dictionary_key embedis_dictionary_keys[] = {
