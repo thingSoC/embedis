@@ -40,13 +40,8 @@ void embedis_SELECT(embedis_state* state) {
         return embedis_response_error(EMBEDIS_ARGS_ERROR);
     }
     const embedis_dictionary* dict = &embedis_dictionaries[0];
-    size_t i, length = state->argv[2] - state->argv[1] - 1;
-    embedis_capitalize_arg(state, 1);
     while (dict->name) {
-        i = 0;
-        while (dict->name[i] == state->argv[1][i]) i++;
-        if (i == length+1) {
-            // found
+        if (!embedis_stricmp(dict->name, state->argv[1])) {
             state->dictionary = dict;
             (*dict->select)(state);
             return;
@@ -104,11 +99,8 @@ void embedis_rom_KEYS(embedis_state* state) {
 
 void embedis_rom_GET(embedis_state* state) {
     const char** rom = embedis_dictionary_rom;
-    size_t i, length = state->argv[2] - state->argv[1] - 1;
     while (*rom) {
-        i = 0;
-        while (rom[0][i] == state->argv[1][i]) i++;
-        if (i == length+1) {
+        if (!embedis_strcmp(rom[0], state->argv[1])) {
             embedis_response_simple(rom[1]);
             return;
         }
@@ -150,17 +142,17 @@ void embedis_rom_DEL(embedis_state* state) {
 
 
 static short int eeprom_key_to_id(const char* key, size_t length) {
-    // Verify we have a zero-terminated key
-    size_t i = 0;
-    while (key[i]) i++;
-    if (length != i) return 0;
+    // Verify we have a strcmp-comparable key
+    int i;
+    for (i = 0; i < length; i++) {
+        if (!key[i]) return 0;
+    }
+    if (key[i]) return 0;
 
     const embedis_dictionary_key* dict = &embedis_dictionary_keys[0];
     while (dict->name) {
-        i = 0;
-        while (dict->name[i] == key[i]) i++;
-        if (i == length+1) {
-            // found
+
+        if (!embedis_strcmp(dict->name, key)) {
             return -dict->id;
         }
         dict++;

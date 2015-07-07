@@ -24,18 +24,18 @@ TEST(DictROM, Select) {
     embedis_init();
     fake_eeprom_erase();
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SELECT ROM");
+    ASSERT_EMBEDIS_OK("SELECT ROM");
 
     EXPECT_EQ(
         embedis("GET vendor"),
         "+AE9RB\r\n"
     );
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SELECT EEPROM");
+    EXPECT_EMBEDIS_OK("SELECT EEPROM");
 
-    EXPECT_PRED_FORMAT1(embedisOK, "DEL vendor");
+    EXPECT_EMBEDIS_OK("DEL vendor");
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SELECT rom");
+    EXPECT_EMBEDIS_OK("SELECT rom");
 
     EXPECT_EQ(
         embedis("GET vendor"),
@@ -50,16 +50,16 @@ TEST(DictROM, Basics) {
 
     embedis_init();
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SELECT ROM");
+    EXPECT_EMBEDIS_OK("SELECT ROM");
 
     EXPECT_EQ(
         embedis("GET vendor"),
         "+AE9RB\r\n"
     );
 
-    EXPECT_PRED_FORMAT1(embedisFAIL, "SET vendor blah");
+    EXPECT_EMBEDIS_FAIL("SET vendor blah");
 
-    EXPECT_PRED_FORMAT1(embedisFAIL, "DEL vendor");
+    EXPECT_EMBEDIS_FAIL("DEL vendor");
 
 }
 
@@ -69,28 +69,28 @@ TEST(DictEEPROM, Basics) {
     embedis_init();
     fake_eeprom_erase();
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SELECT EEPROM");
+    EXPECT_EMBEDIS_OK("SELECT EEPROM");
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SET foo1 bar1");
+    EXPECT_EMBEDIS_OK("SET foo1 bar1");
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SET foo bar");
+    EXPECT_EMBEDIS_OK("SET foo bar");
 
     s = "SET ";
     s += embedis_dictionary_keys[0].name;
     s += " bar2";
-    EXPECT_PRED_FORMAT1(embedisOK, s);
+    EXPECT_EMBEDIS_OK(s);
 
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SET foo good");
+    EXPECT_EMBEDIS_OK("SET foo good");
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SET foo3 bar3");
+    EXPECT_EMBEDIS_OK("SET foo3 bar3");
 
     EXPECT_EQ(
         embedis("GET foo"),
         "$4\r\ngood\r\n"
     );
 
-    EXPECT_PRED_FORMAT1(embedisOK, "DEL foo");
+    EXPECT_EMBEDIS_OK("DEL foo");
 
     EXPECT_EQ(
         embedis("GET foo"),
@@ -134,14 +134,14 @@ TEST(DictEEPROM, KEYS) {
     embedis_init();
     fake_eeprom_erase();
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SELECT EEPROM");
+    EXPECT_EMBEDIS_OK("SELECT EEPROM");
 
     EXPECT_EQ(
         embedis("KEYS"),
         "*0\r\n"
     );
 
-    EXPECT_PRED_FORMAT1(embedisOK, "SET foo bar");
+    EXPECT_EMBEDIS_OK("SET foo bar");
 
     EXPECT_EQ(
         embedis("KEYS"),

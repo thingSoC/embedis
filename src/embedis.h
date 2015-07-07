@@ -145,8 +145,10 @@ struct embedis_state {
 
 void embedis_init();
 void embedis_reset();
-void embedis_capitalize_arg(embedis_state* state, size_t arg);
 void embedis_in(char data);
+
+int embedis_strcmp(const char* s1, const char* s2);
+int embedis_stricmp(const char* s1, const char* s2);
 
 void embedis_emit_newline();
 void embedis_emit_integer(int i);

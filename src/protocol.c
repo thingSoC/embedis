@@ -147,31 +147,40 @@ void embedis_reset() {
 }
 
 
-// Utility to capitalize an argument.
-void embedis_capitalize_arg(embedis_state* state, size_t arg) {
-    embedis_prototol_state* cmd = (embedis_prototol_state*)state;
-    if (arg >= command.state.argc) return;
-    char* upcase = &cmd->buf[state->argv[arg] - state->argv[0]];
-    while (*upcase) {
-        if (*upcase >= 'a' && *upcase <= 'z') {
-            *upcase -= 32;
-        }
-        upcase++;
+int embedis_strcmp(const char* s1, const char* s2) {
+    int rc;
+    while (1) {
+        if (!*s1 && !*s2) return 0;
+        rc = *s1 - *s2;
+        if (rc) return rc;
+        s1++;
+        s2++;
     }
+}
+
+
+int embedis_stricmp(const char* s1, const char* s2) {
+    int rc, us1, us2;
+    while (1) {
+        if (!*s1 && !*s2) return 0;
+        us1 = *s1;
+        us2 = *s2;
+        if (us1 >= 'a' && us1 <= 'z') us1 -= 32;
+        if (us2 >= 'a' && us2 <= 'z') us2 -= 32;
+        rc = us1 - us2;
+        if (rc) return rc;
+        s1++;
+        s2++;
+    }
+
 }
 
 
 // Main command dispatcher.
 static void embedis_dispatch() {
     const embedis_command* cmd = &embedis_commands[0];
-    size_t i;
-
-    embedis_capitalize_arg(&command.state, 0);
-
     while (cmd->name) {
-        i = 0;
-        while (cmd->name[i] && cmd->name[i] == command.buf[i]) i++;
-        if (!cmd->name[i] && !command.buf[i]) break;
+        if (!embedis_stricmp(cmd->name, command.state.argv[0])) break;
         cmd++;
     }
     (*cmd->call)(&command.state);
