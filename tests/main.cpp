@@ -171,7 +171,7 @@ fail:
 
 // This is a mock EEPROM which is simply stored in RAM.
 
-#define FAKE_EEPROM_SIZE 128
+#define FAKE_EEPROM_SIZE (EMBEDIS_COMMAND_BUF_SIZE/2)
 
 static char fake_eeprom[FAKE_EEPROM_SIZE];
 

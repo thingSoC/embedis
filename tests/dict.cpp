@@ -81,6 +81,7 @@ TEST(DictEEPROM, Basics) {
     EXPECT_EMBEDIS_NULL(s);
 }
 
+
 TEST(DictEEPROM, KEYS) {
     std::string s;
 
@@ -114,4 +115,64 @@ TEST(DictEEPROM, KEYS) {
         s
     );
 
+}
+
+
+TEST(DictEEPROM, ValueOverflow) {
+    std::string s1, s2;
+    size_t len;
+
+    embedis_init();
+    fake_eeprom_erase();
+
+    EXPECT_EMBEDIS_OK("SELECT EEPROM");
+
+    // free space for a key of len 3
+    len = embedis_eeprom_size();
+    len -= 2 + 2 + 3 + 2;
+
+    // Just barely fits
+    s2.assign(len, 'x');
+    s1 = "SET foo ";
+    s1 += s2;
+    EXPECT_EMBEDIS_OK(s1);
+    EXPECT_EMBEDIS_STRING("GET foo", s2);
+
+    // One extra value char causes fail
+    s2.assign(len+1, 'x');
+    s1 = "SET foo ";
+    s1 += s2;
+    EXPECT_EMBEDIS_OK("SET foo bar");
+    EXPECT_EMBEDIS_ERROR(s1);
+    EXPECT_EMBEDIS_STRING("GET foo", "bar");
+}
+
+
+TEST(DictEEPROM, KeyOverflow) {
+    std::string s1, s2;
+    size_t len;
+
+    embedis_init();
+    fake_eeprom_erase();
+
+    EXPECT_EMBEDIS_OK("SELECT EEPROM");
+
+    // free key space for a value of len 3
+    len = embedis_eeprom_size();
+    len -= 2 + 2 + 3 + 2;
+
+    // Just barely fits
+    s2.assign(len, 'x');
+    s1 = "SET ";
+    s1 += s2 + " bar";
+    EXPECT_EMBEDIS_OK(s1);
+    s1 = "GET ";
+    s1 += s2;
+    EXPECT_EMBEDIS_STRING(s1, "bar");
+
+    // One extra value char causes fail
+    s2.assign(len+1, 'x');
+    s1 = "SET foo ";
+    s1 += s2 + " bar";
+    EXPECT_EMBEDIS_ERROR(s1);
 }

@@ -449,13 +449,33 @@ void embedis_eeprom_GET(embedis_state* state) {
 
 
 void embedis_eeprom_SET(embedis_state* state) {
-    size_t value_len = state->argv[3] - state->argv[2] - 1;
-    int key_len = state->argv[2] - state->argv[1] - 1;
-    if (eeprom_work(state->argv[1], key_len, state->argv[2], &value_len, 0)) {
-        embedis_response_error(EMBEDIS_OK);
-    } else {
-        embedis_response_error(0); // out of space
+    size_t value_len, value_pos;
+    int is_found, key_len = state->argv[2] - state->argv[1] - 1;
+
+    // Compute free space
+    value_pos = 0;
+    while ((eeprom_work(0, 0, 0, 0, &value_pos))) {}
+    int free_bytes = value_pos;
+
+    is_found = eeprom_work(state->argv[1], key_len, 0, &value_len, &value_pos);
+
+    // If a key exists, it's value space is available
+    // Else account for key and value size storage
+    if (is_found) free_bytes += value_len;
+    else free_bytes -= 4;
+
+    // If key is stored-type and doesn't exists, account for its size
+    if (!eeprom_key_to_id(state->argv[1], key_len)) {
+        if (!is_found) free_bytes -= key_len;
     }
+
+    value_len = state->argv[3] - state->argv[2] - 1;
+    if (free_bytes < value_len) {
+        return embedis_response_error(0);
+    }
+
+    eeprom_work(state->argv[1], key_len, state->argv[2], &value_len, 0);
+    embedis_response_error(EMBEDIS_OK);
 }
 
 
