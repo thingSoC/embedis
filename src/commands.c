@@ -219,9 +219,9 @@ static int eeprom_reset(const char* key_name, int key_len, const char* value, si
  }
  */
 static int eeprom_work(const char* key_name, int key_len, const char* value, size_t* value_len, size_t* value_pos) {
-    size_t pos = embedis_eeprom_size(), deloffset = 0, key_pos;
+    size_t pos = embedis_eeprom_size(), deloffset = 0, key_pos = 0;
     char on_key = 1, found_key = 0;
-    int i, key_id_or_len;
+    int i, key_id_or_len = 0;
 
     if (!key_name) {
         if (*value_pos) {
