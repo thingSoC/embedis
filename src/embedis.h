@@ -1,5 +1,5 @@
 /*  Embedis - Embedded Dictionary Server
-    Copyright (C) 2015 Pattern Agents, LLC
+    Copyright (C) 2015 PatternAgents, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -117,6 +117,12 @@ typedef struct embedis_dictionary_key {
     short int id;
 } embedis_dictionary_key;
 
+typedef struct embedis_rw_key  {
+    const char* name;
+    void (*read)(embedis_state* state);
+    void (*write)(embedis_state* state);
+} embedis_rw_key;
+
 typedef struct embedis_command {
     const char* name;
     void (*call)(embedis_state* state);
@@ -178,6 +184,9 @@ void embedis_eeprom_GET(embedis_state* state);
 void embedis_eeprom_SET(embedis_state* state);
 void embedis_eeprom_DEL(embedis_state* state);
 
+void embedis_READ(embedis_state* state);
+void embedis_WRITE(embedis_state* state);
+
 // Application must provide implementations of these
 
 void embedis_out(char data);
@@ -190,6 +199,7 @@ extern const embedis_dictionary embedis_dictionaries[];
 extern const embedis_command embedis_commands[];
 extern const char* embedis_dictionary_rom[];
 extern const embedis_dictionary_key embedis_dictionary_keys[];
+extern const embedis_rw_key embedis_rw_keys[];
 
 /**
   * Close the Doxygen embedis_Exported_Functions group.

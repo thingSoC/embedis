@@ -1,5 +1,5 @@
 /*  Embedis - Embedded Dictionary Server
-    Copyright (C) 2015 Pattern Agents, LLC
+    Copyright (C) 2015 PatternAgents, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ void fake_eeprom_erase();
 namespace embedis_predicates {
 
 testing::AssertionResult ok(const char* cmd_expr, std::string cmd);
-testing::AssertionResult fail(const char* cmd_expr, std::string cmd);
+testing::AssertionResult error(const char* cmd_expr, std::string cmd);
 testing::AssertionResult null(const char* cmd_expr, std::string cmd);
 testing::AssertionResult string(const char* cmd_expr, const char* result_expr, std::string cmd, std::string result);
 
@@ -38,10 +38,10 @@ EXPECT_PRED_FORMAT1(embedis_predicates::ok, val1)
 #define ASSERT_EMBEDIS_OK(val1) \
 ASSERT_PRED_FORMAT1(embedis_predicates::ok, val1)
 
-#define EXPECT_EMBEDIS_FAIL(val1) \
-EXPECT_PRED_FORMAT1(embedis_predicates::fail, val1)
+#define EXPECT_EMBEDIS_ERROR(val1) \
+EXPECT_PRED_FORMAT1(embedis_predicates::error, val1)
 #define ASSERT_EMBEDIS_FAIL(val1) \
-ASSERT_PRED_FORMAT1(embedis_predicates::fail, val1)
+ASSERT_PRED_FORMAT1(embedis_predicates::error, val1)
 
 #define EXPECT_EMBEDIS_NULL(val1) \
 EXPECT_PRED_FORMAT1(embedis_predicates::null, val1)

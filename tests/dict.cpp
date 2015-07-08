@@ -1,5 +1,5 @@
 /*  Embedis - Embedded Dictionary Server
-    Copyright (C) 2015 Pattern Agents, LLC
+    Copyright (C) 2015 PatternAgents, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@ TEST(DictROM, Select) {
 
     ASSERT_EMBEDIS_FAIL("SELECT this_does_not_exist");
     ASSERT_EMBEDIS_OK("SELECT ROM");
-    EXPECT_EMBEDIS_STRING("GET vendor", "AE9RB");
+    EXPECT_EMBEDIS_STRING("GET vendor", "PatternAgents");
     ASSERT_EMBEDIS_OK("SELECT EEPROM");
     EXPECT_EMBEDIS_OK("DEL vendor");
     ASSERT_EMBEDIS_OK("SELECT rom");
-    EXPECT_EMBEDIS_STRING("GET vendor", "AE9RB");
+    EXPECT_EMBEDIS_STRING("GET vendor", "PatternAgents");
 }
 
 
@@ -38,9 +38,9 @@ TEST(DictROM, Basics) {
     embedis_init();
 
     EXPECT_EMBEDIS_OK("SELECT ROM");
-    EXPECT_EMBEDIS_STRING("GET vendor", "AE9RB");
-    EXPECT_EMBEDIS_FAIL("SET vendor blah");
-    EXPECT_EMBEDIS_FAIL("DEL vendor");
+    EXPECT_EMBEDIS_STRING("GET vendor", "PatternAgents");
+    EXPECT_EMBEDIS_ERROR("SET vendor blah");
+    EXPECT_EMBEDIS_ERROR("DEL vendor");
 }
 
 

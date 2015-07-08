@@ -1,5 +1,5 @@
 /*  Embedis - Embedded Dictionary Server
-    Copyright (C) 2015 Pattern Agents, LLC
+    Copyright (C) 2015 PatternAgents, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ fail:
            "Result was: " << escaped(result);
 }
 
-testing::AssertionResult fail(const char* cmd_expr, std::string cmd) {
+testing::AssertionResult error(const char* cmd_expr, std::string cmd) {
     std::string result = embedis(cmd);
     std::string s = result;
     if (!delcrnl(s)) goto fail;

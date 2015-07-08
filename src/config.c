@@ -1,5 +1,5 @@
 /*  Embedis - Embedded Dictionary Server
-    Copyright (C) 2015 Pattern Agents, LLC
+    Copyright (C) 2015 PatternAgents, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,9 +40,10 @@
 // the pointers, plus the zero, to obtain the exact length.
 // e.g. ptrdiff_t argv1len = argv[2] - argv[1] - 1;
 
+
+// This default handler can be specialized to support dynamic commands.
+// Normally, it just returns an error if the command isn't found.
 static void embedis_command_missing(embedis_state* state) {
-    // This default handler can be specialized to support dynamic commands.
-    // Normally, it just returns an error if the command isn't found.
     embedis_response_error(EMBEDIS_UNKNOWN_COMMAND);
 }
 
@@ -54,6 +55,8 @@ const embedis_command embedis_commands[] = {
     {"GET", embedis_GET},
     {"SET", embedis_SET},
     {"DEL", embedis_DEL},
+    {"READ", embedis_READ},
+    {"WRITE", embedis_WRITE},
     {0, embedis_command_missing}
 };
 
@@ -63,8 +66,10 @@ const embedis_dictionary embedis_dictionaries[] = {
     {0}
 };
 
+// The ROM dictionary is useful for information about the device.
+// Vendor name, device name, and firmware version are good examples.
 const char* embedis_dictionary_rom[] = {
-    "vendor", "AE9RB",
+    "vendor", "PatternAgents",
     0
 };
 
@@ -74,4 +79,25 @@ const char* embedis_dictionary_rom[] = {
 const embedis_dictionary_key embedis_dictionary_keys[] = {
     {"asset_identification", 1000},
     {0}
+};
+
+// Example configuration for hardware keys.
+
+static void embedis_mock_READ(embedis_state* state) {
+    // Responds with the number of the mock requested
+    embedis_response_simple(&state->argv[1][4]);
+}
+
+static void embedis_mock_WRITE(embedis_state* state) {
+    embedis_response_error(EMBEDIS_OK);
+}
+
+static void embedis_mock_missing(embedis_state* state) {
+    embedis_response_error(0);
+}
+
+const embedis_rw_key embedis_rw_keys[] = {
+    {"mock0", embedis_mock_READ, embedis_mock_WRITE},
+    {"mock1", embedis_mock_READ, embedis_mock_WRITE},
+    {0, embedis_mock_missing, embedis_mock_missing}
 };

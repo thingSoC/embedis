@@ -1,5 +1,5 @@
 /*  Embedis - Embedded Dictionary Server
-    Copyright (C) 2015 Pattern Agents, LLC
+    Copyright (C) 2015 PatternAgents, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,22 +23,22 @@ TEST(Protocol, WithExtraSapces) {
 
     EXPECT_EQ(
         embedis("GET vendor"),
-        "+AE9RB\r\n"
+        "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
         embedis("  GET vendor"),
-        "+AE9RB\r\n"
+        "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
         embedis("GET   vendor"),
-        "+AE9RB\r\n"
+        "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
         embedis("GET vendor  "),
-        "+AE9RB\r\n"
+        "+PatternAgents\r\n"
     );
 
 }
@@ -50,17 +50,17 @@ TEST(Protocol, Caps) {
 
     EXPECT_EQ(
         embedis("get vendor"),
-        "+AE9RB\r\n"
+        "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
         embedis("GET vendor"),
-        "+AE9RB\r\n"
+        "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
         embedis("GeT vendor"),
-        "+AE9RB\r\n"
+        "+PatternAgents\r\n"
     );
 
 }

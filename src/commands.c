@@ -1,5 +1,5 @@
 /*  Embedis - Embedded Dictionary Server
-    Copyright (C) 2015 Pattern Agents, LLC
+    Copyright (C) 2015 PatternAgents, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -463,4 +463,26 @@ void embedis_eeprom_DEL(embedis_state* state) {
     int key_len = state->argv[2] - state->argv[1] - 1;;
     eeprom_work(state->argv[1], key_len, 0, 0, 0);
     embedis_response_error(EMBEDIS_OK);
+}
+
+
+// Hardware READ/WRITE dispatchers
+
+static const embedis_rw_key* find_rw_key(embedis_state* state) {
+    const embedis_rw_key* key = &embedis_rw_keys[0];
+    while(key->name) {
+        if (!embedis_strcmp(key->name, state->argv[1])) break;
+        key++;
+    }
+    return key;
+}
+
+void embedis_READ(embedis_state* state) {
+    const embedis_rw_key* key = find_rw_key(state);
+    key->read(state);
+}
+
+void embedis_WRITE(embedis_state* state) {
+    const embedis_rw_key* key = find_rw_key(state);
+    key->write(state);
 }
