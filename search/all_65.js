@@ -14,6 +14,7 @@ var searchData=
   ['embedis_5fexported_5fvariables',['Embedis_Exported_Variables',['../group__embedis___exported___variables.html',1,'']]],
   ['embedis_5fok',['EMBEDIS_OK',['../group__embedis___exported___variables.html#ga73f72644912b9c479ae4aea6a5ca491d',1,'EMBEDIS_OK():&#160;protocol.c'],['../group__embedis___exported___variables.html#ga73f72644912b9c479ae4aea6a5ca491d',1,'EMBEDIS_OK():&#160;protocol.c']]],
   ['embedis_5fprototol_5fstate',['embedis_prototol_state',['../structembedis__prototol__state.html',1,'']]],
+  ['embedis_5frw_5fkey',['embedis_rw_key',['../structembedis__rw__key.html',1,'']]],
   ['embedis_5fstate',['embedis_state',['../structembedis__state.html',1,'embedis_state'],['../group__embedis___exported___variables.html#gacbcc8ef06f4a19ec3145cbb5456956eb',1,'embedis_state():&#160;embedis.h']]],
   ['embedis_5fstorage_5foverflow',['EMBEDIS_STORAGE_OVERFLOW',['../group__embedis___exported___variables.html#ga42062b96ebaddab548c438d429bf58ee',1,'EMBEDIS_STORAGE_OVERFLOW():&#160;protocol.c'],['../group__embedis___exported___variables.html#ga42062b96ebaddab548c438d429bf58ee',1,'EMBEDIS_STORAGE_OVERFLOW():&#160;protocol.c']]],
   ['embedis_5fsyntax_5ferror',['EMBEDIS_SYNTAX_ERROR',['../group__embedis___exported___variables.html#ga41d46a45f3bdf14bb005b43818f4ec8e',1,'EMBEDIS_SYNTAX_ERROR():&#160;protocol.c'],['../group__embedis___exported___variables.html#ga41d46a45f3bdf14bb005b43818f4ec8e',1,'EMBEDIS_SYNTAX_ERROR():&#160;protocol.c']]],

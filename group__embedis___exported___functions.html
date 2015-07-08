@@ -90,10 +90,12 @@ Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_init</b> ()</td></tr>
 <tr class="memitem:ga05ae2bac2eb170bb106a089cbf6c69d1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga05ae2bac2eb170bb106a089cbf6c69d1"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_reset</b> ()</td></tr>
-<tr class="memitem:ga4e372c38bcfa6e250b8ba1c31efa2035"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4e372c38bcfa6e250b8ba1c31efa2035"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_capitalize_arg</b> (<a class="el" href="structembedis__state.html">embedis_state</a> *state, size_t arg)</td></tr>
 <tr class="memitem:ga790448466c5433efdbc40bfed439a0e8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga790448466c5433efdbc40bfed439a0e8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_in</b> (char data)</td></tr>
+<tr class="memitem:gab48388812ed3fd82fe1cb32cf5a3d430"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab48388812ed3fd82fe1cb32cf5a3d430"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_strcmp</b> (const char *s1, const char *s2)</td></tr>
+<tr class="memitem:gae302fa42add7bc631610f85ac29d3ef4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gae302fa42add7bc631610f85ac29d3ef4"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_stricmp</b> (const char *s1, const char *s2)</td></tr>
 <tr class="memitem:ga4ae7c0870a13af5e6a77dff2151d0978"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4ae7c0870a13af5e6a77dff2151d0978"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_emit_newline</b> ()</td></tr>
 <tr class="memitem:ga2763318ae208c8a0a73c51fbe45d1f6f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2763318ae208c8a0a73c51fbe45d1f6f"></a>
@@ -138,6 +140,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_eeprom_GET</b
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_eeprom_SET</b> (<a class="el" href="structembedis__state.html">embedis_state</a> *state)</td></tr>
 <tr class="memitem:ga4c29b29b2a522f3e95ef9beecfb42b76"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga4c29b29b2a522f3e95ef9beecfb42b76"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_eeprom_DEL</b> (<a class="el" href="structembedis__state.html">embedis_state</a> *state)</td></tr>
+<tr class="memitem:ga55f3ce6415b0e8d092dfae2cd433fdab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga55f3ce6415b0e8d092dfae2cd433fdab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_READ</b> (<a class="el" href="structembedis__state.html">embedis_state</a> *state)</td></tr>
+<tr class="memitem:gab11fcd777951e43c4a0f4d68f47d915b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab11fcd777951e43c4a0f4d68f47d915b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_WRITE</b> (<a class="el" href="structembedis__state.html">embedis_state</a> *state)</td></tr>
 <tr class="memitem:gadbfaf6fd019bce282d0ed3aca1a8f58f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gadbfaf6fd019bce282d0ed3aca1a8f58f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_out</b> (char data)</td></tr>
 <tr class="memitem:ga988e14acae1f11607271c420d771d530"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga988e14acae1f11607271c420d771d530"></a>
@@ -153,10 +159,12 @@ Variables</h2></td></tr>
 const <a class="el" href="structembedis__dictionary.html">embedis_dictionary</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_dictionaries</b> []</td></tr>
 <tr class="memitem:gad4d1d061068898cd2473405a96e1dced"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gad4d1d061068898cd2473405a96e1dced"></a>
 const <a class="el" href="structembedis__command.html">embedis_command</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_commands</b> []</td></tr>
-<tr class="memitem:ga5b0e2a02c2f8fede49439eafe5f78b4b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga5b0e2a02c2f8fede49439eafe5f78b4b"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_dictionary_rom</b> []</td></tr>
+<tr class="memitem:ga57ed5b15d8cbcf6c3aba5cbbbb80fa94"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga57ed5b15d8cbcf6c3aba5cbbbb80fa94"></a>
+char *const&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_dictionary_rom</b> []</td></tr>
 <tr class="memitem:ga20d17262843d7b9aa1741b84de0295e5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga20d17262843d7b9aa1741b84de0295e5"></a>
 const <a class="el" href="structembedis__dictionary__key.html">embedis_dictionary_key</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_dictionary_keys</b> []</td></tr>
+<tr class="memitem:ga24877913ce69bc2c9f25ffeb65d77abd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga24877913ce69bc2c9f25ffeb65d77abd"></a>
+const <a class="el" href="structembedis__rw__key.html">embedis_rw_key</a>&#160;</td><td class="memItemRight" valign="bottom"><b>embedis_rw_keys</b> []</td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 </div><!-- contents -->
