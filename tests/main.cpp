@@ -50,24 +50,123 @@ std::string embedis(std::string cmd) {
 
 // Testing predicates
 
-testing::AssertionResult embedisOK(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis(cmd);
-    if (result.empty() || result[0] != '+') {
-        return testing::AssertionFailure() << cmd_expr <<
-               " expected to succeed. Result was: " << result;
-    }
-    return testing::AssertionSuccess();
+namespace embedis_predicates {
+
+static int delcrnl(std::string &s) {
+    if (s.size() < 2) return 0;
+    if (s.substr(s.size()-2, 2) != "\r\n") return 0;
+    s.erase(s.size()-2,2);
+    return 1;
 }
 
-testing::AssertionResult embedisFAIL(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis(cmd);
-    if (result.empty() || result[0] != '-') {
-        return testing::AssertionFailure() << cmd_expr <<
-               " expected to fail. Result was: " << result;
+std::string escaped(std::string const& s) {
+    ::std::ostringstream out;
+    out.put('"');
+    for (std::string::const_iterator i = s.begin(), end = s.end(); i != end; ++i) {
+        unsigned char c = *i;
+        if (' ' <= c and c <= '~' and c != '\\' and c != '"') {
+            out.put(c);
+        }
+        else {
+            out.put('\\');
+            switch(c) {
+            case '"':
+                out.put('"');
+                break;
+            case '\\':
+                out.put('\\');
+                break;
+            case '\t':
+                out.put('t');
+                break;
+            case '\r':
+                out.put('r');
+                break;
+            case '\n':
+                out.put('n');
+                break;
+            default:
+                char const* const hexdig = "0123456789ABCDEF";
+                out.put('x');
+                out.put(hexdig[c >> 4]);
+                out.put(hexdig[c & 0xF]);
+            }
+        }
     }
-    return testing::AssertionSuccess();
+    out.put('"');
+    return out.str();
 }
 
+testing::AssertionResult ok(const char* cmd_expr, std::string cmd) {
+    std::string result = embedis(cmd);
+    std::string s = result;
+    if (!delcrnl(s)) goto fail;
+    if (result[0] != '+') goto fail;
+    return testing::AssertionSuccess();
+fail:
+    return testing::AssertionFailure() << cmd_expr <<
+           " expected to succeed." << ::std::endl <<
+           "Result was: " << escaped(result);
+}
+
+testing::AssertionResult fail(const char* cmd_expr, std::string cmd) {
+    std::string result = embedis(cmd);
+    std::string s = result;
+    if (!delcrnl(s)) goto fail;
+    if (result[0] != '-') goto fail;
+    return testing::AssertionSuccess();
+fail:
+    return testing::AssertionFailure() << cmd_expr <<
+           " expected to fail." << ::std::endl <<
+           "Result was: " << escaped(result);
+}
+
+testing::AssertionResult null(const char* cmd_expr, std::string cmd) {
+    std::string result = embedis(cmd);
+    if (result == "$-1\r\n") {
+        return testing::AssertionSuccess();
+    }
+    return testing::AssertionFailure() << cmd_expr <<
+           " expected to return null." << ::std::endl <<
+           "Result was: " << escaped(result);
+}
+
+testing::AssertionResult string(const char* cmd_expr, const char* result_expr, std::string cmd, std::string expected) {
+    std::string result = embedis(cmd);
+    std::string s = result;
+
+    if (!s.empty()) {
+        // Simple string
+        if (s[0] == '+') {
+            s.erase(0,1);
+            if (!delcrnl(s)) goto fail;
+            if (s == expected) return testing::AssertionSuccess();
+        }
+        // Binary string
+        if (s[0] == '$') {
+            s.erase(0,1);
+            int size = 0;
+            while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
+                size = size * 10 + (s[0] - '0');
+                s.erase(0,1);
+            }
+            if (s.length() != size + 4) goto fail;
+            if (s[0] != '\r') goto fail;
+            if (s[1] != '\n') goto fail;
+            s.erase(0,2);
+            if (!delcrnl(s)) goto fail;
+            if (s == expected) return testing::AssertionSuccess();
+        }
+
+    }
+
+fail:
+    return testing::AssertionFailure()  << cmd_expr <<
+           " expected to return string: " << escaped(expected) << ::std::endl <<
+           "Result was: " << escaped(result);
+}
+
+} /* end namespace embedis_predicates */
 
 
 // This is a mock EEPROM which is simply stored in RAM.

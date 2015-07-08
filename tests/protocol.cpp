@@ -16,8 +16,6 @@
 */
 
 #include "main.h"
-#include "embedis.h"
-
 
 TEST(Protocol, WithExtraSapces) {
 
@@ -87,6 +85,7 @@ TEST(Protocol, Overflow) {
         "-ERROR buffer overflow\r\n"
     );
 
+    // Make sure bad things don't happen at max args
     s.clear();
     for (int i = 0; i < EMBEDIS_COMMAND_MAX_ARGS; i++) {
         s.append("Z ");
@@ -96,12 +95,14 @@ TEST(Protocol, Overflow) {
         "-ERROR unknown command\r\n"
     );
 
+    // Make sure we report args overflow
     s.append("Z ");
     EXPECT_EQ(
         embedis(s.c_str()),
         "-ERROR bad argument count\r\n"
     );
 
+    // Make sure bad things don't happen with more than max args
     s.append("Z Z Z Z");
     EXPECT_EQ(
         embedis(s.c_str()),

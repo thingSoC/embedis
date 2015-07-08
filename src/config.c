@@ -59,7 +59,8 @@ const embedis_command embedis_commands[] = {
 
 const embedis_dictionary embedis_dictionaries[] = {
     {"ROM", embedis_rom_SELECT, embedis_rom_KEYS, embedis_rom_GET, embedis_rom_SET, embedis_rom_DEL},
-    {"EEPROM", embedis_eeprom_SELECT, embedis_eeprom_KEYS, embedis_eeprom_GET, embedis_eeprom_SET, embedis_eeprom_DEL}
+    {"EEPROM", embedis_eeprom_SELECT, embedis_eeprom_KEYS, embedis_eeprom_GET, embedis_eeprom_SET, embedis_eeprom_DEL},
+    {0}
 };
 
 const char* embedis_dictionary_rom[] = {
@@ -72,5 +73,5 @@ const char* embedis_dictionary_rom[] = {
 // storing the number instead of a string and length.
 const embedis_dictionary_key embedis_dictionary_keys[] = {
     {"asset_identification", 1000},
-    {0,0}
+    {0}
 };

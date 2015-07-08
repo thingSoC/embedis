@@ -16,7 +16,6 @@
 */
 
 #include "main.h"
-#include "embedis.h"
 
 
 TEST(DictROM, Select) {
@@ -24,26 +23,14 @@ TEST(DictROM, Select) {
     embedis_init();
     fake_eeprom_erase();
 
+    ASSERT_EMBEDIS_FAIL("SELECT this_does_not_exist");
     ASSERT_EMBEDIS_OK("SELECT ROM");
-
-    EXPECT_EQ(
-        embedis("GET vendor"),
-        "+AE9RB\r\n"
-    );
-
-    EXPECT_EMBEDIS_OK("SELECT EEPROM");
-
+    EXPECT_EMBEDIS_STRING("GET vendor", "AE9RB");
+    ASSERT_EMBEDIS_OK("SELECT EEPROM");
     EXPECT_EMBEDIS_OK("DEL vendor");
-
-    EXPECT_EMBEDIS_OK("SELECT rom");
-
-    EXPECT_EQ(
-        embedis("GET vendor"),
-        "+AE9RB\r\n"
-    );
-
+    ASSERT_EMBEDIS_OK("SELECT rom");
+    EXPECT_EMBEDIS_STRING("GET vendor", "AE9RB");
 }
-
 
 
 TEST(DictROM, Basics) {
@@ -51,17 +38,11 @@ TEST(DictROM, Basics) {
     embedis_init();
 
     EXPECT_EMBEDIS_OK("SELECT ROM");
-
-    EXPECT_EQ(
-        embedis("GET vendor"),
-        "+AE9RB\r\n"
-    );
-
+    EXPECT_EMBEDIS_STRING("GET vendor", "AE9RB");
     EXPECT_EMBEDIS_FAIL("SET vendor blah");
-
     EXPECT_EMBEDIS_FAIL("DEL vendor");
-
 }
+
 
 TEST(DictEEPROM, Basics) {
     std::string s;
@@ -70,9 +51,7 @@ TEST(DictEEPROM, Basics) {
     fake_eeprom_erase();
 
     EXPECT_EMBEDIS_OK("SELECT EEPROM");
-
     EXPECT_EMBEDIS_OK("SET foo1 bar1");
-
     EXPECT_EMBEDIS_OK("SET foo bar");
 
     s = "SET ";
@@ -80,52 +59,26 @@ TEST(DictEEPROM, Basics) {
     s += " bar2";
     EXPECT_EMBEDIS_OK(s);
 
-
     EXPECT_EMBEDIS_OK("SET foo good");
-
     EXPECT_EMBEDIS_OK("SET foo3 bar3");
-
-    EXPECT_EQ(
-        embedis("GET foo"),
-        "$4\r\ngood\r\n"
-    );
-
+    EXPECT_EMBEDIS_STRING("GET foo", "good");
     EXPECT_EMBEDIS_OK("DEL foo");
-
-    EXPECT_EQ(
-        embedis("GET foo"),
-        "$-1\r\n"
-    );
-
-    EXPECT_EQ(
-        embedis("GET foo1"),
-        "$4\r\nbar1\r\n"
-    );
+    EXPECT_EMBEDIS_NULL("GET foo");
+    EXPECT_EMBEDIS_STRING("GET foo1", "bar1");
 
     s = "GET ";
     s += embedis_dictionary_keys[0].name;
-    EXPECT_EQ(
-        embedis(s.c_str()),
-        "$4\r\nbar2\r\n"
-    );
+    EXPECT_EMBEDIS_STRING(s, "bar2");
 
-    EXPECT_EQ(
-        embedis("GET foo3"),
-        "$4\r\nbar3\r\n"
-    );
+    EXPECT_EMBEDIS_STRING("GET foo3", "bar3");
 
     s = "DEL ";
     s += embedis_dictionary_keys[0].name;
-    EXPECT_PRED_FORMAT1(embedisOK, s);
+    EXPECT_EMBEDIS_OK(s);
 
     s = "GET ";
     s += embedis_dictionary_keys[0].name;
-    EXPECT_EQ(
-        embedis(s.c_str()),
-        "$-1\r\n"
-    );
-
-
+    EXPECT_EMBEDIS_NULL(s);
 }
 
 TEST(DictEEPROM, KEYS) {
@@ -151,7 +104,7 @@ TEST(DictEEPROM, KEYS) {
     s = "SET ";
     s += embedis_dictionary_keys[0].name;
     s += " bar2";
-    EXPECT_PRED_FORMAT1(embedisOK, s);
+    EXPECT_EMBEDIS_OK(s);
 
     s = "*2\r\n$3\r\nfoo\r\n+";
     s += embedis_dictionary_keys[0].name;
@@ -160,6 +113,5 @@ TEST(DictEEPROM, KEYS) {
         embedis("KEYS"),
         s
     );
-
 
 }
