@@ -68,7 +68,7 @@ const embedis_dictionary embedis_dictionaries[] = {
 
 // The ROM dictionary is useful for information about the device.
 // Vendor name, device name, and firmware version are good examples.
-const char* embedis_dictionary_rom[] = {
+char* const embedis_dictionary_rom[] = {
     "vendor", "PatternAgents",
     0
 };

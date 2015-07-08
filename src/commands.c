@@ -98,7 +98,7 @@ void embedis_rom_KEYS(embedis_state* state) {
 
 
 void embedis_rom_GET(embedis_state* state) {
-    const char** rom = embedis_dictionary_rom;
+    char* const* rom = embedis_dictionary_rom;
     while (*rom) {
         if (!embedis_strcmp(rom[0], state->argv[1])) {
             embedis_response_simple(rom[1]);

@@ -197,7 +197,7 @@ void embedis_eeprom_store(size_t pos, char value);
 
 extern const embedis_dictionary embedis_dictionaries[];
 extern const embedis_command embedis_commands[];
-extern const char* embedis_dictionary_rom[];
+extern char* const embedis_dictionary_rom[];
 extern const embedis_dictionary_key embedis_dictionary_keys[];
 extern const embedis_rw_key embedis_rw_keys[];
 
