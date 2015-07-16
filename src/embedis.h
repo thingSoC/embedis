@@ -103,13 +103,18 @@ extern const char* EMBEDIS_STORAGE_OVERFLOW; /**< Embedis Storage Overflow Flag 
 
 typedef struct embedis_state embedis_state;  /**< Embedis CLI State */
 
-typedef struct embedis_dictionary {
-    const char* name;
+typedef struct embedis_dictionary_commands {
     void (*select)(embedis_state* state);
     void (*keys)(embedis_state* state);
     void (*get)(embedis_state* state);
     void (*set)(embedis_state* state);
     void (*del)(embedis_state* state);
+} embedis_dictionary_commands;
+
+typedef struct embedis_dictionary {
+    const char* name;
+    const embedis_dictionary_commands* commands;
+    void* context;
 } embedis_dictionary;
 
 typedef struct embedis_dictionary_key {
@@ -127,6 +132,12 @@ typedef struct embedis_command {
     const char* name;
     void (*call)(embedis_state* state);
 } embedis_command;
+
+typedef struct embedis_ram_access {
+    size_t (*size)();
+    char (*fetch)(size_t pos);
+    void (*store)(size_t pos, char value);
+} embedis_ram_access;
 
 struct embedis_state {
     const char* argv[EMBEDIS_COMMAND_MAX_ARGS+1];
@@ -164,7 +175,7 @@ void embedis_response_simple(const char* message);
 void embedis_response_string(const char* message, size_t length);
 void embedis_response_null();
 
-// dict.c
+// commands.c
 
 void embedis_SELECT(embedis_state* state);
 void embedis_KEYS(embedis_state* state);
@@ -172,17 +183,19 @@ void embedis_GET(embedis_state* state);
 void embedis_SET(embedis_state* state);
 void embedis_DEL(embedis_state* state);
 
+extern const embedis_dictionary_commands embedis_rom_commands;
 void embedis_rom_SELECT(embedis_state* state);
 void embedis_rom_KEYS(embedis_state* state);
 void embedis_rom_GET(embedis_state* state);
 void embedis_rom_SET(embedis_state* state);
 void embedis_rom_DEL(embedis_state* state);
 
-void embedis_eeprom_SELECT(embedis_state* state);
-void embedis_eeprom_KEYS(embedis_state* state);
-void embedis_eeprom_GET(embedis_state* state);
-void embedis_eeprom_SET(embedis_state* state);
-void embedis_eeprom_DEL(embedis_state* state);
+extern const embedis_dictionary_commands embedis_ram_commands;
+void embedis_ram_SELECT(embedis_state* state);
+void embedis_ram_KEYS(embedis_state* state);
+void embedis_ram_GET(embedis_state* state);
+void embedis_ram_SET(embedis_state* state);
+void embedis_ram_DEL(embedis_state* state);
 
 void embedis_READ(embedis_state* state);
 void embedis_WRITE(embedis_state* state);
@@ -191,13 +204,8 @@ void embedis_WRITE(embedis_state* state);
 
 void embedis_out(char data);
 
-size_t embedis_eeprom_size();
-size_t embedis_eeprom_fetch(size_t pos);
-void embedis_eeprom_store(size_t pos, char value);
-
 extern const embedis_dictionary embedis_dictionaries[];
 extern const embedis_command embedis_commands[];
-extern char* const embedis_dictionary_rom[];
 extern const embedis_dictionary_key embedis_dictionary_keys[];
 extern const embedis_rw_key embedis_rw_keys[];
 

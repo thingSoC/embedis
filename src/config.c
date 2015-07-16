@@ -34,11 +34,11 @@
 // This file is intended to be modified.
 
 // The argc and argv guarantee:
-// argv[0] is always the command in uppercase.
+// argv[0] is always the command.
 // All args are zero-terminated. However, to support binary payloads
 // the commands are guaranteed to be in order. This allows you to subtract
 // the pointers, plus the zero, to obtain the exact length.
-// e.g. ptrdiff_t argv1len = argv[2] - argv[1] - 1;
+// e.g. size_t argv1len = argv[2] - argv[1] - 1;
 
 
 // This default handler can be specialized to support dynamic commands.
@@ -48,7 +48,6 @@ static void embedis_command_missing(embedis_state* state) {
 }
 
 // Adjust this call table to support the desired command set.
-// Commands must be upercase or they will not be found.
 const embedis_command embedis_commands[] = {
     {"SELECT", embedis_SELECT},
     {"KEYS", embedis_KEYS},
@@ -60,17 +59,50 @@ const embedis_command embedis_commands[] = {
     {0, embedis_command_missing}
 };
 
-const embedis_dictionary embedis_dictionaries[] = {
-    {"ROM", embedis_rom_SELECT, embedis_rom_KEYS, embedis_rom_GET, embedis_rom_SET, embedis_rom_DEL},
-    {"EEPROM", embedis_eeprom_SELECT, embedis_eeprom_KEYS, embedis_eeprom_GET, embedis_eeprom_SET, embedis_eeprom_DEL},
-    {0}
-};
-
-// The ROM dictionary is useful for information about the device.
+// A ROM dictionary is useful for information about the device.
 // Vendor name, device name, and firmware version are good examples.
-char* const embedis_dictionary_rom[] = {
+static char const * const embedis_dictionary_rom[] = {
     "vendor", "PatternAgents",
     0
+};
+
+// An actual RAM dictionary is not very useful outside of testing.
+// You'll want to implement this for some kind of non-volatile RAM.
+// EEPROM, NVSRAM, FRAM, FLASH, etc.
+
+#define MOCK_RAM_SIZE (64)
+
+static char mock_ram[MOCK_RAM_SIZE];
+
+static size_t mock_ram_size() {
+    return MOCK_RAM_SIZE;
+}
+
+static char mock_ram_fetch(size_t pos) {
+    if (pos >= MOCK_RAM_SIZE) return 0xFF;
+    return mock_ram[pos];
+}
+
+static void mock_ram_store(size_t pos, char value) {
+    if (pos >= MOCK_RAM_SIZE) return;
+    mock_ram[pos] = value;
+}
+
+const embedis_ram_access mock_ram_access = {
+    mock_ram_size,
+    mock_ram_fetch,
+    mock_ram_store
+};
+
+// Dictionaries for the SELECT command. The first one is the default.
+
+const embedis_dictionary embedis_dictionaries[] = {
+    {"ROM", &embedis_rom_commands, (void*)&embedis_dictionary_rom},
+    // A RAM dictionary is not suggested for production.
+    {"RAM", &embedis_ram_commands, (void*)&mock_ram_access},
+    // Uncomment for Arduino EEPROM support
+    // {"EEPROM", &embedis_ram_commands, (void*)&arduino_eeprom_access},
+    {0}
 };
 
 // This list maps keys to a numeric value (1-32767).
@@ -83,21 +115,21 @@ const embedis_dictionary_key embedis_dictionary_keys[] = {
 
 // Example configuration for hardware keys.
 
-static void embedis_mock_READ(embedis_state* state) {
+static void mock_READ(embedis_state* state) {
     // Responds with the number of the mock requested
     embedis_response_simple(&state->argv[1][4]);
 }
 
-static void embedis_mock_WRITE(embedis_state* state) {
+static void mock_WRITE(embedis_state* state) {
     embedis_response_error(EMBEDIS_OK);
 }
 
-static void embedis_mock_missing(embedis_state* state) {
+static void mock_missing(embedis_state* state) {
     embedis_response_error(0);
 }
 
 const embedis_rw_key embedis_rw_keys[] = {
-    {"mock0", embedis_mock_READ, embedis_mock_WRITE},
-    {"mock1", embedis_mock_READ, embedis_mock_WRITE},
-    {0, embedis_mock_missing, embedis_mock_missing}
+    {"mock0", mock_READ, mock_WRITE},
+    {"mock1", mock_READ, mock_WRITE},
+    {0, mock_missing, mock_missing}
 };

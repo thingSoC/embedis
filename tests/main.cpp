@@ -167,28 +167,3 @@ fail:
 }
 
 } /* end namespace embedis_predicates */
-
-
-// This is a mock EEPROM which is simply stored in RAM.
-
-#define FAKE_EEPROM_SIZE (EMBEDIS_COMMAND_BUF_SIZE/2)
-
-static char fake_eeprom[FAKE_EEPROM_SIZE];
-
-void fake_eeprom_erase() {
-    for (size_t i = 0; i < FAKE_EEPROM_SIZE; i++) fake_eeprom[i] = 255;
-}
-
-size_t embedis_eeprom_size() {
-    return FAKE_EEPROM_SIZE;
-}
-
-size_t embedis_eeprom_fetch(size_t pos) {
-    if (pos >= FAKE_EEPROM_SIZE) throw;
-    return fake_eeprom[pos];
-}
-
-void embedis_eeprom_store(size_t pos, char value) {
-    if (pos >= FAKE_EEPROM_SIZE) throw;
-    fake_eeprom[pos] = value;
-}

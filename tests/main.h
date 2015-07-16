@@ -22,7 +22,7 @@
 #define TESTMAIN_H
 
 std::string embedis(std::string cmd);
-void fake_eeprom_erase();
+void fake_ram_erase();
 
 namespace embedis_predicates {
 

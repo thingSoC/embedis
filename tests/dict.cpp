@@ -18,15 +18,23 @@
 #include "main.h"
 
 
+extern "C" const embedis_ram_access mock_ram_access;
+
+void mock_ram_erase() {
+    size_t size = mock_ram_access.size();
+    for (size_t i = 0; i < size; i++) mock_ram_access.store(i, 0xFF);
+}
+
+
 TEST(DictROM, Select) {
 
     embedis_init();
-    fake_eeprom_erase();
+    mock_ram_erase();
 
     ASSERT_EMBEDIS_FAIL("SELECT this_does_not_exist");
     ASSERT_EMBEDIS_OK("SELECT ROM");
     EXPECT_EMBEDIS_STRING("GET vendor", "PatternAgents");
-    ASSERT_EMBEDIS_OK("SELECT EEPROM");
+    ASSERT_EMBEDIS_OK("SELECT RAM");
     EXPECT_EMBEDIS_OK("DEL vendor");
     ASSERT_EMBEDIS_OK("SELECT rom");
     EXPECT_EMBEDIS_STRING("GET vendor", "PatternAgents");
@@ -44,13 +52,13 @@ TEST(DictROM, Basics) {
 }
 
 
-TEST(DictEEPROM, Basics) {
+TEST(DictRAM, Basics) {
     std::string s;
 
     embedis_init();
-    fake_eeprom_erase();
+    mock_ram_erase();
 
-    EXPECT_EMBEDIS_OK("SELECT EEPROM");
+    EXPECT_EMBEDIS_OK("SELECT RAM");
     EXPECT_EMBEDIS_OK("SET foo1 bar1");
     EXPECT_EMBEDIS_OK("SET foo bar");
 
@@ -82,13 +90,13 @@ TEST(DictEEPROM, Basics) {
 }
 
 
-TEST(DictEEPROM, KEYS) {
+TEST(DictRAM, KEYS) {
     std::string s;
 
     embedis_init();
-    fake_eeprom_erase();
+    mock_ram_erase();
 
-    EXPECT_EMBEDIS_OK("SELECT EEPROM");
+    EXPECT_EMBEDIS_OK("SELECT RAM");
 
     EXPECT_EQ(
         embedis("KEYS"),
@@ -118,17 +126,17 @@ TEST(DictEEPROM, KEYS) {
 }
 
 
-TEST(DictEEPROM, ValueOverflow) {
+TEST(DictRAM, ValueOverflow) {
     std::string s1, s2;
     size_t len;
 
     embedis_init();
-    fake_eeprom_erase();
+    mock_ram_erase();
 
-    EXPECT_EMBEDIS_OK("SELECT EEPROM");
+    EXPECT_EMBEDIS_OK("SELECT RAM");
 
     // free space for a key of len 3
-    len = embedis_eeprom_size();
+    len = mock_ram_access.size();
     len -= 2 + 2 + 3 + 2;
 
     // Just barely fits
@@ -148,17 +156,17 @@ TEST(DictEEPROM, ValueOverflow) {
 }
 
 
-TEST(DictEEPROM, KeyOverflow) {
+TEST(DictRAM, KeyOverflow) {
     std::string s1, s2;
     size_t len;
 
     embedis_init();
-    fake_eeprom_erase();
+    mock_ram_erase();
 
-    EXPECT_EMBEDIS_OK("SELECT EEPROM");
+    EXPECT_EMBEDIS_OK("SELECT RAM");
 
     // free key space for a value of len 3
-    len = embedis_eeprom_size();
+    len = mock_ram_access.size();
     len -= 2 + 2 + 3 + 2;
 
     // Just barely fits
