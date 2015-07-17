@@ -33,3 +33,10 @@ $ cmake .
 $ make && ctest
 $ make doc
 ```
+
+## Contributors
+
+The folks who make this project possible:
+
+ * David Turnbull
+ * Tom Moxon

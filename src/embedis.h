@@ -18,7 +18,6 @@
   ******************************************************************************
   *
   * @file        embedis.h
-  * @author      Dave Turnbull
   * @version     0.0.1
   * @date        2015-06-29
   * @copyright   PatternAgents, LLC
