@@ -68,6 +68,7 @@ static char const * const embedis_dictionary_rom[] = {
 // An actual RAM dictionary is not very useful outside of testing.
 // You'll want to implement this for some kind of non-volatile RAM.
 // EEPROM, NVSRAM, FRAM, FLASH, etc.
+// Use this section as a template to help you get started.
 
 #define MOCK_RAM_SIZE (64)
 
@@ -93,14 +94,13 @@ const embedis_ram_access mock_ram_access = {
     mock_ram_store
 };
 
-// Dictionaries for the SELECT command. The first one is the default.
+// Dictionaries for the SELECT command. The first one listed is the default.
 
 const embedis_dictionary embedis_dictionaries[] = {
     {"ROM", &embedis_rom_commands, (void*)&embedis_dictionary_rom},
     // A RAM dictionary is not suggested for production.
+    // This is here to help you get started and for testing.
     {"RAM", &embedis_ram_commands, (void*)&mock_ram_access},
-    // Uncomment for Arduino EEPROM support
-    // {"EEPROM", &embedis_ram_commands, (void*)&arduino_eeprom_access},
     {0}
 };
 
@@ -120,10 +120,13 @@ static void mock_READ(embedis_state* state) {
 }
 
 static void mock_WRITE(embedis_state* state) {
+    // No-op. Always OK.
     embedis_response_error(EMBEDIS_OK);
 }
 
 static void mock_missing(embedis_state* state) {
+    // Catch-all to support dynamic keys.
+    // Normally, return an error.
     embedis_response_error(0);
 }
 

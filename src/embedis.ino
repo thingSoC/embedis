@@ -35,26 +35,7 @@ void embedis_out(char b) {
     Serial.write(b);
 }
 
-// Support for internal EEPROM. Some devices do not have EEPROM (Due).
-// Uncomment this section and the EEPROM line in config.ino to enable.
-
-//#include <EEPROM.h>
-//
-//size_t arduino_eeprom_size() {
-//    // E2END is from GCC headers for your specific hardware.
-//    return E2END + 1;
-//}
-//
-//char arduino_eeprom_fetch(size_t pos) {
-//    return EEPROM.read(pos);
-//}
-//
-//void arduino_eeprom_store(size_t pos, char value) {
-//    EEPROM.write(pos, value);
-//}
-//
-//const embedis_ram_access arduino_eeprom_access = {
-//    arduino_eeprom_size,
-//    arduino_eeprom_fetch,
-//    arduino_eeprom_store
-//};
+// Forward declarations for included device support.
+// Feel free to move this to a header filer instead.
+extern const embedis_ram_access arduino_eeprom_access;
+extern const embedis_ram_access arduino_i2ceeprom_access;
