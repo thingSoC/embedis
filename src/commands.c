@@ -32,7 +32,7 @@
 #include "embedis.h"
 
 
-// Dispatchers
+// Primary Dispatchers
 
 
 void embedis_SELECT(embedis_state* state) {
@@ -83,6 +83,36 @@ void embedis_DEL(embedis_state* state) {
     (*state->dictionary->commands->del)(state);
 }
 
+// Helpers to translate key strings with their integer values
+
+static short int dictionary_key_to_id(const char* key, size_t length) {
+    // Verify we have a strcmp-comparable key
+    int i;
+    for (i = 0; i < length; i++) {
+        if (!key[i]) return 0;
+    }
+    if (key[i]) return 0;
+
+    const embedis_dictionary_key* dict = &embedis_dictionary_keys[0];
+    while (dict->name) {
+
+        if (!embedis_strcmp(dict->name, key)) {
+            return -dict->id;
+        }
+        dict++;
+    }
+    return 0;
+}
+
+
+static const char* dictionary_id_to_key(short int id) {
+    const embedis_dictionary_key* dict = &embedis_dictionary_keys[0];
+    while (dict->id) {
+        if (dict->id == id) return dict->name;
+        dict++;
+    }
+    return 0;
+}
 
 // ROM dictionary
 
@@ -127,10 +157,9 @@ void embedis_rom_DEL(embedis_state* state) {
     embedis_response_error(0);
 }
 
-
 /*
- EEPROM key-value data is stored starting at the last location.
- This allows it to, for example, share an EEPROM with another
+ RAM key-value data is stored starting at the last location.
+ This allows it to, for example, share an RAM with another
  system like Device Tree.
 
  The following structure repeats until key_id_or_len is 0.
@@ -149,50 +178,20 @@ void embedis_rom_DEL(embedis_state* state) {
  */
 
 
-static short int eeprom_key_to_id(const char* key, size_t length) {
-    // Verify we have a strcmp-comparable key
-    int i;
-    for (i = 0; i < length; i++) {
-        if (!key[i]) return 0;
-    }
-    if (key[i]) return 0;
 
-    const embedis_dictionary_key* dict = &embedis_dictionary_keys[0];
-    while (dict->name) {
-
-        if (!embedis_strcmp(dict->name, key)) {
-            return -dict->id;
-        }
-        dict++;
-    }
-    return 0;
-}
+static int ram_work(embedis_ram_access* access, const char* key_name, int key_len, const char* value, size_t* value_len, size_t* value_pos);
 
 
-static const char* eeprom_id_to_key(short int id) {
-    const embedis_dictionary_key* dict = &embedis_dictionary_keys[0];
-    while (dict->id) {
-        if (dict->id == id) return dict->name;
-        dict++;
-    }
-    return 0;
-}
-
-
-static int eeprom_work(embedis_state* state, const char* key_name, int key_len, const char* value, size_t* value_len, size_t* value_pos);
-
-
-// Upon detection of an unformatted or corrupt EEPROM
-// we will erase everything and try eeprom_work again.
-static int eeprom_reset(embedis_state* state, const char* key_name, int key_len, const char* value, size_t* value_len, size_t* value_pos) {
-    embedis_ram_access* access = (embedis_ram_access*)state->dictionary->context;
+// Upon detection of an unformatted or corrupt RAM
+// we will erase everything and try ram_work again.
+static int ram_reset(embedis_ram_access* access, const char* key_name, int key_len, const char* value, size_t* value_len, size_t* value_pos) {
     static char reset_lock = 0;
     int rv;
     if (!reset_lock) {
         reset_lock = 1;
         (*access->store)((*access->size)()-1, 0);
         (*access->store)((*access->size)()-2, 0);
-        rv = eeprom_work(state, key_name, key_len, value, value_len, value_pos);
+        rv = ram_work(access, key_name, key_len, value, value_len, value_pos);
         reset_lock = 0;
         return rv;
     }
@@ -201,34 +200,33 @@ static int eeprom_reset(embedis_state* state, const char* key_name, int key_len,
 
 
 /*
- Big evil EEPROM function. This does many things.
+ Big evil RAM function. This does many things.
 
- Ensure EEPROM is formatted.
- eeprom_work("", 0, 0, 0, 0);
+ Ensure RAM is formatted.
+ ram_work("", 0, 0, 0, 0);
 
  GET a value for given key. Returns 0 when not found.
- eeprom_work(key_name, key_len, 0, &value_len, &value_pos);
+ ram_work(key_name, key_len, 0, &value_len, &value_pos);
 
  SET value to the given key. This will replace any existing key.
  Caller is responsible for ensuring there is enough space.
- eeprom_work(key_name, key_len, value, &value_len, 0)
+ ram_work(key_name, key_len, value, &value_len, 0)
 
  DEL a key.
- eeprom_work(key_name, key_len, 0, 0, 0);
+ ram_work(key_name, key_len, 0, 0, 0);
 
  Count the number of keys in dictionary and calculate free bytes.
  free_bytes = count = 0;
- while ((eeprom_work(0, 0, 0, 0, &free_bytes))) count++;
+ while ((ram_work(0, 0, 0, 0, &free_bytes))) count++;
 
  Iterate over all keys.
  pos = 0;
- while ((len_or_id = eeprom_work(0, 0, 0, 0, &pos))) {
-   if (len_or_id < 0) .. fetch key_name with eeprom_id_to_key(-len_or_id);
+ while ((len_or_id = ram_work(0, 0, 0, 0, &pos))) {
+   if (len_or_id < 0) .. fetch key_name with dictionary_id_to_key(-len_or_id);
    else ... key_name can be fetched starting at embedis_ram_fetch(pos)
  }
  */
-static int eeprom_work(embedis_state* state, const char* key_name, int key_len, const char* value, size_t* value_len, size_t* value_pos) {
-    embedis_ram_access* access = (embedis_ram_access*)state->dictionary->context;
+static int ram_work(embedis_ram_access* access, const char* key_name, int key_len, const char* value, size_t* value_len, size_t* value_pos) {
     size_t pos = (*access->size)(), deloffset = 0, key_pos = 0;
     char on_key = 1, found_key = 0;
     int i, key_id_or_len = 0;
@@ -239,7 +237,7 @@ static int eeprom_work(embedis_state* state, const char* key_name, int key_len, 
             on_key = 0;
         }
     } else {
-        key_id_or_len = eeprom_key_to_id(key_name, key_len);
+        key_id_or_len = dictionary_key_to_id(key_name, key_len);
         if (!key_id_or_len) key_id_or_len = key_len;
     }
 
@@ -259,7 +257,7 @@ static int eeprom_work(embedis_state* state, const char* key_name, int key_len, 
             on_key = 0;
 
             if ((i < 0 && pos < 2) || (i >= 0 && i  + 2 > pos)) {
-                return eeprom_reset(state, key_name, key_len, value, value_len, value_pos);
+                return ram_reset(access, key_name, key_len, value, value_len, value_pos);
             }
 
 
@@ -306,7 +304,7 @@ static int eeprom_work(embedis_state* state, const char* key_name, int key_len, 
         i = (*access->fetch)(pos-1) + ((*access->fetch)(pos-2) << 8);
         pos -= 2;
         if (i + 2 > pos) {
-            return eeprom_reset(state, key_name, key_len, value, value_len, value_pos);
+            return ram_reset(access, key_name, key_len, value, value_len, value_pos);
         }
         pos -= i;
 
@@ -376,21 +374,21 @@ static int eeprom_work(embedis_state* state, const char* key_name, int key_len, 
 }
 
 
-// Ensures EEPROM is formatted and doesn't contain
+// Ensures RAM is formatted and doesn't contain
 // keys that have been removed from embedis_dictionary_keys.
-static void eeprom_cleanup(embedis_state* state) {
+static void ram_cleanup(embedis_ram_access* access) {
     size_t pos = 0;
     int len_or_id, is_clean = 0;
     // Ensure formatted
-    eeprom_work(state, "", 0, 0, 0, 0);
+    ram_work(access, "", 0, 0, 0, 0);
     // Remove bad keys
     while (!is_clean) {
         is_clean = 1;
-        while ((len_or_id = eeprom_work(state, 0, 0, 0, 0, &pos))) {
+        while ((len_or_id = ram_work(access, 0, 0, 0, 0, &pos))) {
             if (len_or_id < 0) {
-                if (!eeprom_id_to_key(-len_or_id)) {
+                if (!dictionary_id_to_key(-len_or_id)) {
                     is_clean = 0;
-                    eeprom_work(state, "", -len_or_id, 0, 0, 0);
+                    ram_work(access, "", -len_or_id, 0, 0, 0);
                     break;
                 }
             }
@@ -409,11 +407,12 @@ const embedis_dictionary_commands embedis_ram_commands = {
 
 
 void embedis_ram_SELECT(embedis_state* state) {
+    embedis_ram_access* access = (embedis_ram_access*)state->dictionary->context;
     size_t free_bytes = 0;
     char* s = "+OK free = ";
-    eeprom_cleanup(state);
+    ram_cleanup(access);
 
-    while (eeprom_work(state, 0, 0, 0, 0, &free_bytes)) {}
+    while (ram_work(access, 0, 0, 0, 0, &free_bytes)) {}
 
     while (*s) embedis_out(*(s++));
     embedis_emit_integer(free_bytes);
@@ -426,15 +425,15 @@ void embedis_ram_KEYS(embedis_state* state) {
     size_t pos;
     int len_or_id, i;
 
-    eeprom_cleanup(state);
+    ram_cleanup(access);
 
     // Count the keys
     pos = i = 0;
-    while ((eeprom_work(state, 0, 0, 0, 0, &pos))) i++;
+    while ((ram_work(access, 0, 0, 0, 0, &pos))) i++;
     embedis_emit_size('*', i);
 
     pos = 0;
-    while ((len_or_id = eeprom_work(state, 0, 0, 0, 0, &pos))) {
+    while ((len_or_id = ram_work(access, 0, 0, 0, 0, &pos))) {
         if (len_or_id > 0) {
             embedis_emit_size('$', len_or_id);
             for (i = 0; i < len_or_id; i++) {
@@ -442,7 +441,7 @@ void embedis_ram_KEYS(embedis_state* state) {
             }
             embedis_emit_newline();
         } else {
-            embedis_response_simple(eeprom_id_to_key(-len_or_id));
+            embedis_response_simple(dictionary_id_to_key(-len_or_id));
         }
     }
 
@@ -453,7 +452,7 @@ void embedis_ram_GET(embedis_state* state) {
     embedis_ram_access* access = (embedis_ram_access*)state->dictionary->context;
     size_t value_len, value_pos;
     int key_len = state->argv[2] - state->argv[1] - 1;;
-    if(eeprom_work(state, state->argv[1], key_len, 0, &value_len, &value_pos)) {
+    if(ram_work(access, state->argv[1], key_len, 0, &value_len, &value_pos)) {
         embedis_emit_size('$', value_len);
         while (value_len) {
             embedis_out((*access->fetch)(value_pos));
@@ -468,15 +467,16 @@ void embedis_ram_GET(embedis_state* state) {
 
 
 void embedis_ram_SET(embedis_state* state) {
+    embedis_ram_access* access = (embedis_ram_access*)state->dictionary->context;
     size_t value_len, value_pos;
     int is_found, key_len = state->argv[2] - state->argv[1] - 1;
 
     // Compute free space
     value_pos = 0;
-    while ((eeprom_work(state, 0, 0, 0, 0, &value_pos))) {}
+    while ((ram_work(access, 0, 0, 0, 0, &value_pos))) {}
     int free_bytes = value_pos;
 
-    is_found = eeprom_work(state, state->argv[1], key_len, 0, &value_len, &value_pos);
+    is_found = ram_work(access, state->argv[1], key_len, 0, &value_len, &value_pos);
 
     // If a key exists, it's value space is available
     // Else account for key and value size storage
@@ -484,7 +484,7 @@ void embedis_ram_SET(embedis_state* state) {
     else free_bytes -= 4;
 
     // If key is stored-type and doesn't exists, account for its size
-    if (!eeprom_key_to_id(state->argv[1], key_len)) {
+    if (!dictionary_key_to_id(state->argv[1], key_len)) {
         if (!is_found) free_bytes -= key_len;
     }
 
@@ -493,14 +493,15 @@ void embedis_ram_SET(embedis_state* state) {
         return embedis_response_error(0);
     }
 
-    eeprom_work(state, state->argv[1], key_len, state->argv[2], &value_len, 0);
+    ram_work(access, state->argv[1], key_len, state->argv[2], &value_len, 0);
     embedis_response_error(EMBEDIS_OK);
 }
 
 
 void embedis_ram_DEL(embedis_state* state) {
+    embedis_ram_access* access = (embedis_ram_access*)state->dictionary->context;
     int key_len = state->argv[2] - state->argv[1] - 1;;
-    eeprom_work(state, state->argv[1], key_len, 0, 0, 0);
+    ram_work(access, state->argv[1], key_len, 0, 0, 0);
     embedis_response_error(EMBEDIS_OK);
 }
 
