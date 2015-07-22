@@ -52,6 +52,14 @@ TEST(DictROM, Basics) {
 }
 
 
+TEST(DictROM, Keys) {
+    embedis_init();
+
+    EXPECT_EMBEDIS_OK("SELECT ROM");
+    EXPECT_EMBEDIS_ARRAY("KEYS", {"vendor"});
+}
+
+
 TEST(DictRAM, Basics) {
     std::string s;
 
@@ -91,38 +99,25 @@ TEST(DictRAM, Basics) {
 
 
 TEST(DictRAM, KEYS) {
-    std::string s;
-
     embedis_init();
     mock_ram_erase();
 
     EXPECT_EMBEDIS_OK("SELECT RAM");
-
-    EXPECT_EQ(
-        embedis("KEYS"),
-        "*0\r\n"
-    );
+    EXPECT_EMBEDIS_ARRAY("KEYS", {});
 
     EXPECT_EMBEDIS_OK("SET foo bar");
+    EXPECT_EMBEDIS_ARRAY("KEYS", {"foo"});
 
-    EXPECT_EQ(
-        embedis("KEYS"),
-        "*1\r\n$3\r\nfoo\r\n"
-    );
-
+    std::string s;
     s = "SET ";
     s += embedis_dictionary_keys[0].name;
     s += " bar2";
     EXPECT_EMBEDIS_OK(s);
 
-    s = "*2\r\n$3\r\nfoo\r\n+";
-    s += embedis_dictionary_keys[0].name;
-    s += "\r\n";
-    EXPECT_EQ(
-        embedis("KEYS"),
-        s
-    );
-
+    std::vector<std::string> a;
+    a.push_back("foo");
+    a.push_back(embedis_dictionary_keys[0].name);
+    EXPECT_EMBEDIS_ARRAY("KEYS", a);
 }
 
 

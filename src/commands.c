@@ -31,6 +31,21 @@
 #include "embedis.h"
 
 
+void embedis_COMMANDS(embedis_state* state) {
+    const embedis_command* cmd = &embedis_commands[0];
+    int count = 0;
+    while (cmd->name) {cmd++; count++;}
+    embedis_out('*');
+    embedis_emit_integer(count);
+    embedis_emit_newline();
+    cmd = &embedis_commands[0];
+    while (cmd->name) {
+        embedis_response_simple(cmd->name);
+        cmd++;
+    }
+}
+
+
 // Primary Dispatchers
 
 
@@ -130,7 +145,17 @@ void embedis_rom_SELECT(embedis_state* state) {
 
 
 void embedis_rom_KEYS(embedis_state* state) {
-    embedis_response_error(0);
+    char* const* rom = state->dictionary->context;
+    int count = 0;
+    while (*rom) {rom+=2; count++;}
+    embedis_out('*');
+    embedis_emit_integer(count);
+    embedis_emit_newline();
+    rom = state->dictionary->context;
+    while (*rom) {
+        embedis_response_simple(rom[0]);
+        rom+=2;
+    }
 }
 
 

@@ -48,6 +48,7 @@ static void embedis_command_missing(embedis_state* state) {
 
 // Adjust this call table to support the desired command set.
 const embedis_command embedis_commands[] = {
+    {"COMMANDS", embedis_COMMANDS},
     {"SELECT", embedis_SELECT},
     {"KEYS", embedis_KEYS},
     {"GET", embedis_GET},

@@ -52,13 +52,52 @@ std::string embedis(std::string cmd) {
 
 namespace embedis_predicates {
 
-static int delcrnl(std::string &s) {
-    if (s.size() < 2) return 0;
-    if (s.substr(s.size()-2, 2) != "\r\n") return 0;
-    s.erase(s.size()-2,2);
-    return 1;
+// Remove expected "\r\n"
+// return true on success
+static bool delstartcrnl(std::string &s) {
+    if (s.size() < 2) return false;
+    if (s.substr(0, 2) != "\r\n") return false;
+    s.erase(0,2);
+    return true;
 }
 
+// Extract first string from the RESP result
+// return true on success
+static bool getstring(std::string &s, std::string &out) {
+    out.clear();
+
+    if (s.empty()) return false;
+
+    // Simple string, including error string
+    if (s[0] == '+' || s[0] == '-') {
+        s.erase(0,1);
+        while (!s.empty() && s[0] != '\r') {
+            out.append(1, s[0]);
+            s.erase(0,1);
+        }
+        return delstartcrnl(s);
+    }
+
+    // Binary string
+    if (s[0] == '$') {
+        s.erase(0,1);
+        int size = 0;
+        while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
+            size = size * 10 + (s[0] - '0');
+            s.erase(0,1);
+        }
+        if (!delstartcrnl(s)) return false;
+        while (!s.empty() && size) {
+            size--;
+            out.append(1, s[0]);
+            s.erase(0,1);
+        }
+        return delstartcrnl(s);
+    }
+    return false;
+}
+
+// Utility to quote and add escape sequences for printing string
 std::string escaped(std::string const& s) {
     ::std::ostringstream out;
     out.put('"');
@@ -100,10 +139,15 @@ std::string escaped(std::string const& s) {
 testing::AssertionResult ok(const char* cmd_expr, std::string cmd) {
     std::string result = embedis(cmd);
     std::string s = result;
-    if (!delcrnl(s)) goto fail;
-    if (result[0] != '+') goto fail;
-    return testing::AssertionSuccess();
-fail:
+    std::string actual;
+    if (!s.empty() && result[0] == '+') {
+        if (getstring(s, actual)) {
+            if (s.empty() && actual.substr(0,2) == "OK") {
+                return testing::AssertionSuccess();
+            }
+        }
+
+    }
     return testing::AssertionFailure() << cmd_expr <<
            " expected to succeed." << ::std::endl <<
            "Result was: " << escaped(result);
@@ -112,10 +156,15 @@ fail:
 testing::AssertionResult error(const char* cmd_expr, std::string cmd) {
     std::string result = embedis(cmd);
     std::string s = result;
-    if (!delcrnl(s)) goto fail;
-    if (result[0] != '-') goto fail;
-    return testing::AssertionSuccess();
-fail:
+    std::string actual;
+    if (!s.empty() && result[0] == '-') {
+        if (getstring(s, actual)) {
+            if (s.empty()) {
+                return testing::AssertionSuccess();
+            }
+        }
+
+    }
     return testing::AssertionFailure() << cmd_expr <<
            " expected to fail." << ::std::endl <<
            "Result was: " << escaped(result);
@@ -134,36 +183,52 @@ testing::AssertionResult null(const char* cmd_expr, std::string cmd) {
 testing::AssertionResult string(const char* cmd_expr, const char* result_expr, std::string cmd, std::string expected) {
     std::string result = embedis(cmd);
     std::string s = result;
-
-    if (!s.empty()) {
-        // Simple string
-        if (s[0] == '+') {
-            s.erase(0,1);
-            if (!delcrnl(s)) goto fail;
-            if (s == expected) return testing::AssertionSuccess();
-        }
-        // Binary string
-        if (s[0] == '$') {
-            s.erase(0,1);
-            int size = 0;
-            while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
-                size = size * 10 + (s[0] - '0');
-                s.erase(0,1);
-            }
-            if (s.length() != size + 4) goto fail;
-            if (s[0] != '\r') goto fail;
-            if (s[1] != '\n') goto fail;
-            s.erase(0,2);
-            if (!delcrnl(s)) goto fail;
-            if (s == expected) return testing::AssertionSuccess();
+    std::string actual;
+    if (getstring(s, actual)) {
+        if (actual==expected && s.empty()) {
+            return testing::AssertionSuccess();
         }
 
     }
-
-fail:
     return testing::AssertionFailure()  << cmd_expr <<
            " expected to return string: " << escaped(expected) << ::std::endl <<
            "Result was: " << escaped(result);
+}
+
+
+testing::AssertionResult array(const char* cmd_expr, const char* result_expr, std::string cmd, std::vector<std::string> expected) {
+    std::string result = embedis(cmd);
+    std::string s = result;
+    std::string actual;
+    int size = 0;
+    if (s[0] != '*') goto fail;
+    s.erase(0,1);
+    while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
+        size = size * 10 + (s[0] - '0');
+        s.erase(0,1);
+    }
+    if (!delstartcrnl(s)) goto fail;
+    if (size != expected.size()) goto fail;
+
+    for (auto e : expected ) {
+        if (!getstring(s, actual)) goto fail;
+        if (e != actual) goto fail;
+    }
+    if (!s.empty()) goto fail;
+    return testing::AssertionSuccess();
+
+fail:
+    std::string eprint;
+    eprint.append("[");
+    for (auto e : expected ) {
+        eprint.append(escaped(e));
+        eprint.append(", ");
+    }
+    if (eprint.size() > 2) eprint.erase(eprint.size()-2,2);
+    eprint.append("]");
+    return testing::AssertionFailure()  << cmd_expr <<
+    " expected to return array: " << eprint << ::std::endl <<
+    "Result was: " << escaped(result);
 }
 
 } /* end namespace embedis_predicates */

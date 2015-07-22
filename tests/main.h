@@ -30,6 +30,7 @@ testing::AssertionResult ok(const char* cmd_expr, std::string cmd);
 testing::AssertionResult error(const char* cmd_expr, std::string cmd);
 testing::AssertionResult null(const char* cmd_expr, std::string cmd);
 testing::AssertionResult string(const char* cmd_expr, const char* result_expr, std::string cmd, std::string result);
+testing::AssertionResult array(const char* cmd_expr, const char* result_expr, std::string cmd, std::vector<std::string> expected);
 
 } /* end namespace embedis_predicates */
 
@@ -52,6 +53,11 @@ ASSERT_PRED_FORMAT1(embedis_predicates::null, val1)
 EXPECT_PRED_FORMAT2(embedis_predicates::string, val1, val2)
 #define ASSERT_EMBEDIS_STRING(val1, val2) \
 ASSERT_PRED_FORMAT2(embedis_predicates::string, val1, val2)
+
+#define EXPECT_EMBEDIS_ARRAY(val1, val2) \
+EXPECT_PRED_FORMAT2(embedis_predicates::array, val1, val2)
+#define ASSERT_EMBEDIS_ARRAY(val1, val2) \
+ASSERT_PRED_FORMAT2(embedis_predicates::array, val1, val2)
 
 
 #endif // TESTMAIN_H

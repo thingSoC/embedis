@@ -176,6 +176,8 @@ void embedis_response_null();
 
 // commands.c
 
+void embedis_COMMANDS(embedis_state* state);
+
 void embedis_SELECT(embedis_state* state);
 void embedis_KEYS(embedis_state* state);
 void embedis_GET(embedis_state* state);
