@@ -18,21 +18,21 @@
 
 // Embedis is going to use the primary serial port.
 void setup() {
-    embedis_init();
     Serial.begin(57600);
+}
+
+// Create embedis_state_0 for use on serial port.
+// 128 byte input buffer supporting 8 arguments.
+EMBEDIS_STATE_INSTANCE(0, serial_write, 128, 8);
+void serial_write(char b) {
+    Serial.write(b);
 }
 
 // In the main loop, send any characters received over
 // the serial port to Embedis for processing.
 void loop() {
     int b = Serial.read();
-    if (b >= 0) embedis_in(b);
-}
-
-// When Embedis needs to send a response, it will
-// call this function for every character.
-void embedis_out(char b) {
-    Serial.write(b);
+    if (b >= 0) embedis_in(&embedis_state_0, b);
 }
 
 // Forward declarations for included device support.

@@ -32,19 +32,28 @@ void embedis_out(char data) {
     result.append(1, data);
 }
 
+EMBEDIS_STATE_INSTANCE(0, embedis_out, 128, 8);
+
+
 std::string embedis(std::string cmd) {
     char last1 = 0, last2 = 0;
     result.clear();
     for (size_t i = 0; i < cmd.length(); i++) {
-        embedis_in(cmd[i]);
+        embedis_in(&embedis_state_0, cmd[i]);
         last1 = last2;
         last2 = cmd[i];
     }
     if (last1 != '\r' && last2 != '\n') {
-        embedis_in('\r');
-        embedis_in('\n');
+        embedis_in(&embedis_state_0, '\r');
+        embedis_in(&embedis_state_0, '\n');
     }
     return result;
+}
+
+
+void embedis_init() {
+    embedis_state_0.dictionary = &embedis_dictionaries[0];
+    embedis_reset(&embedis_state_0);
 }
 
 
@@ -69,7 +78,8 @@ static bool getstring(std::string &s, std::string &out) {
     if (s.empty()) return false;
 
     // Simple string, including error string
-    if (s[0] == '+' || s[0] == '-') {
+    // Integers are treated as strings too
+    if (s[0] == ':' || s[0] == '+' || s[0] == '-') {
         s.erase(0,1);
         while (!s.empty() && s[0] != '\r') {
             out.append(1, s[0]);
@@ -200,19 +210,22 @@ testing::AssertionResult array(const char* cmd_expr, const char* result_expr, st
     std::string result = embedis(cmd);
     std::string s = result;
     std::string actual;
-    int size = 0;
-    if (s[0] != '*') goto fail;
-    s.erase(0,1);
-    while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
-        size = size * 10 + (s[0] - '0');
-        s.erase(0,1);
-    }
-    if (!delstartcrnl(s)) goto fail;
-    if (size != expected.size()) goto fail;
 
-    for (auto e : expected ) {
-        if (!getstring(s, actual)) goto fail;
-        if (e != actual) goto fail;
+    if (s.empty()) goto fail;
+    while (!s.empty() && s[0] == '*') {
+        int size = 0;
+        s.erase(0,1);
+        while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
+            size = size * 10 + (s[0] - '0');
+            s.erase(0,1);
+        }
+        if (!delstartcrnl(s)) goto fail;
+        if (size != expected.size()) goto fail;
+
+        for (auto e : expected ) {
+            if (!getstring(s, actual)) goto fail;
+            if (e != actual) goto fail;
+        }
     }
     if (!s.empty()) goto fail;
     return testing::AssertionSuccess();

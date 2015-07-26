@@ -39,110 +39,102 @@ const char* EMBEDIS_ARGS_ERROR = "bad argument count";
 const char* EMBEDIS_STORAGE_OVERFLOW = "storage overflow";
 
 
-void embedis_emit_newline() {
-    embedis_out('\r');
-    embedis_out('\n');
+void embedis_emit_newline(embedis_state* state) {
+    (*state->output)('\r');
+    (*state->output)('\n');
 }
 
 
-void embedis_emit_integer(int i) {
+void embedis_emit_integer(embedis_state* state, int i) {
     size_t j, k;
     if (i < 0) {
         i = -i;
-        embedis_out('-');
+        (*state->output)('-');
     }
     for (j = 1; i / (j*10); j *= 10) {}
     while (j) {
         k = i / j;
-        embedis_out('0' + k);
+        (*state->output)('0' + k);
         i -= k * j;
         j /= 10;
     }
 }
 
 
-void embedis_emit_size(char kind, size_t length) {
-    embedis_out(kind);
-    embedis_emit_integer(length);
-    embedis_emit_newline();
+void embedis_emit_size(embedis_state* state, char kind, size_t length) {
+    (*state->output)(kind);
+    embedis_emit_integer(state, length);
+    embedis_emit_newline(state);
 }
 
 
-void embedis_response_error(const char* message) {
+void embedis_response_error(embedis_state* state, const char* message) {
     const char* errstr = "-ERROR";
     if (message == EMBEDIS_OK) {
-        embedis_response_simple(message);
+        embedis_response_simple(state, message);
         return;
     }
     while(*errstr) {
-        embedis_out(*errstr);
+        (*state->output)(*errstr);
         errstr++;
     }
     if (message) {
-        embedis_out(' ');
+        (*state->output)(' ');
         while(*message) {
-            embedis_out(*message);
+            (*state->output)(*message);
             message++;
         }
     }
-    embedis_emit_newline();
+    embedis_emit_newline(state);
 }
 
 
-void embedis_response_simple(const char* message) {
-    embedis_out('+');
+void embedis_response_simple(embedis_state* state, const char* message) {
+    (*state->output)('+');
     while(*message) {
-        embedis_out(*message);
+        (*state->output)(*message);
         message++;
     }
-    embedis_emit_newline();
+    embedis_emit_newline(state);
 }
 
 
-void embedis_response_string(const char* message, size_t length) {
+void embedis_response_string(embedis_state* state, const char* message, size_t length) {
     size_t i = 0;
-    embedis_emit_size('$', length);
+    embedis_emit_size(state, '$', length);
     for (i = 0; i < length; i++) {
-        embedis_out(message[i]);
+        (*state->output)(message[i]);
     }
-    embedis_emit_newline();
+    embedis_emit_newline(state);
 }
 
 
-void embedis_response_null() {
+void embedis_response_null(embedis_state* state) {
     const char* nullstr = "$-1";
     while(*nullstr) {
-        embedis_out(*nullstr);
+        (*state->output)(*nullstr);
         nullstr++;
     }
-    embedis_emit_newline();
+    embedis_emit_newline(state);
 }
 
 
-typedef struct embedis_prototol_state {
-    embedis_state state;
-    size_t pos;
-    char buf[EMBEDIS_COMMAND_BUF_SIZE];
-    char mode;
-} embedis_prototol_state;
-
-static embedis_prototol_state command;
-
-
-// Initialize everything. Call once at program start.
-void embedis_init() {
-    command.state.dictionary = &embedis_dictionaries[0];
-    embedis_reset();
+// Call embedis_state_last(0) to get last embedis_state in linked list.
+embedis_state* embedis_state_last(embedis_state* current) {
+    static embedis_state* last = 0;
+    if (!current) return last;
+    embedis_state* x = last;
+    last = current;
+    return x;
 }
 
-
-// Reset only the protocol state.
-// Call this when a UART notifies you of a break condition.
-void embedis_reset() {
-    command.mode = 0;
-    command.state.argc = 0;
-    command.state.argv[0] = command.buf;
-    command.pos = 0;
+// Reset only the protocol state. For eaxmple,
+// call this when a UART notifies you of a break condition.
+void embedis_reset(embedis_state* state) {
+    state->protocol.mode = 0;
+    state->protocol.pos = 0;
+    state->argc = 0;
+    state->argv[0] = state->protocol.buf;
 }
 
 
@@ -176,20 +168,20 @@ int embedis_stricmp(const char* s1, const char* s2) {
 
 
 // Main command dispatcher.
-static void embedis_dispatch() {
+static void embedis_dispatch(embedis_state* state) {
     const embedis_command* cmd = &embedis_commands[0];
     while (cmd->name) {
-        if (!embedis_stricmp(cmd->name, command.state.argv[0])) break;
+        if (!embedis_stricmp(cmd->name, state->argv[0])) break;
         cmd++;
     }
-    (*cmd->call)(&command.state);
+    (*cmd->call)(state);
 }
 
 
 // Process characters received over connection.
-void embedis_in(char data) {
+void embedis_in(embedis_state* state, char data) {
 
-    if (command.mode == 0) {
+    if (state->protocol.mode == 0) {
         switch (data) {
         case '+':
         case '-':
@@ -203,70 +195,70 @@ void embedis_in(char data) {
             // nop
             return;
         default:
-            if (command.pos != 0) {
-                embedis_reset();
-                embedis_response_error(EMBEDIS_SYNTAX_ERROR);
+            if (state->protocol.pos != 0) {
+                embedis_reset(state);
+                embedis_response_error(state, EMBEDIS_SYNTAX_ERROR);
                 return;
             }
-            command.mode = ' ';
+            state->protocol.mode = ' ';
             break;
         }
     }
 
 
-    //    if (command.mode == 0 && command.pos == 0) command.mode = ' ';
+    //    if (state->protocol.mode == 0 && state->protocol.pos == 0) state->protocol.mode = ' ';
 
 
-    if (command.mode == ' ') {
+    if (state->protocol.mode == ' ') {
         if (data == '\r' || data == '\n') {
-            if (!command.pos) {
-                embedis_reset();
+            if (!state->protocol.pos) {
+                embedis_reset(state);
                 return;
             }
             // Deal with trailing spaces
-            if (command.state.argv[command.state.argc] != &command.buf[command.pos]) {
-                command.state.argc++;
+            if (state->argv[state->argc] != &state->protocol.buf[state->protocol.pos]) {
+                state->argc++;
             } else {
-                command.pos--;
+                state->protocol.pos--;
             }
             // Check for overflows
-            if (command.state.argc > EMBEDIS_COMMAND_MAX_ARGS) {
-                embedis_response_error(EMBEDIS_ARGS_ERROR);
-                embedis_reset();
+            if (state->argc > state->protocol.argv_length) {
+                embedis_response_error(state, EMBEDIS_ARGS_ERROR);
+                embedis_reset(state);
                 return;
             }
-            if (command.pos >= EMBEDIS_COMMAND_BUF_SIZE) {
-                embedis_response_error(EMBEDIS_BUFFER_OVERFLOW);
-                embedis_reset();
+            if (state->protocol.pos >= state->protocol.buf_length) {
+                embedis_response_error(state, EMBEDIS_BUFFER_OVERFLOW);
+                embedis_reset(state);
                 return;
             }
-            command.buf[command.pos] = 0;
-            command.pos++;
-            command.state.argv[command.state.argc] = &command.buf[command.pos];
-            embedis_dispatch();
-            embedis_reset();
+            state->protocol.buf[state->protocol.pos] = 0;
+            state->protocol.pos++;
+            state->argv[state->argc] = &state->protocol.buf[state->protocol.pos];
+            embedis_dispatch(state);
+            embedis_reset(state);
             return;
         }
 
         if (data == ' ') {
-            if (command.state.argv[command.state.argc] == &command.buf[command.pos]) {
+            if (state->argv[state->argc] == &state->protocol.buf[state->protocol.pos]) {
                 // drop extra spaces
                 return;
             }
-            if (command.pos < EMBEDIS_COMMAND_BUF_SIZE) {
-                command.buf[command.pos] = 0;
-                command.pos++;
+            if (state->protocol.pos < state->protocol.buf_length) {
+                state->protocol.buf[state->protocol.pos] = 0;
+                state->protocol.pos++;
             }
-            command.state.argc++;
-            if (command.state.argc <= EMBEDIS_COMMAND_MAX_ARGS) {
-                command.state.argv[command.state.argc] = &command.buf[command.pos];
+            state->argc++;
+            if (state->argc <= state->protocol.argv_length) {
+                state->argv[state->argc] = &state->protocol.buf[state->protocol.pos];
             }
             return;
         }
 
-        if (command.pos < EMBEDIS_COMMAND_BUF_SIZE) {
-            command.buf[command.pos] = data;
-            command.pos++;
+        if (state->protocol.pos < state->protocol.buf_length) {
+            state->protocol.buf[state->protocol.pos] = data;
+            state->protocol.pos++;
         }
 
         return;

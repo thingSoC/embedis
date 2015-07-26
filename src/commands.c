@@ -35,12 +35,10 @@ void embedis_COMMANDS(embedis_state* state) {
     const embedis_command* cmd = &embedis_commands[0];
     int count = 0;
     while (cmd->name) {cmd++; count++;}
-    embedis_out('*');
-    embedis_emit_integer(count);
-    embedis_emit_newline();
+    embedis_emit_size(state, '*', count);
     cmd = &embedis_commands[0];
     while (cmd->name) {
-        embedis_response_simple(cmd->name);
+        embedis_response_simple(state, cmd->name);
         cmd++;
     }
 }
@@ -51,7 +49,7 @@ void embedis_COMMANDS(embedis_state* state) {
 
 void embedis_SELECT(embedis_state* state) {
     if (state->argc < 2) {
-        return embedis_response_error(EMBEDIS_ARGS_ERROR);
+        return embedis_response_error(state, EMBEDIS_ARGS_ERROR);
     }
     const embedis_dictionary* dict = &embedis_dictionaries[0];
     while (dict->name) {
@@ -62,7 +60,7 @@ void embedis_SELECT(embedis_state* state) {
         }
         dict++;
     }
-    embedis_response_error(0);
+    embedis_response_error(state, 0);
 }
 
 
@@ -73,27 +71,27 @@ void embedis_KEYS(embedis_state* state) {
 
 void embedis_GET(embedis_state* state) {
     if (state->argc != 2) {
-        return embedis_response_error(EMBEDIS_ARGS_ERROR);
+        return embedis_response_error(state, EMBEDIS_ARGS_ERROR);
     }
-    if (state->argv[2] - state->argv[1] == 1) return embedis_response_error(0);
+    if (state->argv[2] - state->argv[1] == 1) return embedis_response_error(state, 0);
     (*state->dictionary->commands->get)(state);
 }
 
 
 void embedis_SET(embedis_state* state) {
     if (state->argc != 3) {
-        return embedis_response_error(EMBEDIS_ARGS_ERROR);
+        return embedis_response_error(state, EMBEDIS_ARGS_ERROR);
     }
-    if (state->argv[2] - state->argv[1] == 1) return embedis_response_error(0);
+    if (state->argv[2] - state->argv[1] == 1) return embedis_response_error(state, 0);
     (*state->dictionary->commands->set)(state);
 }
 
 
 void embedis_DEL(embedis_state* state) {
     if (state->argc != 2) {
-        return embedis_response_error(EMBEDIS_ARGS_ERROR);
+        return embedis_response_error(state, EMBEDIS_ARGS_ERROR);
     }
-    if (state->argv[2] - state->argv[1] == 1) return embedis_response_error(0);
+    if (state->argv[2] - state->argv[1] == 1) return embedis_response_error(state, 0);
     (*state->dictionary->commands->del)(state);
 }
 
@@ -140,7 +138,7 @@ const embedis_dictionary_commands embedis_rom_commands = {
 
 
 void embedis_rom_SELECT(embedis_state* state) {
-    embedis_response_error(EMBEDIS_OK);
+    embedis_response_error(state, EMBEDIS_OK);
 }
 
 
@@ -148,12 +146,10 @@ void embedis_rom_KEYS(embedis_state* state) {
     char* const* rom = state->dictionary->context;
     int count = 0;
     while (*rom) {rom+=2; count++;}
-    embedis_out('*');
-    embedis_emit_integer(count);
-    embedis_emit_newline();
+    embedis_emit_size(state, '*', count);
     rom = state->dictionary->context;
     while (*rom) {
-        embedis_response_simple(rom[0]);
+        embedis_response_simple(state, rom[0]);
         rom+=2;
     }
 }
@@ -163,22 +159,22 @@ void embedis_rom_GET(embedis_state* state) {
     char* const* rom = state->dictionary->context;
     while (*rom) {
         if (!embedis_strcmp(rom[0], state->argv[1])) {
-            embedis_response_simple(rom[1]);
+            embedis_response_simple(state, rom[1]);
             return;
         }
         rom += 2;
     }
-    embedis_response_null();
+    embedis_response_null(state);
 }
 
 
 void embedis_rom_SET(embedis_state* state) {
-    embedis_response_error(0);
+    embedis_response_error(state, 0);
 }
 
 
 void embedis_rom_DEL(embedis_state* state) {
-    embedis_response_error(0);
+    embedis_response_error(state, 0);
 }
 
 /*
@@ -438,9 +434,9 @@ void embedis_ram_SELECT(embedis_state* state) {
 
     while (ram_work(access, 0, 0, 0, 0, &free_bytes)) {}
 
-    while (*s) embedis_out(*(s++));
-    embedis_emit_integer(free_bytes);
-    embedis_emit_newline();
+    while (*s) (*state->output)(*(s++));
+    embedis_emit_integer(state, free_bytes);
+    embedis_emit_newline(state);
 }
 
 
@@ -454,18 +450,18 @@ void embedis_ram_KEYS(embedis_state* state) {
     // Count the keys
     pos = i = 0;
     while ((ram_work(access, 0, 0, 0, 0, &pos))) i++;
-    embedis_emit_size('*', i);
+    embedis_emit_size(state, '*', i);
 
     pos = 0;
     while ((len_or_id = ram_work(access, 0, 0, 0, 0, &pos))) {
         if (len_or_id > 0) {
-            embedis_emit_size('$', len_or_id);
+            embedis_emit_size(state, '$', len_or_id);
             for (i = 0; i < len_or_id; i++) {
-                embedis_out((*access->fetch)(pos + i));
+                (*state->output)((*access->fetch)(pos + i));
             }
-            embedis_emit_newline();
+            embedis_emit_newline(state);
         } else {
-            embedis_response_simple(dictionary_id_to_key(-len_or_id));
+            embedis_response_simple(state, dictionary_id_to_key(-len_or_id));
         }
     }
 
@@ -477,15 +473,15 @@ void embedis_ram_GET(embedis_state* state) {
     size_t value_len, value_pos;
     int key_len = state->argv[2] - state->argv[1] - 1;;
     if(ram_work(access, state->argv[1], key_len, 0, &value_len, &value_pos)) {
-        embedis_emit_size('$', value_len);
+        embedis_emit_size(state, '$', value_len);
         while (value_len) {
-            embedis_out((*access->fetch)(value_pos));
+            (*state->output)((*access->fetch)(value_pos));
             value_len--;
             value_pos++;
         }
-        embedis_emit_newline();
+        embedis_emit_newline(state);
     } else {
-        embedis_response_null();
+        embedis_response_null(state);
     }
 }
 
@@ -514,11 +510,11 @@ void embedis_ram_SET(embedis_state* state) {
 
     value_len = state->argv[3] - state->argv[2] - 1;
     if (free_bytes < value_len) {
-        return embedis_response_error(0);
+        return embedis_response_error(state, 0);
     }
 
     ram_work(access, state->argv[1], key_len, state->argv[2], &value_len, 0);
-    embedis_response_error(EMBEDIS_OK);
+    embedis_response_error(state, EMBEDIS_OK);
 }
 
 
@@ -526,7 +522,7 @@ void embedis_ram_DEL(embedis_state* state) {
     embedis_ram_access* access = (embedis_ram_access*)state->dictionary->context;
     int key_len = state->argv[2] - state->argv[1] - 1;;
     ram_work(access, state->argv[1], key_len, 0, 0, 0);
-    embedis_response_error(EMBEDIS_OK);
+    embedis_response_error(state, EMBEDIS_OK);
 }
 
 

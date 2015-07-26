@@ -43,7 +43,7 @@
 // This default handler can be specialized to support dynamic commands.
 // Normally, it just returns an error if the command isn't found.
 static void embedis_command_missing(embedis_state* state) {
-    embedis_response_error(EMBEDIS_UNKNOWN_COMMAND);
+    embedis_response_error(state, EMBEDIS_UNKNOWN_COMMAND);
 }
 
 // Adjust this call table to support the desired command set.
@@ -102,7 +102,7 @@ const embedis_dictionary embedis_dictionaries[] = {
     // A RAM dictionary is not suggested for production.
     // This is here to help you get started and for testing.
     {"RAM", &embedis_ram_commands, (void*)&mock_ram_access},
-    {0}
+    {0, 0, 0}
 };
 
 // This list maps keys to a numeric value (1-32767).
@@ -110,29 +110,29 @@ const embedis_dictionary embedis_dictionaries[] = {
 // storing the number instead of a string and length.
 const embedis_dictionary_key embedis_dictionary_keys[] = {
     {"asset_identification", 1000},
-    {0}
+    {0, 0}
 };
 
 // Example configuration for hardware keys.
 
 static void mock_READ(embedis_state* state) {
     // Responds with the number of the mock requested
-    embedis_response_simple(&state->argv[1][4]);
+    embedis_response_simple(state, &state->argv[1][4]);
 }
 
 static void mock_WRITE(embedis_state* state) {
     // No-op. Always OK.
-    embedis_response_error(EMBEDIS_OK);
+    embedis_response_error(state, EMBEDIS_OK);
 }
 
-static void mock_missing(embedis_state* state) {
+static void rw_key_missing(embedis_state* state) {
     // Catch-all to support dynamic keys.
     // Normally, return an error.
-    embedis_response_error(0);
+    embedis_response_error(state, 0);
 }
 
 const embedis_rw_key embedis_rw_keys[] = {
     {"mock0", mock_READ, mock_WRITE},
     {"mock1", mock_READ, mock_WRITE},
-    {0, mock_missing, mock_missing}
+    {0, rw_key_missing, rw_key_missing}
 };

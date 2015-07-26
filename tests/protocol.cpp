@@ -71,8 +71,12 @@ TEST(Protocol, Overflow) {
 
     std::string s;
 
+    // Find instance 0 which is used for main testing
+    embedis_state* state = embedis_state_last(0);
+    while (state->num) state = state->prev;
+
     // The 1 is for the trailing zero
-    s.append(EMBEDIS_COMMAND_BUF_SIZE-1, 'X');
+    s.append(state->protocol.buf_length-1, 'X');
     EXPECT_EQ(
         embedis(s.c_str()),
         "-ERROR unknown command\r\n"
@@ -87,7 +91,7 @@ TEST(Protocol, Overflow) {
 
     // Make sure bad things don't happen at max args
     s.clear();
-    for (int i = 0; i < EMBEDIS_COMMAND_MAX_ARGS; i++) {
+    for (int i = 0; i < state->protocol.argv_length; i++) {
         s.append("Z ");
     }
     EXPECT_EQ(

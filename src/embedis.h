@@ -53,26 +53,6 @@ extern "C" {
   * @}
   */
 
-/*-----------------------------------------------------------------------------*/
-/* Exported Constants                                                          */
-/*-----------------------------------------------------------------------------*/
-/** @defgroup embedis_Exported_Constants
-  * @{
-  */
-
-#ifndef EMBEDIS_COMMAND_BUF_SIZE
-#define EMBEDIS_COMMAND_BUF_SIZE (128)
-#endif
-
-#ifndef EMBEDIS_COMMAND_MAX_ARGS
-#define EMBEDIS_COMMAND_MAX_ARGS (8)
-#endif
-
-
-/**
-  * Close the Doxygen embedis_Exported_Constants group.
-  * @}
-  */
 
 /*-----------------------------------------------------------------------------*/
 /* Exported Macros                                                             */
@@ -103,45 +83,57 @@ extern const char* EMBEDIS_STORAGE_OVERFLOW; /**< Embedis Storage Overflow Flag 
 typedef struct embedis_state embedis_state;  /**< Embedis CLI State */
 
 typedef struct embedis_dictionary_commands {
-    void (*select)(embedis_state* state);
-    void (*keys)(embedis_state* state);
-    void (*get)(embedis_state* state);
-    void (*set)(embedis_state* state);
-    void (*del)(embedis_state* state);
+    void (*const select)(embedis_state* state);
+    void (*const keys)(embedis_state* state);
+    void (*const get)(embedis_state* state);
+    void (*const set)(embedis_state* state);
+    void (*const del)(embedis_state* state);
 } embedis_dictionary_commands;
 
 typedef struct embedis_dictionary {
-    const char* name;
+    const char* const name;
     const embedis_dictionary_commands* commands;
-    void* context;
+    void* const context;
 } embedis_dictionary;
 
 typedef struct embedis_dictionary_key {
-    const char* name;
-    short int id;
+    const char* const name;
+    const short int id;
 } embedis_dictionary_key;
 
 typedef struct embedis_rw_key  {
-    const char* name;
-    void (*read)(embedis_state* state);
-    void (*write)(embedis_state* state);
+    const char* const name;
+    void (*const read)(embedis_state* state);
+    void (*const write)(embedis_state* state);
 } embedis_rw_key;
 
 typedef struct embedis_command {
-    const char* name;
-    void (*call)(embedis_state* state);
+    const char* const name;
+    void (*const call)(embedis_state* state);
 } embedis_command;
 
 typedef struct embedis_ram_access {
-    size_t (*size)();
-    char (*fetch)(size_t pos);
-    void (*store)(size_t pos, char value);
+    size_t (*const size)();
+    char (*const fetch)(size_t pos);
+    void (*const store)(size_t pos, char value);
 } embedis_ram_access;
 
+typedef struct embedis_protocol {
+    char* const buf;
+    const size_t buf_length;
+    const size_t argv_length;
+    size_t pos;
+    char mode;
+} embedis_protocol;
+
 struct embedis_state {
-    const char* argv[EMBEDIS_COMMAND_MAX_ARGS+1];
-    const embedis_dictionary* dictionary;
+    void (*const output)(char data);
+    char** const argv;
     size_t argc;
+    const embedis_dictionary* dictionary;
+    embedis_state* prev;
+    embedis_protocol protocol;
+    unsigned char num;
 };
 
 /** Platform Globals */
@@ -159,20 +151,20 @@ struct embedis_state {
   */
 // protocol.c
 
-void embedis_init();
-void embedis_reset();
-void embedis_in(char data);
+embedis_state* embedis_state_last(embedis_state*);
+void embedis_reset(embedis_state *state);
+void embedis_in(embedis_state *state, char data);
 
 int embedis_strcmp(const char* s1, const char* s2);
 int embedis_stricmp(const char* s1, const char* s2);
 
-void embedis_emit_newline();
-void embedis_emit_integer(int i);
-void embedis_emit_size(char kind, size_t length);
-void embedis_response_error(const char* message);
-void embedis_response_simple(const char* message);
-void embedis_response_string(const char* message, size_t length);
-void embedis_response_null();
+void embedis_emit_newline(embedis_state* state);
+void embedis_emit_integer(embedis_state* state, int i);
+void embedis_emit_size(embedis_state* state, char kind, size_t length);
+void embedis_response_error(embedis_state* state, const char* message);
+void embedis_response_simple(embedis_state* state, const char* message);
+void embedis_response_string(embedis_state* state, const char* message, size_t length);
+void embedis_response_null(embedis_state* state);
 
 // commands.c
 
@@ -203,12 +195,33 @@ void embedis_WRITE(embedis_state* state);
 
 // Application must provide implementations of these
 
-void embedis_out(char data);
-
 extern const embedis_dictionary embedis_dictionaries[];
 extern const embedis_command embedis_commands[];
 extern const embedis_dictionary_key embedis_dictionary_keys[];
 extern const embedis_rw_key embedis_rw_keys[];
+
+
+// Creates an instance of embedis_state named embedis_state_{num}.
+// You can have 256 of these but only num 0-7 support the SUBSCRIBE command.
+#define EMBEDIS_STATE_INSTANCE(num, output, buflen, argslen) \
+char embedis_state_##num##_buf[buflen]; \
+char* embedis_state_##num##_argv[argslen+1] = {embedis_state_##num##_buf}; \
+embedis_state embedis_state_##num = { \
+    output, \
+    embedis_state_##num##_argv, \
+    0, \
+    &embedis_dictionaries[0], \
+    embedis_state_last(&embedis_state_##num), \
+    { \
+        embedis_state_##num##_buf, \
+        buflen, \
+        argslen, \
+        0, \
+        0 \
+    }, \
+    num \
+};
+
 
 /**
   * Close the Doxygen embedis_Exported_Functions group.
