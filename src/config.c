@@ -56,6 +56,9 @@ const embedis_command embedis_commands[] = {
     {"DEL", embedis_DEL},
     {"READ", embedis_READ},
     {"WRITE", embedis_WRITE},
+    {"PUBLISH", embedis_PUBLISH},
+    {"SUBSCRIBE", embedis_SUBSCRIBE},
+    {"UNSUBSCRIBE", embedis_UNSUBSCRIBE},
     {0, embedis_command_missing}
 };
 
@@ -136,3 +139,13 @@ const embedis_rw_key embedis_rw_keys[] = {
     {"mock1", mock_READ, mock_WRITE},
     {0, rw_key_missing, rw_key_missing}
 };
+
+// Publish and Subscribe
+
+char const * const embedis_pubsub_channels[] = {
+    "temperature",
+    "humidity",
+    0
+};
+
+unsigned char embedis_pubsub_subscriptions[sizeof(embedis_pubsub_channels) / sizeof(char*) - 1];

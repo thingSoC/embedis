@@ -20,7 +20,7 @@
 
 TEST(IO, ReadWrite) {
 
-    embedis_init();
+    embedis_test_init();
 
     EXPECT_EMBEDIS_OK("WRITE mock0");
     EXPECT_EMBEDIS_OK("WRITE mock1");

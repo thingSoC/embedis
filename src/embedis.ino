@@ -3,9 +3,6 @@
   ******************************************************************************
   *
   * @file        embedis.ino
-  * @author      Dave Turnbull
-  * @version     0.0.1
-  * @date        2015-06-29
   * @copyright   PatternAgents, LLC
   * @brief       Embedis Example Sketch for the Arduino IDE
   *     
@@ -28,11 +25,19 @@ void serial_write(char b) {
     Serial.write(b);
 }
 
-// In the main loop, send any characters received over
-// the serial port to Embedis for processing.
 void loop() {
+    // In the main loop, send any characters received over
+    // the serial port to Embedis for processing.
     int b = Serial.read();
     if (b >= 0) embedis_in(&embedis_state_0, b);
+    
+    // Publish a temperature message every 5 seconds
+    static unsigned long time_temperature = millis();
+    if (millis() > time_temperature) {
+        time_temperature = millis() + 5000;
+        String temperature = random(7130, 7150) / 100.0;
+        embedis_publish("temperature", temperature.c_str(), temperature.length());
+    }
 }
 
 // Forward declarations for included device support.

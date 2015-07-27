@@ -26,34 +26,66 @@ int main() {
 // Helper for functional testing of Embedis commands.
 // This mock uses strings instead of a serial port.
 
-static std::string result;
+static std::string result_0;
+static std::string result_99;
+static std::string *result;
 
-void embedis_out(char data) {
-    result.append(1, data);
+void embedis_out_0(char data) {
+    result_0.append(1, data);
 }
 
-EMBEDIS_STATE_INSTANCE(0, embedis_out, 128, 8);
-
-
-std::string embedis(std::string cmd) {
-    char last1 = 0, last2 = 0;
-    result.clear();
-    for (size_t i = 0; i < cmd.length(); i++) {
-        embedis_in(&embedis_state_0, cmd[i]);
-        last1 = last2;
-        last2 = cmd[i];
-    }
-    if (last1 != '\r' && last2 != '\n') {
-        embedis_in(&embedis_state_0, '\r');
-        embedis_in(&embedis_state_0, '\n');
-    }
-    return result;
+void embedis_out_99(char data) {
+    result_99.append(1, data);
 }
 
+EMBEDIS_STATE_INSTANCE(0, embedis_out_0, 128, 8);
+EMBEDIS_STATE_INSTANCE(99, embedis_out_99, 128, 8);
 
-void embedis_init() {
+embedis_state* embedis_test_state;
+
+std::string embedis_test(std::string cmd) {
+    if (!cmd.empty()) {
+        char last1 = 0, last2 = 0;
+        result->clear();
+        for (size_t i = 0; i < cmd.length(); i++) {
+            embedis_in(embedis_test_state, cmd[i]);
+            last1 = last2;
+            last2 = cmd[i];
+        }
+        if (last1 != '\r' && last2 != '\n') {
+            embedis_in(embedis_test_state, '\r');
+            embedis_in(embedis_test_state, '\n');
+        }
+    }
+    std::string ret = *result;
+    result->clear();
+    return ret;
+}
+
+void embedis_test_interface(int i) {
+    switch(i) {
+        case 0:
+            result = &result_0;
+            embedis_test_state = &embedis_state_0;
+            break;
+        case 99:
+            result = &result_99;
+            embedis_test_state = &embedis_state_99;
+            break;
+        default:
+            throw "unknown interface";
+    }
+
+}
+
+void embedis_test_init() {
+    embedis_test_interface(0);
     embedis_state_0.dictionary = &embedis_dictionaries[0];
     embedis_reset(&embedis_state_0);
+    result_0.clear();
+    embedis_state_99.dictionary = &embedis_dictionaries[0];
+    embedis_reset(&embedis_state_99);
+    result_99.clear();
 }
 
 
@@ -147,7 +179,7 @@ std::string escaped(std::string const& s) {
 }
 
 testing::AssertionResult ok(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis(cmd);
+    std::string result = embedis_test(cmd);
     std::string s = result;
     std::string actual;
     if (!s.empty() && result[0] == '+') {
@@ -164,7 +196,7 @@ testing::AssertionResult ok(const char* cmd_expr, std::string cmd) {
 }
 
 testing::AssertionResult error(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis(cmd);
+    std::string result = embedis_test(cmd);
     std::string s = result;
     std::string actual;
     if (!s.empty() && result[0] == '-') {
@@ -181,7 +213,7 @@ testing::AssertionResult error(const char* cmd_expr, std::string cmd) {
 }
 
 testing::AssertionResult null(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis(cmd);
+    std::string result = embedis_test(cmd);
     if (result == "$-1\r\n") {
         return testing::AssertionSuccess();
     }
@@ -191,7 +223,7 @@ testing::AssertionResult null(const char* cmd_expr, std::string cmd) {
 }
 
 testing::AssertionResult string(const char* cmd_expr, const char* result_expr, std::string cmd, std::string expected) {
-    std::string result = embedis(cmd);
+    std::string result = embedis_test(cmd);
     std::string s = result;
     std::string actual;
     if (getstring(s, actual)) {
@@ -207,7 +239,7 @@ testing::AssertionResult string(const char* cmd_expr, const char* result_expr, s
 
 
 testing::AssertionResult array(const char* cmd_expr, const char* result_expr, std::string cmd, std::vector<std::string> expected) {
-    std::string result = embedis(cmd);
+    std::string result = embedis_test(cmd);
     std::string s = result;
     std::string actual;
 

@@ -193,12 +193,20 @@ void embedis_ram_DEL(embedis_state* state);
 void embedis_READ(embedis_state* state);
 void embedis_WRITE(embedis_state* state);
 
+void embedis_PUBLISH(embedis_state* state);
+void embedis_SUBSCRIBE(embedis_state* state);
+void embedis_UNSUBSCRIBE(embedis_state* state);
+
+int embedis_publish(const char* channel, const char* message, size_t length);
+
 // Application must provide implementations of these
 
 extern const embedis_dictionary embedis_dictionaries[];
 extern const embedis_command embedis_commands[];
 extern const embedis_dictionary_key embedis_dictionary_keys[];
 extern const embedis_rw_key embedis_rw_keys[];
+extern char const * const embedis_pubsub_channels[];
+extern unsigned char embedis_pubsub_subscriptions[];
 
 
 // Creates an instance of embedis_state named embedis_state_{num}.

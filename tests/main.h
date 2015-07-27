@@ -21,9 +21,9 @@
 #ifndef TESTMAIN_H
 #define TESTMAIN_H
 
-std::string embedis(std::string cmd);
-void embedis_init();
-void fake_ram_erase();
+std::string embedis_test(std::string cmd);
+void embedis_test_interface(int i);
+void embedis_test_init();
 
 namespace embedis_predicates {
 
@@ -42,7 +42,7 @@ ASSERT_PRED_FORMAT1(embedis_predicates::ok, val1)
 
 #define EXPECT_EMBEDIS_ERROR(val1) \
 EXPECT_PRED_FORMAT1(embedis_predicates::error, val1)
-#define ASSERT_EMBEDIS_FAIL(val1) \
+#define ASSERT_EMBEDIS_ERROR(val1) \
 ASSERT_PRED_FORMAT1(embedis_predicates::error, val1)
 
 #define EXPECT_EMBEDIS_NULL(val1) \

@@ -28,10 +28,10 @@ void mock_ram_erase() {
 
 TEST(DictROM, Select) {
 
-    embedis_init();
+    embedis_test_init();
     mock_ram_erase();
 
-    ASSERT_EMBEDIS_FAIL("SELECT this_does_not_exist");
+    ASSERT_EMBEDIS_ERROR("SELECT this_does_not_exist");
     ASSERT_EMBEDIS_OK("SELECT ROM");
     EXPECT_EMBEDIS_STRING("GET vendor", "PatternAgents");
     ASSERT_EMBEDIS_OK("SELECT RAM");
@@ -43,7 +43,7 @@ TEST(DictROM, Select) {
 
 TEST(DictROM, Basics) {
 
-    embedis_init();
+    embedis_test_init();
 
     EXPECT_EMBEDIS_OK("SELECT ROM");
     EXPECT_EMBEDIS_STRING("GET vendor", "PatternAgents");
@@ -53,7 +53,7 @@ TEST(DictROM, Basics) {
 
 
 TEST(DictROM, Keys) {
-    embedis_init();
+    embedis_test_init();
 
     EXPECT_EMBEDIS_OK("SELECT ROM");
     EXPECT_EMBEDIS_ARRAY("KEYS", {"vendor"});
@@ -63,7 +63,7 @@ TEST(DictROM, Keys) {
 TEST(DictRAM, Basics) {
     std::string s;
 
-    embedis_init();
+    embedis_test_init();
     mock_ram_erase();
 
     EXPECT_EMBEDIS_OK("SELECT RAM");
@@ -99,7 +99,7 @@ TEST(DictRAM, Basics) {
 
 
 TEST(DictRAM, KEYS) {
-    embedis_init();
+    embedis_test_init();
     mock_ram_erase();
 
     EXPECT_EMBEDIS_OK("SELECT RAM");
@@ -125,7 +125,7 @@ TEST(DictRAM, ValueOverflow) {
     std::string s1, s2;
     size_t len;
 
-    embedis_init();
+    embedis_test_init();
     mock_ram_erase();
 
     EXPECT_EMBEDIS_OK("SELECT RAM");
@@ -155,7 +155,7 @@ TEST(DictRAM, KeyOverflow) {
     std::string s1, s2;
     size_t len;
 
-    embedis_init();
+    embedis_test_init();
     mock_ram_erase();
 
     EXPECT_EMBEDIS_OK("SELECT RAM");

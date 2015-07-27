@@ -546,3 +546,136 @@ void embedis_WRITE(embedis_state* state) {
     const embedis_rw_key* key = find_rw_key(state);
     key->write(state);
 }
+
+
+// Publish and Subscribe
+
+static int find_channel(const char* channel, size_t* index) {
+    const char** name = (void*)embedis_pubsub_channels;
+    (*index) = 0;
+    while (*name) {
+        if (!embedis_strcmp(*name, channel)) {
+            return 1;
+        }
+        (*index)++;
+        name++;
+    }
+    return 0;
+}
+
+
+static int count_subscriptions(unsigned char mask) {
+    int count = 0;
+    size_t index = 0;
+    const char** name = (void*)embedis_pubsub_channels;
+    while (*name) {
+        if (embedis_pubsub_subscriptions[index] & mask) {
+            count++;
+        }
+        index++;
+        name++;
+    }
+    return count;
+}
+
+
+// User program API. Returns number of receivers.
+int embedis_publish(const char* channel, const char* message, size_t length) {
+    embedis_state* client = embedis_state_last(0);
+    size_t index;
+    unsigned char mask;
+    int count = 0;
+    if (!find_channel(channel, &index)) {
+        return 0;
+    }
+    while (client) {
+        if (client->num < 8) {
+            mask = 1 << client->num;
+            if (embedis_pubsub_subscriptions[index] & mask) {
+                embedis_emit_size(client, '*', 3);
+                embedis_response_simple(client, "publish");
+                embedis_response_simple(client, channel);
+                embedis_response_string(client, message, length);
+                count++;
+            }
+        }
+        client = client->prev;
+    }
+    return count;
+}
+
+
+void embedis_PUBLISH(embedis_state* state) {
+    int count = embedis_publish(state->argv[1], state->argv[2], state->argv[3] - state->argv[2] - 1);
+    if (state->argc != 3) {
+        return embedis_response_error(state, EMBEDIS_ARGS_ERROR);
+    }
+    embedis_emit_size(state, ':', count);
+}
+
+
+void embedis_SUBSCRIBE(embedis_state* state) {
+    size_t index;
+    unsigned char mask;
+    if (state->num > 7) {
+        // Only channels 0-7 can subscribe
+        return embedis_response_error(state, 0);
+    }
+    if (state->argc != 2) {
+        return embedis_response_error(state, EMBEDIS_ARGS_ERROR);
+    }
+    if (!find_channel(state->argv[1], &index)) {
+        return embedis_response_error(state, 0);
+    }
+
+    mask = 1 << state->num;
+    embedis_pubsub_subscriptions[index] |= mask;
+
+    embedis_emit_size(state, '*', 3);
+    embedis_response_simple(state, "subscribe");
+    embedis_response_simple(state, state->argv[1]);
+    embedis_emit_size(state, ':', count_subscriptions(mask));
+
+}
+
+
+static void unsubscribe(embedis_state* state, size_t index, unsigned char mask) {
+    embedis_pubsub_subscriptions[index] ^= mask;
+    embedis_emit_size(state, '*', 3);
+    embedis_response_simple(state, "unsubscribe");
+    embedis_response_simple(state, embedis_pubsub_channels[index]);
+    embedis_emit_size(state, ':', count_subscriptions(mask));
+}
+
+
+void embedis_UNSUBSCRIBE(embedis_state* state) {
+    size_t index = 0;
+    unsigned char mask = 1 << state->num;
+    const char** name = (void*)embedis_pubsub_channels;
+
+    if (state->num > 7) {
+        // Only channels 0-7 have subscriptions
+        return;
+    }
+    if (state->argc > 2) {
+        return embedis_response_error(state, EMBEDIS_ARGS_ERROR);
+    }
+
+    if (state->argc == 2) {
+        if (find_channel(state->argv[1], &index)) {
+            unsubscribe(state, index, mask);
+            return;
+        }
+
+    }
+
+    // unsubscribe all
+    while (*name) {
+        if (embedis_pubsub_subscriptions[index] & mask) {
+            unsubscribe(state, index, mask);
+        }
+        index++;
+        name++;
+    }
+
+}

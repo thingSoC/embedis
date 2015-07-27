@@ -19,25 +19,25 @@
 
 TEST(Protocol, WithExtraSapces) {
 
-    embedis_init();
+    embedis_test_init();
 
     EXPECT_EQ(
-        embedis("GET vendor"),
+        embedis_test("GET vendor"),
         "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
-        embedis("  GET vendor"),
+        embedis_test("  GET vendor"),
         "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
-        embedis("GET   vendor"),
+        embedis_test("GET   vendor"),
         "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
-        embedis("GET vendor  "),
+        embedis_test("GET vendor  "),
         "+PatternAgents\r\n"
     );
 
@@ -46,20 +46,20 @@ TEST(Protocol, WithExtraSapces) {
 
 TEST(Protocol, Caps) {
 
-    embedis_init();
+    embedis_test_init();
 
     EXPECT_EQ(
-        embedis("get vendor"),
+        embedis_test("get vendor"),
         "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
-        embedis("GET vendor"),
+        embedis_test("GET vendor"),
         "+PatternAgents\r\n"
     );
 
     EXPECT_EQ(
-        embedis("GeT vendor"),
+        embedis_test("GeT vendor"),
         "+PatternAgents\r\n"
     );
 
@@ -67,7 +67,7 @@ TEST(Protocol, Caps) {
 
 TEST(Protocol, Overflow) {
 
-    embedis_init();
+    embedis_test_init();
 
     std::string s;
 
@@ -78,14 +78,14 @@ TEST(Protocol, Overflow) {
     // The 1 is for the trailing zero
     s.append(state->protocol.buf_length-1, 'X');
     EXPECT_EQ(
-        embedis(s.c_str()),
+        embedis_test(s.c_str()),
         "-ERROR unknown command\r\n"
     );
 
     // This one should overflow
     s.append(1, 'X');
     EXPECT_EQ(
-        embedis(s.c_str()),
+        embedis_test(s.c_str()),
         "-ERROR buffer overflow\r\n"
     );
 
@@ -95,21 +95,21 @@ TEST(Protocol, Overflow) {
         s.append("Z ");
     }
     EXPECT_EQ(
-        embedis(s.c_str()),
+        embedis_test(s.c_str()),
         "-ERROR unknown command\r\n"
     );
 
     // Make sure we report args overflow
     s.append("Z ");
     EXPECT_EQ(
-        embedis(s.c_str()),
+        embedis_test(s.c_str()),
         "-ERROR bad argument count\r\n"
     );
 
     // Make sure bad things don't happen with more than max args
     s.append("Z Z Z Z");
     EXPECT_EQ(
-        embedis(s.c_str()),
+        embedis_test(s.c_str()),
         "-ERROR bad argument count\r\n"
     );
 

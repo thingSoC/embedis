@@ -18,7 +18,7 @@
 #include "main.h"
 
 TEST(Commands, Basic) {
-    embedis_init();
+    embedis_test_init();
 
     std::vector<std::string> a;
     const embedis_command *cmd = &embedis_commands[0];
