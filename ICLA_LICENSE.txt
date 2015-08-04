@@ -1,4 +1,4 @@
-/*! @page ICLA_License ICLA_License
+/*! @page ICLA_LICENSE ICLA_LICENSE
 \verbatim
 
                     The PatternAgents, LLC
@@ -139,6 +139,7 @@ and interest in and to Your Contributions.
 
 Please sign: __________________________________ Date: ________________
 
-\endverbatim*/
+\endverbatim
+*/
 
 
