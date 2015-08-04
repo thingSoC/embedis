@@ -49,7 +49,7 @@ const embedis_command embedis_commands[] = {
     {"COMMANDS", embedis_COMMANDS},
     {"SELECT", embedis_SELECT},
     {"KEYS", embedis_KEYS},
-    {"PING", embedis_PING},
+  //  {"PING", embedis_PING},
     {"GET", embedis_GET},
     {"SET", embedis_SET},
     {"DEL", embedis_DEL},
@@ -143,9 +143,9 @@ const embedis_rw_key embedis_rw_keys[] = {
     {0, rw_key_missing, rw_key_missing}
 };
 
-void embedis_PING(embedis_state* state) {
- embedis_response_simple(state, "PONG");
-}
+//void embedis_PING(embedis_state* state) {
+// embedis_response_simple(state, "PONG");
+//}
 
 // Publish and Subscribe
 
