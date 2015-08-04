@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>Embedis: Member List</title>
+<title>Embedis: src/i2ceeprom.ino File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -40,8 +40,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -62,7 +62,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
-      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -79,21 +80,71 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">embedis_dictionary_commands Member List</div>  </div>
+<div class="title">i2ceeprom.ino File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>, including all inherited members.</p>
-<table class="directory">
-  <tr bgcolor="#f0f0f0"class="even"><td class="entry"><b>del</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>get</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"class="even"><td class="entry"><b>keys</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>select</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"class="even"><td class="entry"><b>set</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<p>The Embedis Dictionary.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;Wire.h&gt;</code><br/>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a2cd035bdb0110b3a747693d7effd0563"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2cd035bdb0110b3a747693d7effd0563"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>I2C_EEPROM_ADDRESS</b>&#160;&#160;&#160;0x54</td></tr>
+<tr class="memitem:a55a9597213468204c99dce754d6a5a2c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a55a9597213468204c99dce754d6a5a2c"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>I2C_EEPROM_BITSIZE</b>&#160;&#160;&#160;65536</td></tr>
+<tr class="memitem:acb424f8b5efd999887f597f8ea27facd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb424f8b5efd999887f597f8ea27facd"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>I2C_EEPROM_BITSPERBYTE</b>&#160;&#160;&#160;8</td></tr>
+<tr class="memitem:a9cc9dd4584253f9f2e6e2cea41d454ea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9cc9dd4584253f9f2e6e2cea41d454ea"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>I2C_EEPROM_WRDELAY</b>&#160;&#160;&#160;5</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a9d3ae1d2c099c9e00dc5015c3a06234b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d3ae1d2c099c9e00dc5015c3a06234b"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>arduino_i2ceeprom_size</b> ()</td></tr>
+<tr class="memitem:ad6a59396a25743a44d62692b62be2520"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad6a59396a25743a44d62692b62be2520"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>arduino_i2ceeprom_fetch</b> (size_t pos)</td></tr>
+<tr class="memitem:a22fb87a9d10c41f7fa0c4ce3e58a6d9d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a22fb87a9d10c41f7fa0c4ce3e58a6d9d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>arduino_i2ceeprom_store</b> (size_t pos, char value)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a430e345314b793f5e483d887c8b66910"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structembedis__ram__access.html">embedis_ram_access</a>&#160;</td><td class="memItemRight" valign="bottom"><b>arduino_i2ceeprom_access</b></td></tr>
+</table>
+<a name="details" id="details"></a><h2>Detailed Description</h2>
+<div class="textblock"><p>The Embedis Dictionary. </p>
+<dl class="section copyright"><dt>Copyright</dt><dd>PatternAgents, LLC </dd></dl>
+</div><h2>Variable Documentation</h2>
+<a class="anchor" id="a430e345314b793f5e483d887c8b66910"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structembedis__ram__access.html">embedis_ram_access</a> arduino_i2ceeprom_access</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line"> {</div>
+<div class="line">    arduino_i2ceeprom_size,</div>
+<div class="line">    arduino_i2ceeprom_fetch,</div>
+<div class="line">    arduino_i2ceeprom_store</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

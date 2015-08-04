@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<title>Embedis: Member List</title>
+<title>Embedis: src/eeprom.ino File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -40,8 +40,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -62,7 +62,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
-      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -79,21 +80,75 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">embedis_dictionary_commands Member List</div>  </div>
+<div class="title">eeprom.ino File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>, including all inherited members.</p>
-<table class="directory">
-  <tr bgcolor="#f0f0f0"class="even"><td class="entry"><b>del</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>get</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"class="even"><td class="entry"><b>keys</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>select</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"class="even"><td class="entry"><b>set</b> (defined in <a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a>)</td><td class="entry"><a class="el" href="structembedis__dictionary__commands.html">embedis_dictionary_commands</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<p>The Embedis Dictionary, support for internal EEPROM.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;EEPROM.h&gt;</code><br/>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ae227ca0523aa82d3112a4bc6a67e45ae"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="eeprom_8ino.html#ae227ca0523aa82d3112a4bc6a67e45ae">arduino_eeprom_size</a> ()</td></tr>
+<tr class="memitem:a3d2078587ff5551065fabf8ef5742069"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3d2078587ff5551065fabf8ef5742069"></a>
+char&#160;</td><td class="memItemRight" valign="bottom"><b>arduino_eeprom_fetch</b> (size_t pos)</td></tr>
+<tr class="memitem:a483aa6752fa9302a7697ab8063afe83e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a483aa6752fa9302a7697ab8063afe83e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>arduino_eeprom_store</b> (size_t pos, char value)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:adb18107191f2f9d695dbc08976b4f46e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structembedis__ram__access.html">embedis_ram_access</a>&#160;</td><td class="memItemRight" valign="bottom"><b>arduino_eeprom_access</b></td></tr>
+</table>
+<a name="details" id="details"></a><h2>Detailed Description</h2>
+<div class="textblock"><p>The Embedis Dictionary, support for internal EEPROM. </p>
+<dl class="section copyright"><dt>Copyright</dt><dd>PatternAgents, LLC </dd></dl>
+</div><h2>Function Documentation</h2>
+<a class="anchor" id="ae227ca0523aa82d3112a4bc6a67e45ae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t arduino_eeprom_size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Support for Internal EEPROM. To use, change the "#if 0" to "#if 1" and add the following line to the embedis_dictionaries[] in the config.ino file {"EEPROM", &amp;embedis_ram_commands, (void*)&amp;arduino_eeprom_access}, </p>
+
+</div>
+</div>
+<h2>Variable Documentation</h2>
+<a class="anchor" id="adb18107191f2f9d695dbc08976b4f46e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structembedis__ram__access.html">embedis_ram_access</a> arduino_eeprom_access</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line"> {</div>
+<div class="line">    <a class="code" href="eeprom_8ino.html#ae227ca0523aa82d3112a4bc6a67e45ae">arduino_eeprom_size</a>,</div>
+<div class="line">    arduino_eeprom_fetch,</div>
+<div class="line">    arduino_eeprom_store</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
