@@ -64,6 +64,3 @@ extern const embedis_ram_access arduino_eeprom_access;
 extern const embedis_ram_access arduino_i2ceeprom_access;
 extern const embedis_ram_access arduino_fram_access;
 
-void embedis_PING(embedis_state* state) {
- embedis_response_simple(state, "PONG");
-}

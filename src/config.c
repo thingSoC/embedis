@@ -143,6 +143,10 @@ const embedis_rw_key embedis_rw_keys[] = {
     {0, rw_key_missing, rw_key_missing}
 };
 
+void embedis_PING(embedis_state* state) {
+ embedis_response_simple(state, "PONG");
+}
+
 // Publish and Subscribe
 
 char const * const embedis_pubsub_channels[] = {
