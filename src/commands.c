@@ -17,16 +17,13 @@
 /**
   ******************************************************************************
   *
-  * @file        dict.c
-  * @version     0.0.1
-  * @date        2015-06-29
+  * @file        commands.c
   * @copyright   PatternAgents, LLC
   * @brief       The Embedis Dictionary
   *
   ******************************************************************************
   */
 
-/// @file
 
 #include "embedis.h"
 

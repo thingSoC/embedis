@@ -14,6 +14,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+/**
+  ******************************************************************************
+  *
+  * @file        i2ceeprom.ino
+  * @copyright   PatternAgents, LLC
+  * @brief       The Embedis Dictionary
+  *
+  ******************************************************************************
+  */
 
 // Support for 24Cxx external EEPROMs.
 // To use:
@@ -22,33 +31,40 @@
 //    {"EEPROM", &embedis_ram_commands, (void*)&arduino_i2ceeprom_access},
 //  * Adjust defines to match your device.
 
-#if 0
+#if 1
 
 #include <Wire.h>
 
-#define I2C_EEPROM_ADDRESS 0x00
-#define I2C_EEPROM_BITSIZE 8192
+#define I2C_EEPROM_ADDRESS 0x54
+#define I2C_EEPROM_BITSIZE 65536
+#define I2C_EEPROM_BITSPERBYTE 8
 #define I2C_EEPROM_WRDELAY 5
 
 size_t arduino_i2ceeprom_size() {
     Wire.begin();
-    return I2C_EEPROM_BITSIZE / 8;
+    return (I2C_EEPROM_BITSIZE / I2C_EEPROM_BITSPERBYTE);
 }
 
 char arduino_i2ceeprom_fetch(size_t pos) {
-    byte addr = 0x50 | I2C_EEPROM_ADDRESS | (pos >> 8);
-    Wire.beginTransmission(addr);
-    Wire.write(pos & 0xFF);
+    uint8_t hiaddr = (uint8_t) (pos >> 8);
+    uint8_t loaddr = (uint8_t) (pos & 0x00ff);
+    Wire.beginTransmission(I2C_EEPROM_ADDRESS);
+    Wire.write(hiaddr);
+    Wire.write(loaddr);
     Wire.endTransmission();
-    Wire.requestFrom(addr, (byte)1);
+    Wire.requestFrom((int) I2C_EEPROM_ADDRESS, (int)1);
+    // todo: check return status - need all eight bits
     if (Wire.available()) return Wire.read();
     else return 0xFF;
 }
 
 void arduino_i2ceeprom_store(size_t pos, char value) {
-    byte addr = 0x50 | I2C_EEPROM_ADDRESS | (pos >> 8);
-    Wire.beginTransmission(addr);
-    Wire.write(pos & 0xFF);
+    uint8_t hiaddr = (uint8_t) (pos >> 8);
+    uint8_t loaddr = (uint8_t) (pos & 0x00ff);
+    // insert read before write check to reduce wear...
+    Wire.beginTransmission(I2C_EEPROM_ADDRESS);
+    Wire.write(hiaddr);
+    Wire.write(loaddr);
     Wire.write(value);
     Wire.endTransmission();
     delay(I2C_EEPROM_WRDELAY);

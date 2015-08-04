@@ -19,8 +19,6 @@
   ******************************************************************************
   *
   * @file        config.c
-  * @version     0.0.1
-  * @date        2015-06-29
   * @copyright   PatternAgents, LLC
   * @brief       The Embedis Dictionary Server Configuration
   *
@@ -51,6 +49,7 @@ const embedis_command embedis_commands[] = {
     {"COMMANDS", embedis_COMMANDS},
     {"SELECT", embedis_SELECT},
     {"KEYS", embedis_KEYS},
+    {"PING", embedis_PING},
     {"GET", embedis_GET},
     {"SET", embedis_SET},
     {"DEL", embedis_DEL},
@@ -59,6 +58,7 @@ const embedis_command embedis_commands[] = {
     {"PUBLISH", embedis_PUBLISH},
     {"SUBSCRIBE", embedis_SUBSCRIBE},
     {"UNSUBSCRIBE", embedis_UNSUBSCRIBE},
+
     {0, embedis_command_missing}
 };
 
@@ -105,6 +105,9 @@ const embedis_dictionary embedis_dictionaries[] = {
     // A RAM dictionary is not suggested for production.
     // This is here to help you get started and for testing.
     {"RAM", &embedis_ram_commands, (void*)&mock_ram_access},
+    {"FRAM", &embedis_ram_commands, (void*)&arduino_fram_access},
+    {"I2CEEPROM", &embedis_ram_commands, (void*)&arduino_i2ceeprom_access},
+    {"EEPROM", &embedis_ram_commands, (void*)&arduino_eeprom_access},
     {0, 0, 0}
 };
 

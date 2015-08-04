@@ -14,16 +14,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+/**
+  ******************************************************************************
+  *
+  * @file        eeprom.ino
+  * @copyright   PatternAgents, LLC
+  * @brief       The Embedis Dictionary, support for internal EEPROM
+  *
+  ******************************************************************************
+  */
 
-// Support for Arduino internal EEPROM. Some devices do not have EEPROM (Due).
-// If you get an error about EEPROM.h not found, your device does not have EEPROM
-// but you can use the i2ceeprom with an external EEPROM.
-
-// To use, change the "#if 0" to "#if 1" and add the following line to
-// the embedis_dictionaries[] in config.ino.
-// {"EEPROM", &embedis_ram_commands, (void*)&arduino_eeprom_access},
-
-#if 0
+/**
+  ******************************************************************************
+  *
+  *  Support for Internal EEPROM. 
+  *  To use, change the "#if 0" to "#if 1" and add the following line to
+  *  the embedis_dictionaries[] in the config.ino file
+  *  {"EEPROM", &embedis_ram_commands, (void*)&arduino_eeprom_access},
+  *
+  ******************************************************************************
+  */
+  
+#if 1
 
 #include <EEPROM.h>
 
