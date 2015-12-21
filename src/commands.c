@@ -374,14 +374,14 @@ static int ram_work(embedis_ram_access* access, const char* key_name, int key_le
         i = 0;
         (*access->store)(pos-1, 0);
         (*access->store)(pos-2, 0);
-
+        if (*access->commit) (*access->commit)();
         return 1;
-
     }
 
     if (deloffset) {
         (*access->store)(pos+deloffset-1, 0);
         (*access->store)(pos+deloffset-2, 0);
+        if (*access->commit) (*access->commit)();
         return 1;
     }
 

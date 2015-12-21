@@ -96,7 +96,8 @@ void arduino_fram_store(size_t pos, char value) {
 const embedis_ram_access arduino_fram_access = {
     arduino_fram_size,
     arduino_fram_fetch,
-    arduino_fram_store
+    arduino_fram_store,
+    0
 };
 
 uint8_t SPItransfer(uint8_t x) {

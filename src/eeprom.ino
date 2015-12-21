@@ -55,7 +55,8 @@ void arduino_eeprom_store(size_t pos, char value) {
 const embedis_ram_access arduino_eeprom_access = {
     arduino_eeprom_size,
     arduino_eeprom_fetch,
-    arduino_eeprom_store
+    arduino_eeprom_store,
+    0
 };
 
 #endif

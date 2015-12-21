@@ -112,6 +112,7 @@ typedef struct embedis_ram_access {
     size_t (*const size)();
     char (*const fetch)(size_t pos);
     void (*const store)(size_t pos, char value);
+    void (*const commit)();
 } embedis_ram_access;
 
 typedef struct embedis_protocol {

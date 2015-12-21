@@ -73,7 +73,8 @@ void arduino_i2ceeprom_store(size_t pos, char value) {
 const embedis_ram_access arduino_i2ceeprom_access = {
     arduino_i2ceeprom_size,
     arduino_i2ceeprom_fetch,
-    arduino_i2ceeprom_store
+    arduino_i2ceeprom_store,
+    0
 };
 
 #endif

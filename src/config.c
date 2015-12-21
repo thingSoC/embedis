@@ -49,7 +49,6 @@ const embedis_command embedis_commands[] = {
     {"COMMANDS", embedis_COMMANDS},
     {"SELECT", embedis_SELECT},
     {"KEYS", embedis_KEYS},
-  //  {"PING", embedis_PING},
     {"GET", embedis_GET},
     {"SET", embedis_SET},
     {"DEL", embedis_DEL},
@@ -95,7 +94,8 @@ static void mock_ram_store(size_t pos, char value) {
 const embedis_ram_access mock_ram_access = {
     mock_ram_size,
     mock_ram_fetch,
-    mock_ram_store
+    mock_ram_store,
+    0
 };
 
 // Dictionaries for the SELECT command. The first one listed is the default.
@@ -142,10 +142,6 @@ const embedis_rw_key embedis_rw_keys[] = {
     {"mock1", mock_READ, mock_WRITE},
     {0, rw_key_missing, rw_key_missing}
 };
-
-//void embedis_PING(embedis_state* state) {
-// embedis_response_simple(state, "PONG");
-//}
 
 // Publish and Subscribe
 
