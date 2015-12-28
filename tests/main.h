@@ -20,7 +20,7 @@
 
 
 #include "benchtest.hpp"
-#include "embedis.h"
+#include "Embedis.h"
 #include "Stream.h"
 
 const size_t BUF_LENGTH = 128;
