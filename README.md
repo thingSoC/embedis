@@ -38,5 +38,6 @@ $ make doc
 
 The folks who make this project possible:
 
- * David Turnbull
+ * PatternAgents, LLC
  * Tom Moxon
+ * David Turnbull

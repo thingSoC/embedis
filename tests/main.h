@@ -15,15 +15,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "benchtest.hpp"
-#include "embedis.h"
-
 #ifndef TESTMAIN_H
 #define TESTMAIN_H
+
+
+#include "benchtest.hpp"
+#include "embedis.h"
+#include "Stream.h"
+
+const size_t BUF_LENGTH = 128;
+const size_t ARGV_LENGTH = 8;
 
 std::string embedis_test(std::string cmd);
 void embedis_test_interface(int i);
 void embedis_test_init();
+
+extern std::vector<char> kvs_data;
 
 namespace embedis_predicates {
 

@@ -25,18 +25,18 @@ endif()
 file(GLOB_RECURSE INCLUDE_BENCHTEST "benchtest/include/*.hpp")
 source_group("Header Files\\benchtest" FILES ${INCLUDE_BENCHTEST})
 
-file(GLOB_RECURSE EMBEDIS_HEADERS "src/*.h*")
-source_group("Header Files\\embedis" FILES ${EMBEDIS_HEADERS})
+file(GLOB_RECURSE ARDUINO_MOCK "arduino/*")
+source_group("Header Files\\arduino" FILES ${ARDUINO_MOCK})
 
-file(GLOB_RECURSE EMBEDIS_SRC "src/*.c*")
+file(GLOB_RECURSE EMBEDIS_SRC "src/*")
 source_group("Source Files\\embedis" FILES ${EMBEDIS_SRC})
 
-include_directories(src tests benchtest/include)
+include_directories(src tests arduino benchtest/include)
 
 ### testing
 
 file(GLOB_RECURSE TEST_EMBEDIS_SRC "tests/*.c*"  "tests/*.h*")
-add_executable(test_embedis ${TEST_EMBEDIS_SRC} ${INCLUDE_BENCHTEST} ${EMBEDIS_HEADERS} ${EMBEDIS_SRC})
+add_executable(test_embedis ${TEST_EMBEDIS_SRC} ${INCLUDE_BENCHTEST} ${ARDUINO_MOCK} ${EMBEDIS_SRC})
 add_test(NAME run_test_embedis COMMAND test_embedis)
 
 ### documentation

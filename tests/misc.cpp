@@ -17,14 +17,28 @@
 
 #include "main.h"
 
-TEST(Commands, Basic) {
+
+TEST(Commands, Basic)
+{
     embedis_test_init();
 
+    // Make sure internal commands is really set up
+    // before we try to peek at them from here.
+    embedis_test("commands");
+
+    // Access to protected member
+    class EmbedisBypass : public Embedis {
+    public:
+        static TVec<Command>* c() {
+            return &commands;
+        }
+    };
+    auto commands = EmbedisBypass::c();
+
     std::vector<std::string> a;
-    const embedis_command *cmd = &embedis_commands[0];
-    while (cmd->name) {
-        a.push_back(cmd->name);
-        cmd++;
+    for (size_t i = 0; i < commands->size(); ++i) {
+        a.push_back((*commands)[i].name.c_str());
     }
+
     EXPECT_EMBEDIS_ARRAY("COMMANDS", a);
 }

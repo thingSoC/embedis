@@ -18,16 +18,24 @@
 #include "main.h"
 
 
-TEST(IO, ReadWrite) {
-
+TEST(IO, ReadWrite)
+{
     embedis_test_init();
 
-    EXPECT_EMBEDIS_OK("WRITE mock0");
+    Embedis::hardware("mock0", [](Embedis* e) {
+        e->response("ZERO");
+    }, 0);
+
+    Embedis::hardware("mock1", 0, [](Embedis* e) {
+        e->response(Embedis::OK);
+    });
+
+
+    EXPECT_EMBEDIS_ERROR("WRITE mock0");
     EXPECT_EMBEDIS_OK("WRITE mock1");
     EXPECT_EMBEDIS_ERROR("WRITE mock2");
 
-    EXPECT_EMBEDIS_STRING("READ mock0", "0");
-    EXPECT_EMBEDIS_STRING("READ mock1", "1");
+    EXPECT_EMBEDIS_STRING("READ mock0", "ZERO");
+    EXPECT_EMBEDIS_ERROR("READ mock1");
     EXPECT_EMBEDIS_ERROR("READ mock2");
-
 }

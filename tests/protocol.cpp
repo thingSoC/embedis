@@ -17,8 +17,9 @@
 
 #include "main.h"
 
-TEST(Protocol, WithExtraSapces) {
 
+TEST(Protocol, WithExtraSapces)
+{
     embedis_test_init();
 
     EXPECT_EQ(
@@ -44,8 +45,8 @@ TEST(Protocol, WithExtraSapces) {
 }
 
 
-TEST(Protocol, Caps) {
-
+TEST(Protocol, Caps)
+{
     embedis_test_init();
 
     EXPECT_EQ(
@@ -65,18 +66,15 @@ TEST(Protocol, Caps) {
 
 }
 
-TEST(Protocol, Overflow) {
 
+TEST(Protocol, Overflow)
+{
     embedis_test_init();
 
     std::string s;
 
-    // Find instance 0 which is used for main testing
-    embedis_state* state = embedis_state_last(0);
-    while (state->num) state = state->prev;
-
     // The 1 is for the trailing zero
-    s.append(state->protocol.buf_length-1, 'X');
+    s.append(BUF_LENGTH-1, 'X');
     EXPECT_EQ(
         embedis_test(s.c_str()),
         "-ERROR unknown command\r\n"
@@ -91,7 +89,7 @@ TEST(Protocol, Overflow) {
 
     // Make sure bad things don't happen at max args
     s.clear();
-    for (int i = 0; i < state->protocol.argv_length; i++) {
+    for (int i = 0; i < ARGV_LENGTH; i++) {
         s.append("Z ");
     }
     EXPECT_EQ(
@@ -112,6 +110,26 @@ TEST(Protocol, Overflow) {
         embedis_test(s.c_str()),
         "-ERROR bad argument count\r\n"
     );
+}
 
+
+TEST(Protocol, Quotes)
+{
+    embedis_test_init();
+
+    EXPECT_EMBEDIS_STRING("GET \"vendor\"", "PatternAgents");
+    EXPECT_EMBEDIS_STRING("GET  \"vendor\"", "PatternAgents");
+    EXPECT_EMBEDIS_STRING("GET \"vendor\" ", "PatternAgents");
+
+    EXPECT_EMBEDIS_OK("SELECT RAM");
+
+    EXPECT_EMBEDIS_OK("set foo \"\"");
+    EXPECT_EMBEDIS_STRING("GET foo", "");
+
+    EXPECT_EMBEDIS_OK("set    \"two words\"    \"you win\"   ");
+    EXPECT_EMBEDIS_STRING("GET \"two words\"", "you win");
+
+    // If this was written it would cause data loss
+    EXPECT_EMBEDIS_ERROR("set \"\" doh ");
 
 }

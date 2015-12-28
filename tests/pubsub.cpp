@@ -17,7 +17,9 @@
 
 #include "main.h"
 
-TEST(PubSub, Basics) {
+
+TEST(PubSub, Basics)
+{
     std::vector<std::string> a;
 
     embedis_test_init();
@@ -30,9 +32,7 @@ TEST(PubSub, Basics) {
     a = {"subscribe", "humidity", "2"};
     EXPECT_EMBEDIS_ARRAY("SUBSCRIBE humidity", a);
 
-    embedis_test_interface(99);
-
-    EXPECT_EMBEDIS_ERROR("SUBSCRIBE temperature");
+    embedis_test_interface(1);
 
     EXPECT_EMBEDIS_STRING("PUBLISH temperature 98.6", "1");
 
@@ -44,13 +44,26 @@ TEST(PubSub, Basics) {
     a = {"unsubscribe", "temperature", "1"};
     EXPECT_EMBEDIS_ARRAY("UNSUBSCRIBE temperature", a);
 
-    embedis_test_interface(99);
+    embedis_test_interface(1);
 
     EXPECT_EMBEDIS_STRING("PUBLISH temperature 101.5", "0");
 
     embedis_test_interface(0);
 
     EXPECT_EQ(embedis_test(""), "");
+}
 
 
+TEST(PubSub, API)
+{
+    std::vector<std::string> a;
+
+    embedis_test_init();
+
+    a = {"subscribe", "syslog", "1"};
+    EXPECT_EMBEDIS_ARRAY("SUBSCRIBE syslog", a);
+
+    a = {"publish", "syslog", "All is well."};
+    Embedis::publish(a[1].c_str(), a[2].c_str());
+    EXPECT_EMBEDIS_ARRAY("", a);
 }

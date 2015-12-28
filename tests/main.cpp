@@ -16,264 +16,139 @@
 */
 
 #include "main.h"
-#include "embedis.h"
+#include "Embedis.h"
 
-int main() {
-    testing::reporter(new testing::DefaultReporter);
-    return testing::run();
-}
 
-// Helper for functional testing of Embedis commands.
-// This mock uses strings instead of a serial port.
+class MockStream : public Stream {
+public:
+    std::string in;
+    std::string out;
+    virtual size_t write(uint8_t c) {
+        out += (char)c;
+        return 1;
+    }
+    virtual size_t write(const uint8_t *buffer, size_t size) {
+        for (size_t i = 0; i < size; i++) {
+            out += (char)buffer[i];
+        }
+        return size;
+    }
+    virtual int available() {
+        return in.length();
+    }
+    virtual int read() {
+        if (in.length() == 0) return -1;
+        int r = in[0];
+        in = in.substr(1);
+        return r;
+    }
+    virtual int peek() {
+        if (in.length() == 0) return -1;
+        return in[0];
+    }
+    virtual void flush() {
+        in = "";
+        out = "";
+    }
+};
 
-static std::string result_0;
-static std::string result_99;
-static std::string *result;
 
-void embedis_out_0(char data) {
-    result_0.append(1, data);
-}
+MockStream ms0;
+Embedis em0(ms0, BUF_LENGTH, ARGV_LENGTH);
 
-void embedis_out_99(char data) {
-    result_99.append(1, data);
-}
+MockStream ms1;
+Embedis em1(ms1, BUF_LENGTH, ARGV_LENGTH);
 
-EMBEDIS_STATE_INSTANCE(0, embedis_out_0, 128, 8);
-EMBEDIS_STATE_INSTANCE(99, embedis_out_99, 128, 8);
+MockStream* ms = &ms0;
+Embedis* em = &em0;
 
-embedis_state* embedis_test_state;
 
-std::string embedis_test(std::string cmd) {
+std::string embedis_test(std::string cmd)
+{
     if (!cmd.empty()) {
         char last1 = 0, last2 = 0;
-        result->clear();
         for (size_t i = 0; i < cmd.length(); i++) {
-            embedis_in(embedis_test_state, cmd[i]);
+            ms->in += cmd[i];
             last1 = last2;
             last2 = cmd[i];
         }
         if (last1 != '\r' && last2 != '\n') {
-            embedis_in(embedis_test_state, '\r');
-            embedis_in(embedis_test_state, '\n');
+            ms->in += "\r\n";
         }
     }
-    std::string ret = *result;
-    result->clear();
+    em->process();
+    std::string ret = ms->out;
+    ms->out = "";
     return ret;
 }
 
-void embedis_test_interface(int i) {
+
+void embedis_test_interface(int i)
+{
     switch(i) {
-        case 0:
-            result = &result_0;
-            embedis_test_state = &embedis_state_0;
-            break;
-        case 99:
-            result = &result_99;
-            embedis_test_state = &embedis_state_99;
-            break;
-        default:
-            throw "unknown interface";
+    case 0:
+        ms = &ms0;
+        em = &em0;
+        break;
+    case 1:
+        ms = &ms1;
+        em = &em1;
+        break;
+    default:
+        throw "unknown interface";
     }
 
 }
 
-void embedis_test_init() {
+
+void embedis_test_init()
+{
     embedis_test_interface(0);
-    embedis_state_0.dictionary = &embedis_dictionaries[0];
-    embedis_reset(&embedis_state_0);
-    result_0.clear();
-    embedis_state_99.dictionary = &embedis_dictionaries[0];
-    embedis_reset(&embedis_state_99);
-    result_99.clear();
+    em0.reset(true);
+    em1.reset(true);
+    ms0.flush();
+    ms1.flush();
+    for (auto& d : kvs_data) d = 0xff;
 }
 
 
-// Testing predicates
-
-namespace embedis_predicates {
-
-// Remove expected "\r\n"
-// return true on success
-static bool delstartcrnl(std::string &s) {
-    if (s.size() < 2) return false;
-    if (s.substr(0, 2) != "\r\n") return false;
-    s.erase(0,2);
-    return true;
-}
-
-// Extract first string from the RESP result
-// return true on success
-static bool getstring(std::string &s, std::string &out) {
-    out.clear();
-
-    if (s.empty()) return false;
-
-    // Simple string, including error string
-    // Integers are treated as strings too
-    if (s[0] == ':' || s[0] == '+' || s[0] == '-') {
-        s.erase(0,1);
-        while (!s.empty() && s[0] != '\r') {
-            out.append(1, s[0]);
-            s.erase(0,1);
-        }
-        return delstartcrnl(s);
-    }
-
-    // Binary string
-    if (s[0] == '$') {
-        s.erase(0,1);
-        int size = 0;
-        while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
-            size = size * 10 + (s[0] - '0');
-            s.erase(0,1);
-        }
-        if (!delstartcrnl(s)) return false;
-        while (!s.empty() && size) {
-            size--;
-            out.append(1, s[0]);
-            s.erase(0,1);
-        }
-        return delstartcrnl(s);
+static bool rom_get(const String& key, String& value)
+{
+    if (key == F("vendor")) {
+        value = F("PatternAgents");
+        return true;
     }
     return false;
 }
 
-// Utility to quote and add escape sequences for printing string
-std::string escaped(std::string const& s) {
-    ::std::ostringstream out;
-    out.put('"');
-    for (std::string::const_iterator i = s.begin(), end = s.end(); i != end; ++i) {
-        unsigned char c = *i;
-        if (' ' <= c and c <= '~' and c != '\\' and c != '"') {
-            out.put(c);
-        }
-        else {
-            out.put('\\');
-            switch(c) {
-            case '"':
-                out.put('"');
-                break;
-            case '\\':
-                out.put('\\');
-                break;
-            case '\t':
-                out.put('t');
-                break;
-            case '\r':
-                out.put('r');
-                break;
-            case '\n':
-                out.put('n');
-                break;
-            default:
-                char const* const hexdig = "0123456789ABCDEF";
-                out.put('x');
-                out.put(hexdig[c >> 4]);
-                out.put(hexdig[c & 0xF]);
-            }
-        }
-    }
-    out.put('"');
-    return out.str();
-}
 
-testing::AssertionResult ok(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis_test(cmd);
-    std::string s = result;
-    std::string actual;
-    if (!s.empty() && result[0] == '+') {
-        if (getstring(s, actual)) {
-            if (s.empty() && actual.substr(0,2) == "OK") {
-                return testing::AssertionSuccess();
-            }
-        }
-
-    }
-    return testing::AssertionFailure() << cmd_expr <<
-           " expected to succeed." << ::std::endl <<
-           "Result was: " << escaped(result);
-}
-
-testing::AssertionResult error(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis_test(cmd);
-    std::string s = result;
-    std::string actual;
-    if (!s.empty() && result[0] == '-') {
-        if (getstring(s, actual)) {
-            if (s.empty()) {
-                return testing::AssertionSuccess();
-            }
-        }
-
-    }
-    return testing::AssertionFailure() << cmd_expr <<
-           " expected to fail." << ::std::endl <<
-           "Result was: " << escaped(result);
-}
-
-testing::AssertionResult null(const char* cmd_expr, std::string cmd) {
-    std::string result = embedis_test(cmd);
-    if (result == "$-1\r\n") {
-        return testing::AssertionSuccess();
-    }
-    return testing::AssertionFailure() << cmd_expr <<
-           " expected to return null." << ::std::endl <<
-           "Result was: " << escaped(result);
-}
-
-testing::AssertionResult string(const char* cmd_expr, const char* result_expr, std::string cmd, std::string expected) {
-    std::string result = embedis_test(cmd);
-    std::string s = result;
-    std::string actual;
-    if (getstring(s, actual)) {
-        if (actual==expected && s.empty()) {
-            return testing::AssertionSuccess();
-        }
-
-    }
-    return testing::AssertionFailure()  << cmd_expr <<
-           " expected to return string: " << escaped(expected) << ::std::endl <<
-           "Result was: " << escaped(result);
+static void rom_keys(Embedis* e)
+{
+    e->response('*', 1);
+    e->response("vendor");
 }
 
 
-testing::AssertionResult array(const char* cmd_expr, const char* result_expr, std::string cmd, std::vector<std::string> expected) {
-    std::string result = embedis_test(cmd);
-    std::string s = result;
-    std::string actual;
+std::vector<char> kvs_data(64);
 
-    if (s.empty()) goto fail;
-    while (!s.empty() && s[0] == '*') {
-        int size = 0;
-        s.erase(0,1);
-        while (!s.empty() && s[0] >= '0' && s[0] <= '9') {
-            size = size * 10 + (s[0] - '0');
-            s.erase(0,1);
-        }
-        if (!delstartcrnl(s)) goto fail;
-        if (size != expected.size()) goto fail;
 
-        for (auto e : expected ) {
-            if (!getstring(s, actual)) goto fail;
-            if (e != actual) goto fail;
-        }
-    }
-    if (!s.empty()) goto fail;
-    return testing::AssertionSuccess();
-
-fail:
-    std::string eprint;
-    eprint.append("[");
-    for (auto e : expected ) {
-        eprint.append(escaped(e));
-        eprint.append(", ");
-    }
-    if (eprint.size() > 2) eprint.erase(eprint.size()-2,2);
-    eprint.append("]");
-    return testing::AssertionFailure()  << cmd_expr <<
-    " expected to return array: " << eprint << ::std::endl <<
-    "Result was: " << escaped(result);
+static char ram_kvs_fetch(size_t pos)
+{
+    return kvs_data.at(pos);
 }
 
-} /* end namespace embedis_predicates */
+
+static void ram_kvs_store(size_t pos, char value)
+{
+    kvs_data.at(pos)=value;
+}
+
+
+int main()
+{
+    Embedis::dictionary("rom", rom_get, 0, 0, rom_keys, 0);
+    Embedis::dictionary("ram", kvs_data.size(), ram_kvs_fetch, ram_kvs_store, 0);
+
+    testing::reporter(new testing::DefaultReporter);
+    return testing::run();
+}
