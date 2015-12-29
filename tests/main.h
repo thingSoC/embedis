@@ -42,6 +42,10 @@ testing::AssertionResult array(const char* cmd_expr, const char* result_expr, st
 
 } /* end namespace embedis_predicates */
 
+inline void PrintTo(const String& val, ::std::ostream* os) {
+    *os << val.c_str();
+}
+
 #define EXPECT_EMBEDIS_OK(val1) \
 EXPECT_PRED_FORMAT1(embedis_predicates::ok, val1)
 #define ASSERT_EMBEDIS_OK(val1) \
