@@ -384,6 +384,12 @@ size_t Embedis::publish(const String& channel, const String& message)
 }
 
 
+bool Embedis::get(const String& key, String& value) {
+    if (!dictionaries.size()) return false;
+    return get(dictionaries[0].name, key, value);
+}
+
+
 bool Embedis::get(const String& dict, const String& key, String& value)
 {
     size_t dnum = find_dictionary(dict);
@@ -394,6 +400,12 @@ bool Embedis::get(const String& dict, const String& key, String& value)
     } else {
         return kvs_get(dptr, key.c_str(), key.length(),  value);
     }
+}
+
+
+bool Embedis::set(const String& key, const String& value) {
+    if (!dictionaries.size()) return false;
+    return set(dictionaries[0].name, key, value);
 }
 
 
@@ -409,6 +421,12 @@ bool Embedis::set(const String& dict, const String& key, const String& value)
     } else {
         return kvs_set(dptr, key.c_str(), key.length(),  value.c_str(), value.length());
     }
+}
+
+
+bool Embedis::del(const String& key) {
+    if (!dictionaries.size()) return false;
+    return del(dictionaries[0].name, key);
 }
 
 

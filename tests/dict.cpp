@@ -182,6 +182,9 @@ TEST(DictRAM, SetAPI)
     rv = Embedis::set("ram", "foo", "doh");
     EXPECT_TRUE(rv);
     EXPECT_EMBEDIS_STRING("GET foo", "doh");
+
+    rv = Embedis::set("vendor", "nocando");
+    EXPECT_FALSE(rv);
 }
 
 
@@ -200,6 +203,10 @@ TEST(DictRAM, GetAPI)
     rv = Embedis::get("ram", "foo", value);
     EXPECT_TRUE(rv);
     EXPECT_EQ(value, "baz");
+
+    rv = Embedis::get("vendor", value);
+    EXPECT_TRUE(rv);
+    EXPECT_EQ(value, "PatternAgents");
 }
 
 
@@ -218,4 +225,8 @@ TEST(DictRAM, DelAPI)
     rv = Embedis::del("ram", "foo");
     EXPECT_TRUE(rv);
     EXPECT_EMBEDIS_NULL("get foo");
+
+    rv = Embedis::del("vendor");
+    EXPECT_FALSE(rv);
+
 }

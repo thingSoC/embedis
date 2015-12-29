@@ -242,8 +242,11 @@ public:
     static size_t publish(const String& channel, const String& message);
 
     // Dictionary access.
+    static bool get(const String& key, String& value);
     static bool get(const String& dict, const String& key, String& value);
+    static bool set(const String& key, const String& value);
     static bool set(const String& dict, const String& key, const String& value);
+    static bool del(const String& key);
     static bool del(const String& dict, const String& key);
 
 private:
