@@ -372,7 +372,7 @@ size_t Embedis::publish(const String& channel, const String& message)
             TVec<Embedis*>* subs = &channels[chan].subs;
             for (size_t j = 0; j < subs->size(); ++j) {
                 (*subs)[j]->response('*', 3);
-                (*subs)[j]->response(F("publish"));
+                (*subs)[j]->response(F("message"));
                 (*subs)[j]->response(channel);
                 (*subs)[j]->response(message);
                 ++qty;

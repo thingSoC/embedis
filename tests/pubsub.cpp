@@ -38,7 +38,7 @@ TEST(PubSub, Basics)
 
     embedis_test_interface(0);
 
-    a = {"publish", "temperature", "98.6"};
+    a = {"message", "temperature", "98.6"};
     EXPECT_EMBEDIS_ARRAY("", a);
 
     a = {"unsubscribe", "temperature", "1"};
@@ -63,7 +63,7 @@ TEST(PubSub, API)
     a = {"subscribe", "syslog", "1"};
     EXPECT_EMBEDIS_ARRAY("SUBSCRIBE syslog", a);
 
-    a = {"publish", "syslog", "All is well."};
+    a = {"message", "syslog", "All is well."};
     Embedis::publish(a[1].c_str(), a[2].c_str());
     EXPECT_EMBEDIS_ARRAY("", a);
 }
