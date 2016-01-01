@@ -38,4 +38,9 @@ TEST(IO, ReadWrite)
     EXPECT_EMBEDIS_STRING("READ mock0", "ZERO");
     EXPECT_EMBEDIS_ERROR("READ mock1");
     EXPECT_EMBEDIS_ERROR("READ mock2");
+
+    std::vector<std::string> a;
+
+    a = {"RO: mock0", "WO: mock1"};
+    EXPECT_EMBEDIS_ARRAY("HARDWARE", a);
 }

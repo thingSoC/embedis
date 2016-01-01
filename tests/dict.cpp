@@ -228,5 +228,14 @@ TEST(DictRAM, DelAPI)
 
     rv = Embedis::del("vendor");
     EXPECT_FALSE(rv);
+}
 
+
+TEST(Dict, DICTIONARIES) {
+    embedis_test_init();
+
+    std::vector<std::string> a;
+
+    a = {"rom", "ram"};
+    EXPECT_EMBEDIS_ARRAY("DICTIONARIES", a);
 }

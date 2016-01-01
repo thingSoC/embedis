@@ -489,6 +489,7 @@ void Embedis::add_readwrite()
     if (added) return;
     added = true;
     add_basic();
+    command(F("HARDWARE"), cmd_HARDWARE);
     command(F("READ"), cmd_READ);
     command(F("WRITE"), cmd_WRITE);
 }
@@ -500,6 +501,7 @@ void Embedis::add_dict()
     if (added) return;
     added = true;
     add_basic();
+    command(F("DICTIONARIES"), cmd_DICTIONARIES);
     command(F("GET"), cmd_GET);
     command(F("SET"), cmd_SET);
     command(F("DEL"), cmd_DEL);
@@ -585,6 +587,19 @@ void Embedis::cmd_UNSUBSCRIBE(Embedis* e)
 }
 
 
+void Embedis::cmd_HARDWARE(Embedis* e)
+{
+    e->response('*', hardwares.size());
+    for (size_t i = 0; i < hardwares.size(); ++i) {
+        String s;
+        if (hardwares[i].read && hardwares[i].write) s = "RW: ";
+        else if (hardwares[i].read) s = "RO: ";
+        else if (hardwares[i].write) s = "WO: ";
+        e->response(s + hardwares[i].name);
+    }
+}
+
+
 void Embedis::cmd_READ(Embedis* e)
 {
     if (e->argc < 2) return e->response(ARGS_ERROR);
@@ -608,6 +623,14 @@ void Embedis::cmd_WRITE(Embedis* e)
     e->response(ERROR);
 }
 
+
+void Embedis::cmd_DICTIONARIES(Embedis* e)
+{
+    e->response('*', dictionaries.size());
+    for (size_t i = 0; i < dictionaries.size(); ++i) {
+        e->response(dictionaries[i].name);
+    }
+}
 
 void Embedis::cmd_GET(Embedis* e)
 {

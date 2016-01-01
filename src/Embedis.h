@@ -264,9 +264,11 @@ private:
     static void cmd_SUBSCRIBE(Embedis*);
     static void cmd_UNSUBSCRIBE(Embedis*);
 
+    static void cmd_HARDWARE(Embedis*);
     static void cmd_READ(Embedis*);
     static void cmd_WRITE(Embedis*);
 
+    static void cmd_DICTIONARIES(Embedis*);
     static void cmd_GET(Embedis*);
     static void cmd_SET(Embedis*);
     static void cmd_DEL(Embedis*);
