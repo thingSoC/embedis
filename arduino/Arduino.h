@@ -1,6 +1,6 @@
 /*
  Arduino.h - Mocks to make some Arduino code run for testing
- Copyright (C) 2015 PatternAgents, LLC
+ Copyright (C) 2016 PatternAgents, LLC
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
