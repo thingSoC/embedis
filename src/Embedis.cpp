@@ -79,6 +79,8 @@ void Embedis::reset(bool everything)
     mode = 0;
     argc = 0;
     argv[0] = &buf[0];
+    mode_args = 1;
+
     if (everything) {
         current_dict = 0;
         subcount = 0;
@@ -104,18 +106,50 @@ void Embedis::process()
     while ((i = stream->read()) >= 0) {
         char c = i;
 
+        // \0   start of command
+        // ' '  human friendly basic collection
+        //  "   human friendly collecting inside quotes
+        //  .   human friendly found second quote, deciding if closing
+        //  $   binary determining string length
+        //  *   binary determining args count
+        // +-:  binary collecting \r terminated
+        //  ?   binary collecting known length
+        // \r   binary expecting required \r
+        // \n   binary expecting required \n
+
+        if (mode == 0 || mode == '?') {
+            switch (c) {
+                case '+':
+                case '-':
+                case ':':
+                    mode_chars = 0;
+                    mode = '+';
+                    continue;
+                case '*':
+                    if (mode != 0) {
+                        break;
+                    }
+                    mode_chars = -1;
+                    mode_args = 0;
+                    mode = c;
+                    continue;
+                case '$':
+                    mode_chars = 0;
+                    mode = c;
+                    continue;
+            }
+            if (mode != 0) {
+                reset();
+                response(SYNTAX_ERROR);
+                continue;
+            }
+        }
+
         if (mode == 0) {
             switch (c) {
-            //                case '+':
-            //                case '-':
-            //                case ':':
-            //                case '$':
-            //                case '*':
-            //                    mode = c;
-            //                    continue;
             case '\r':
             case '\n':
-                // nop
+                // nop, throw these away
                 continue;
             default:
                 if (pos != 0) {
@@ -125,6 +159,114 @@ void Embedis::process()
                 }
                 mode = ' ';
                 break;
+            }
+        }
+
+        if (mode == '+') {
+            if (c == '\r') {
+                mode = '\n';
+                if (pos < buflen) {
+                    buf[pos] = 0;
+                    pos++;
+                }
+                continue;
+            }
+            if (pos < buflen) {
+                buf[pos] = c;
+                pos++;
+            }
+            continue;
+        }
+
+        if (mode == 'b') {
+            if (pos < buflen) {
+                buf[pos] = c;
+                pos++;
+            }
+            mode_chars -= 1;
+            if (mode_chars > 0) {
+                continue;
+            }
+            mode = '\r';
+            if (pos < buflen) {
+                buf[pos] = 0;
+                pos++;
+            }
+            continue;
+        }
+
+        if (mode == '\r') {
+            if (c != '\r') {
+                reset();
+                response(SYNTAX_ERROR);
+                continue;
+            }
+            mode = '\n';
+            continue;
+        }
+
+        if (mode == '\n') {
+            if (c != '\n') {
+                reset();
+                response(SYNTAX_ERROR);
+                continue;
+            }
+            if (mode_chars>0) {
+                mode = 'b';
+                continue;
+            }
+            if (mode_chars==0) {
+                argc += 1;
+                if (argc <= argvlen) {
+                    argv[argc] = &buf[pos];
+                }
+                mode_args -= 1;
+                if (mode_args == 0) {
+                    if (pos >= buflen) {
+                        response(BUFFER_OVERFLOW);
+                        reset();
+                        continue;
+                    }
+                    dispatch();
+                    reset();
+                    continue;
+                }
+            }
+            mode = '?';
+            continue;
+        }
+
+        if (mode == '*') {
+            if (c == '\r') {
+                mode = '\n';
+                continue;
+            }
+            if (c < '0' || c > '9') {
+                reset();
+                response(SYNTAX_ERROR);
+                continue;
+            }
+            mode_args = mode_args * 10 + c - '0';
+            continue;
+        }
+
+        if (mode == '$') {
+            if (c == '\r') {
+                mode = '\n';
+                continue;
+            }
+            if (c=='-' && mode_chars==0) {
+                mode_chars = -1;
+                continue;
+            }
+            if (c < '0' || c > '9') {
+                reset();
+                response(SYNTAX_ERROR);
+                continue;
+            }
+            if (mode_chars != -1) {
+                mode_chars = mode_chars * 10 + c - '0';
+                continue;
             }
         }
 

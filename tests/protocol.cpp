@@ -133,3 +133,25 @@ TEST(Protocol, Quotes)
     EXPECT_EMBEDIS_ERROR("set \"\" doh ");
 
 }
+
+
+TEST(Protocol, Binary)
+{
+    embedis_test_init();
+
+    std::vector<std::string> a;
+
+    a = {"rom", "ram"};
+
+    EXPECT_EMBEDIS_ARRAY("DICTIONARIES", a);
+    EXPECT_EMBEDIS_OK("*2\r\n$6\r\nSELECT\r\n$3\r\nRAM\r\n");
+    EXPECT_EMBEDIS_ARRAY("DICTIONARIES", a);
+    EXPECT_EMBEDIS_ARRAY("*1\r\n$12\r\nDICTIONARIES\r\n", a);
+    EXPECT_EMBEDIS_ARRAY("$12\r\nDICTIONARIES\r\n", a);
+    EXPECT_EMBEDIS_ARRAY("*1\r\n+DICTIONARIES\r\n", a);
+    EXPECT_EMBEDIS_ARRAY("+DICTIONARIES", a);
+    EXPECT_EMBEDIS_ARRAY("*1\r\n-DICTIONARIES\r\n", a);
+    EXPECT_EMBEDIS_ARRAY("-DICTIONARIES", a);
+    EXPECT_EMBEDIS_ARRAY("*1\r\n:DICTIONARIES\r\n", a);
+    EXPECT_EMBEDIS_ARRAY(":DICTIONARIES", a);
+}

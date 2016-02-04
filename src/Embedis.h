@@ -99,6 +99,8 @@ protected:
     char* buf;
     size_t pos;
     char mode;
+    size_t mode_args;
+    int mode_chars;
     size_t subcount;
     size_t current_dict;
 
