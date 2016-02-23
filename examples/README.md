@@ -1,4 +1,4 @@
-# Embedis - Embedded Dictionary Server [![Build Status](https://travis-ci.org/thingSoC/embedis.png?branch=master)](https://travis-ci.org/thingSoC/embedis)
+# Embedis - Embedded Dictionary Server
 
 ## Examples for Different Boards
 
