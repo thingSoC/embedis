@@ -6,12 +6,12 @@ Use the Arduino Library Installer :
 > Sketch -> Include Library -> Manage Libraries
 
 [![Install](http://thingsoc.github.io/img/projects/embedis/library_manager.png?raw=true)  
-*Install*](http://thingsoc.github.io/embedis/wiki)
+*Library Manager*](http://thingsoc.github.io/embedis/wiki)
 
 Under "Filter Search", enter "embedis" :
 
 [![LibMgr](http://thingsoc.github.io/img/projects/embedis/library_search.png?raw=true)  
-*Install*](http://thingsoc.github.io/embedis/wiki)
+*Search for Embedis*](http://thingsoc.github.io/embedis/wiki)
 
 
 and Click on the "Install" Button :
