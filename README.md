@@ -8,7 +8,7 @@ Use the Arduino Library Installer :
 [![Install](http://thingsoc.github.io/img/projects/embedis/library_manager.png?raw=true)  
 *Install*](http://thingsoc.github.io/embedis/wiki)
 
-Under "Filter Search", enter for "embedis" :
+Under "Filter Search", enter "embedis" :
 
 [![LibMgr](http://thingsoc.github.io/img/projects/embedis/library_search.png?raw=true)  
 *Install*](http://thingsoc.github.io/embedis/wiki)
