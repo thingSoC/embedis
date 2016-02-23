@@ -3,11 +3,28 @@
 ## Installing Embedis 
 
 Use the Arduino Library Installer :
-
 > Sketch -> Include Library -> Manage Libraries
 
-Under "Filter Search", enter "Embedis"
-and Click on the "Install" Button
+[![Install](http://thingsoc.github.io/img/projects/embedis/library_manager.png?raw=true)  
+*Install*](http://thingsoc.github.io/embedis/wiki)
+
+Under "Filter Search", enter for "embedis" :
+
+[![LibMgr](http://thingsoc.github.io/img/projects/embedis/library_search.png?raw=true)  
+*Install*](http://thingsoc.github.io/embedis/wiki)
+
+
+and Click on the "Install" Button :
+
+[![LibMgr](http://thingsoc.github.io/img/projects/embedis/libraries.png?raw=true)  
+*Install*](http://thingsoc.github.io/embedis/wiki)
+
+Now you can explore the Embedis examples under :
+
+> Files -> Examples -> Embedis -> Embedis
+
+Note Bene : The default examples uses EEPROM only, and will not function 
+on boards without internal EEPROM (i.e. Arduino Due). There are more specific examples for other boards.
 
 
 ## Embedis Development Environment
