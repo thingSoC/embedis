@@ -1,5 +1,22 @@
 # Embedis - Embedded Dictionary Server [![Build Status](https://travis-ci.org/thingSoC/embedis.png?branch=master)](https://travis-ci.org/thingSoC/embedis)
 
+Embedis is an open source library for creating simple embedded dictionary servers.
+Embedis is used for embedding key-value dictionaries into the
+SRAM, FLASH, FRAM, NVSRAM, EEPROM, or SDcard memory systems
+of small, limited resource, embedded computing platforms,
+such as the Arduino(AVR), Teensy(Cortex-M4), ESP8266, and others.
+
+We needed to support several different persistent memory store types,
+for a number of "Internet of Things", and small embedded system projects.
+
+These types include the internal processor/SoC based SRAM, FLASH, EEPROM,
+and Scratchpad SRAM memories, as well as externally attached FLASH, EEPROM,
+FRAM, NVSRAM and SDCard memories.
+
+Embedis was developed to provide a simple, consistent command line interface, and APIs
+for storing and retrieving data from pins, sensors, interfaces, and other I/O devices,
+across a number of different embedded platforms and IDEs.
+
 ## Installing Embedis 
 
 Use the Arduino Library Installer :
@@ -30,6 +47,23 @@ There are specific examples for boards with different capabilities, such as the 
 that do NOT include EEPROM internal to the microprocessor.
 
 <span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5NPC24C7VQ89L" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
+## Using Embedis
+
+The Embedis command line interface (CLI) uses familiar SET/GET/DEL commands \n
+for storing, retriving, and deleting key-value pairs in the persistant memory stores. \n
+For example :
+
+    ```
+    set mykey somevalue
+    +OK
+    get mykey
+    +somevalue
+    del mykey
+    :1
+    ```
+
+For more information on uisng Embedis, please see the [-> WIKI <-](https://github.com/thingSoC/embedis/wiki/)
 
 ## Embedis Development Environment
 

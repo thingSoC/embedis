@@ -44,8 +44,8 @@ For example :\n
 > :1\n
 
 \par
-The different persistant memory stores are called "dictionaries", \n
-and you can inquiry what dictionary types are available on your system with
+The different persistent memory stores are called "dictionaries", \n
+and you can query what dictionary types are available on your system with
 the DICTIONARIES command, for example:
 > DICTIONARIES \n
 > *3 \n
@@ -55,8 +55,8 @@ the DICTIONARIES command, for example:
 
 \par
 Would indicate that EEPROM, FLASH, and FRAM are available on that system.
-New "dictionaries", or persistant memory stores, are easily added to the Embedis server
-by adding a hander with READ, WRITE, and COMMIT methods to your sketch.
+New "dictionaries", or persistent memory stores, are easily added to the Embedis server
+by adding a handler with READ, WRITE, and COMMIT methods to your sketch.
 \par
 The "select" command is used to switch between different storage devices
 Different memory types are selected using their device name, for example:
