@@ -23,8 +23,10 @@ Now you can explore the Embedis examples under :
 
 > Files -> Examples -> Embedis -> Embedis
 
-Note Bene : The default examples uses EEPROM only, and will not function 
-on boards without internal EEPROM (i.e. Arduino Due). There are more specific examples for other boards.
+Note Bene : The default example uses EEPROM only, and will only function  
+on boards with internal EEPROM (i.e. Arduino Uno/Leo/Mega/etc.). 
+There are more specific examples for other boards, such as the Arduino Due,
+that do NOT include EEPROM internal to the microprocessor.
 
 
 ## Embedis Development Environment
@@ -69,10 +71,5 @@ The folks who make this project possible:
 
 [Embedis](https://github.com/thingSoC/embedis) and  [thingSoC](http://www.thingsoc.com) are community supported, you can help by contributing.
 
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="5NPC24C7VQ89L">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
+<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5NPC24C7VQ89L" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
 
