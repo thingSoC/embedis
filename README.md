@@ -1,14 +1,20 @@
 # Embedis - Embedded Dictionary Server [![Build Status](https://travis-ci.org/thingSoC/embedis.png?branch=master)](https://travis-ci.org/thingSoC/embedis)
 
-This README is for anyone wanting to develop the Embedis server itself.
-If you just want to use the Embedis server, begin with the [main documentation]
-(http://thingSoC.github.io/embedis).
+## Installing Embedis 
 
-## Development Environment
+Use the Arduino Library Installer :
+
+> Sketch -> Include Library -> Manage Libraries
+
+Under "Filter Search", enter "Embedis"
+and Click on the "Install" Button
+
+
+## Embedis Development Environment
 
 The git repository includes a submodule for the testing framework and a
-branch 'gh-pages' for the generated documentation. Here's the recommended
-commands to use:
+branch ['gh-pages'](http://thingSoC.github.io/embedis) for the development generated documentation. 
+The recommended commands to use are as follows:
 
 ```
 git clone {origin_url} embedis
@@ -41,3 +47,15 @@ The folks who make this project possible:
  * PatternAgents, LLC
  * Tom Moxon
  * David Turnbull
+
+## Community Supported
+
+[Embedis](https://github.com/thingSoC/embedis) and  [thingSoC](http://www.thingsoc.com) are community supported, you can help by contributing.
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="5NPC24C7VQ89L">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
