@@ -10,13 +10,13 @@ Use the Arduino Library Installer :
 
 Under "Filter Search", enter "embedis" :
 
-[![LibMgr](http://thingsoc.github.io/img/projects/embedis/library_search.png?raw=true)  
+[![LibMgr](http://thingsoc.github.io/img/projects/embedis/libraries.png?raw=true)  
 *Search for Embedis*](http://thingsoc.github.io/embedis/wiki)
 
 
 and Click on the "Install" Button :
 
-[![LibMgr](http://thingsoc.github.io/img/projects/embedis/libraries.png?raw=true)  
+[![LibMgr](http://thingsoc.github.io/img/projects/embedis/library_search.png?raw=true)  
 *Install*](http://thingsoc.github.io/embedis/wiki)
 
 Now you can explore the Embedis examples under :
