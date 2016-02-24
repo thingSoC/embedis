@@ -79,6 +79,103 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Embedis Command Definitions</div>  </div>
 </div><!--header-->
 <div class="contents">
+<dl class="section user"><dt></dt><dd>Embedis is an open source library for creating simple embedded dictionary servers. <br />
+Embedis is used for embedding key-value dictionaries into the <br />
+SRAM, FLASH, FRAM, NVSRAM, EEPROM, or SDcard memory systems <br />
+of small, limited resource, embedded computing platforms, <br />
+such as the Arduino(AVR), Teensy(Cortex-M4),<br />
+ESP8266, and others. <br />
+</dd></dl>
+<dl class="section user"><dt></dt><dd></dd></dl>
+<h1><a class="anchor" id="main_background"></a>
+Background</h1>
+<dl class="section user"><dt></dt><dd>We needed to support several different persistant memory store types, <br />
+for a number of "Internet of Things", and small embedded system projects. <br />
+These types include the internal processor/SoC based SRAM, FLASH, EEPROM, <br />
+and Scratchpad SRAM memories, as well as externally attached FLASH, EEPROM, <br />
+FRAM, NVSRAM and SDCard memories. <br />
+</dd></dl>
+<dl class="section user"><dt></dt><dd>Embedis was developed to provide a simple, consistant command line interface, and APIs <br />
+for storing and retrieving data from pins, sensors, interfaces, and other I/O devices, <br />
+across a number of different embedded platforms and IDEs. <br />
+</dd></dl>
+<dl class="section user"><dt></dt><dd></dd></dl>
+<h1><a class="anchor" id="main_overview"></a>
+Embedis Overview</h1>
+<dl class="section user"><dt></dt><dd>Embedis is a simple, easily extensible framework for adding persistant, nonvolatile storage to your projects. It is designed to be be lightweight (using only a few kilobytes of program space), and to efficiently support very small storage devices, such as EEPROM or FRAM data storage only a few kilobytes. Embedis implements a Command Line Interface, similar to a subset of the Redis data structure server. </dd></dl>
+<dl class="section user"><dt></dt><dd></dd></dl>
+<h1><a class="anchor" id="main_overview"></a>
+Embedis Overview</h1>
+<dl class="section user"><dt></dt><dd>The Embedis command line interface (CLI) uses familiar SET/GET/DEL commands <br />
+for storing, retriving, and deleting key-value pairs in the persistant memory stores. <br />
+For example :<br />
+<blockquote class="doxtable">
+<p>set mykey somevalue<br />
++OK<br />
+get mykey<br />
++somevalue<br />
+del mykey<br />
+:1<br />
+</p>
+</blockquote>
+</dd></dl>
+<dl class="section user"><dt></dt><dd>The different persistent memory stores are called "dictionaries", <br />
+and you can query what dictionary types are available on your system with the DICTIONARIES command, for example: <blockquote class="doxtable">
+<p>DICTIONARIES <br />
+*3 <br />
++FRAM<br />
++FLASH<br />
++EEPROM <br />
+</p>
+</blockquote>
+</dd></dl>
+<dl class="section user"><dt></dt><dd>Would indicate that EEPROM, FLASH, and FRAM are available on that system. New "dictionaries", or persistent memory stores, are easily added to the Embedis server by adding a handler with READ, WRITE, and COMMIT methods to your sketch. </dd></dl>
+<dl class="section user"><dt></dt><dd>The "select" command is used to switch between different storage devices Different memory types are selected using their device name, for example: <blockquote class="doxtable">
+<p>select EEPROM<br />
++OK free = 8190<br />
+</p>
+</blockquote>
+</dd></dl>
+<p>Would select an internal EEPROM for storage, and inform you that it has 8190 bytes of storage remaining. (The current version of Embedis supports a maximum of 64K Keys, and uses two bytes of the 8196 bytes of the EEPROM to indicate the key pointer (in this case, no or zero keys).</p>
+<dl class="section user"><dt></dt><dd>A list of keys can be retrieved using the KEYS command for the selected memory : <blockquote class="doxtable">
+<p>select EEPROM <br />
++OK free = 8190 <br />
+keys <br />
+*0 <br />
+</p>
+</blockquote>
+</dd></dl>
+<p>In this case, we show zero keys, or an empty dictionary.</p>
+<dl class="section user"><dt></dt><dd>Embedis starts writing from the high memory address of the device, and writes "down" in addressing, from high to low memory addresses. The reason for this is to be able to coexist with other uses of the same EEPROM, such as the DeviceTree information for the auto-configuration of Socks, Hats, Capes, and Shields.</dd></dl>
+<dl class="section user"><dt></dt><dd>Access to hardware resources are accomplished similarly using the READ and WRITE commands, for example: <br />
+<blockquote class="doxtable">
+<p>HARDWARE<br />
+*4 <br />
++wifi <br />
++vcc <br />
++temp <br />
++blte <br />
+<br />
+READ VCC <br />
++3.335 <br />
+<br />
+READ TEMP <br />
++37.542 <br />
+</p>
+</blockquote>
+</dd></dl>
+<p>/par Several custom commands are shown in the Embedis examples for the Arduino, including pinMode, DigitalWrite, DigitalRead, and AnalogRead, allowing you to read sensors and toggle I/O pins directly from the Embedis Command Line Interface. For example, to toggle the LED on and OFF on an Arduino<br />
+</p><blockquote class="doxtable">
+<p>pinMode 13 OUTPUT <br />
++OK <br />
+digitalWrite 13 HIGH <br />
++OK <br />
+digitalWrite 13 LOW <br />
++OK <br />
+</p>
+</blockquote>
+<dl class="section user"><dt></dt><dd>For more information, see the Embedis Wiki at <a href="https://github.com/thingSoC/embedis/wiki">https://github.com/thingSoC/embedis/wiki</a> </dd></dl>
+<dl class="section user"><dt></dt><dd></dd></dl>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
