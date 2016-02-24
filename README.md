@@ -46,8 +46,6 @@ or boards with support for emulated EEPROM, such as the ESP8266.
 There are specific examples for boards with different capabilities, such as the Arduino Due,
 that do NOT include EEPROM internal to the microprocessor.
 
-<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5NPC24C7VQ89L" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
-
 ## Using Embedis
 
 The Embedis command line interface (CLI) uses familiar SET/GET/DEL commands \n
