@@ -98,8 +98,9 @@ $ make doc
 The folks who make this project possible:
 
  * PatternAgents, LLC
- * Tom Moxon
  * David Turnbull
+ * Tom Moxon
+ 
 
 ## Community Supported
 
