@@ -56,6 +56,16 @@ These examples are specifically for the ESP8266 WiFi Platform.
     In this example, all of the keys and values are in unencrypted plain-text, 
     for demonstration, teaching, and debugging purposes.
     
+##  Embedis EEPROM Reserved Keys
+
+ + platform    : the name of the platform (e.g. ESP8266, DUE, LEONARDO, etc.)
+ + board       : the name of the specific board (e.g. Adafruit Huzzah, NodeMCU, etc.)
+ + led_pin     : the pin number of the onboard LED (default 13)
+ + wifi_mode   : AP or STA
+ + wifi_ssid   : yourSSID
+ + wifi_passwd : yourPASSWORD
+ 
+ 
 ## Contributors
 
 The folks who make this project possible:
