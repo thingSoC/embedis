@@ -1,0 +1,21 @@
+# Embedis - Embedded Dictionary Server
+
+## Examples for ESP8266 WiFi Platform
+
+The Arduino IDE now has the capability to support many different CPU architectures and boards.
+These examples are specifically for the ESP8266 WiFi Platform.
+
+## Contributors
+
+The folks who make this project possible:
+
+ * PatternAgents, LLC
+ * Tom Moxon
+ * David Turnbull
+
+## Community Supported
+
+[Embedis](https://github.com/thingSoC/embedis) and  [thingSoC](http://www.thingsoc.com) are community supported, you can help by donating to support this work.
+
+<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5NPC24C7VQ89L" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+
