@@ -60,6 +60,7 @@ These examples are specifically for the ESP8266 WiFi Platform.
 
  + platform    : the name of the platform (e.g. ESP8266, DUE, LEONARDO, etc.)
  + board       : the name of the specific board (e.g. Adafruit Huzzah, NodeMCU, etc.)
+ + UUID        : Unique Universal Identifier Code
  + led_pin     : the pin number of the onboard LED (default 13)
  + wifi_mode   : AP or STA
  + wifi_ssid   : yourSSID
