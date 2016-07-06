@@ -56,7 +56,7 @@ These examples are specifically for the ESP8266 WiFi Platform.
     In this example, all of the keys and values are in unencrypted plain-text, 
     for demonstration, teaching, and debugging purposes.
     
-##  Embedis EEPROM Reserved Keys
+### Embedis EEPROM Reserved Keys
 
  + platform    : the name of the platform (e.g. ESP8266, DUE, LEONARDO, etc.)
  + board       : the name of the specific board (e.g. Adafruit Huzzah, NodeMCU, etc.)
@@ -66,6 +66,11 @@ These examples are specifically for the ESP8266 WiFi Platform.
  + wifi_ssid   : yourSSID
  + wifi_passwd : yourPASSWORD
  
+## Embedis MQTT AIO
+
+Embedis Example for ESP8266 running the Adafruit MQTT Client and connecting to Adafruit.IO servers.
+The example key named "mqtt_embedis" is sent to the Adafruit.IO MQTT servers,
+to demonstrate using Embedis and MQTT together.
  
 ## Contributors
 
