@@ -72,6 +72,13 @@ Embedis Example for ESP8266 running the Adafruit MQTT Client and connecting to A
 The example key named "mqtt_embedis" is sent to the Adafruit.IO MQTT servers,
 to demonstrate using Embedis and MQTT together.
  
+## Embedis I2C FRAM
+
+Embedis Example for ESP8266 and an extrernal I2C FRAM device, such as the MB85RC64, MB85RC256, FM24V10 and others.
+This examples uses the standard I2C "Wire" library and is GPIO4, and GPIO5 for SDA,SCL on the ESP8266,
+You can either "select EEPROM" or "select I2C_FRAM" as your destination Keystore for Embedis keys.
+ 
+
 ## Contributors
 
 The folks who make this project possible:
