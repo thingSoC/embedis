@@ -3,7 +3,7 @@
 ## Examples for Arduino Uno
 
 The Arduino IDE now has he capability to support many different CPU architectures and boards.
-These examples are specifically for the Arduino Due.
+These examples are specifically for the Arduino Uno.
 
 ## Contributors
 
