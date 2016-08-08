@@ -3,8 +3,7 @@
 ## Examples for Different Boards
 
 The Arduino IDE now has he capability to support many different CPU architectures and boards.
-The generic Embedis example uses the builtin EEPROM of the AVR/ATMEGA family, and
-will run on boards like the Uno, Leonardo, Mega, and their variations.
+The generic Embedis example uses the builtin EEPROM however many other add ons are possible..
 
 If you have a different board (and/or CPU architecture) you will need to use one of the examples specifically for that board.
 
