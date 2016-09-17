@@ -31,14 +31,14 @@
 
 /* Arduino Version Specific */
 #if defined(ARDUINO)
-  #if (ARDUINO >= 100)
-    /* newer Arduino IDE Version */
-    #include "Arduino.h"
     /* it's NEW! */
     inline void * operator new (size_t size, void * ptr) throw() {
       (void)size;
       return ptr;
     }
+  #if (ARDUINO >= 100)
+    /* newer Arduino IDE Version */
+    #include "Arduino.h"
   #else
    /* older Arduino IDE Version */
    #include "WProgram.h"
@@ -46,6 +46,7 @@
 #else
    /* NOT the Arduino IDE... */
    /* (i.e. Travis Testing Framework */
+   #include <new>
 #endif
 
 /* Architecture Specific */
