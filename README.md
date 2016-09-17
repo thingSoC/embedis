@@ -40,7 +40,7 @@ Now you can explore the Embedis examples under :
 
 > Files -> Examples -> Embedis -> Embedis
 
-Note Bene : The default example uses EEPROM only, and will only function  
+Note Bene : The default example uses EEPROM only, and will only function
 on boards with support for internal EEPROM (i.e. Arduino Uno/Leo/Mega/etc.),
 or boards with support for emulated EEPROM, such as the ESP8266.
 There are specific examples for boards with different capabilities, such as the Arduino Due,
@@ -48,8 +48,8 @@ that do NOT include EEPROM internal to the microprocessor.
 
 ## Using Embedis
 
-The Embedis command line interface (CLI) uses familiar SET/GET/DEL commands \n
-for storing, retriving, and deleting key-value pairs in the persistant memory stores. \n
+The Embedis command line interface (CLI) uses familiar SET/GET/DEL commands
+for storing, retriving, and deleting key-value pairs in the persistant memory stores.
 For example :
 
     ```
