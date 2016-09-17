@@ -17,18 +17,26 @@
 
 #include <Embedis.h>
 
-/* Test for ESP platform */
-#if defined(ARDUINO_ARCH_ESP8266)
-#include <EEPROM.h>
-#include "spi_flash.h"
+/* Test for platforms that have no native or emulated EEPROM - need special examples for those */
+#if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ARC32) || defined(__ARDUINO_X86__)
+#error "Please use the specific example for your board type as it has no native EEPROM - this generic example won't work for it."
 #else
-#error "Please use the specific example for your board type - this example is for ESP8266 only..."
+#include <EEPROM.h>
 #endif
 
 // Embedis will run on the Serial port. Use the Arduino
 // serial monitor and send "COMMANDS" to get started.
 // Make sure "No line ending" is -not- selected. All others work.
 Embedis embedis(Serial);
+
+/* If E2END isn't defined you can manually set this. 
+ * Set to 1024 bytes by default if undefined 
+ */
+#ifndef E2END
+  #define E2END 1023
+  #warning "EEPROM size set to 1024 by default!"
+#endif  
+const size_t EEPROM_SIZE = E2END + 1;
 
 void setup() 
 {
@@ -39,21 +47,19 @@ void setup()
     /* We use "LOG" instead of "serial.println", to create a LOG channel */
     /* Use SUBSCRIBE LOG to get these messages                           */
     LOG( String() + F(" ") );
-    LOG( String() + F("[ Embedis : ESP8266 Sketch ]") );
+    LOG( String() + F("[ Embedis : Arduino Uno (AVR Arch) Sketch ]") );
     LOG( String() + F("[ Embedis : select 115200 Baud and 'Both NL & CR' as your line ending ]") );
-
-    // Create a key-value Dictionary in emulated EEPROM (FLASH actually...)
-    EEPROM.begin(SPI_FLASH_SEC_SIZE);
-    Embedis::dictionary( 
-        "EEPROM",
-        SPI_FLASH_SEC_SIZE,
+   
+    // Create a key-value Dictionary in EEPROM
+    Embedis::dictionary( "EEPROM",
+        EEPROM_SIZE,
         [](size_t pos) -> char { return EEPROM.read(pos); },
-        [](size_t pos, char value) { EEPROM.write(pos, value); },
-        []() { EEPROM.commit(); }
+        [](size_t pos, char value) { EEPROM.write(pos, value); }
     );
     LOG( String() + F("[ Embedis : EEPROM dictionary installed ]") );
     LOG( String() + F("[ Embedis : EEPROM dictionary selected ]") );
-   
+
+    // Let's add some useful commands as an example...
     // Add pinMode command to mirror Arduino's
     Embedis::command( F("pinMode"), [](Embedis* e) {
         if (e->argc != 3) return e->response(Embedis::ARGS_ERROR);
@@ -103,6 +109,7 @@ void setup()
 
     /* okay, done setting up new dictionary and commands... */
     LOG( String() + F("[ Embedis : Type 'commands' to get a listing of commands ]") );    
+
 }
 
 void loop() 

@@ -19,17 +19,19 @@
 #include <DueFlashStorage.h>
 DueFlashStorage FlashDue;
 
-void setup_FLASH() 
-{
+void setup_FLASH() {
     setup_FLASH( F("FLASH") );
+
 }
 
-void setup_FLASH(const String& dict) 
-{
+void setup_FLASH(const String& dict) {
     Embedis::dictionary( dict,
         1024,
         [](size_t pos) -> char { return FlashDue.read(pos); },
         [](size_t pos, char value) { FlashDue.write(pos, value); },
         []() { }
     );
+    LOG( String() + F("[ Embedis : FLASH dictionary cleared on each Upload! ]") );
+    LOG( String() + F("[ Embedis : FLASH dictionary installed ]") );
+    LOG( String() + F("[ Embedis : FLASH dictionary selected ]") );
 }

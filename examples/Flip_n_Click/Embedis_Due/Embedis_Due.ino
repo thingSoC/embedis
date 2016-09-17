@@ -17,6 +17,11 @@
 
 #include <Embedis.h>
 
+/* Test for SAM platform */
+#if !defined(ARDUINO_ARCH_SAM)
+#error "Please use the specific example for your board type - this example is for SAM3X (Arduino Due) only..."
+#endif
+
 // Embedis will run on the Serial port. Use the Arduino
 // serial monitor and send "COMMANDS" to get started.
 // Make sure "No line ending" is -not- selected. All others work.
@@ -25,27 +30,37 @@ Embedis embedis(Serial);
 void setup() 
 {
     Serial.begin(115200);
-    delay(50);
+    while (!Serial) {
+      ; /* wait for serial port to connect. 
+           Needed for native USB (Leo, Teensy, Due, etc.) 
+           */
+    }
+    /* We use "LOG" instead of "serial.println", to create a LOG channel */
+    /* Use SUBSCRIBE LOG to get these messages                           */
     LOG( String() + F(" ") );
-    LOG( String() + F("[ Embedis Flip-n-Click (Arduino Due) Sketch ]") );
+    LOG( String() + F("[ Embedis : Flip-n-Click (Arduino Due) Sketch ]") );
     
-    // "FLASH" is the internal Flash memory of the Arduino Due Processor
+    /* create the "FLASH" dictionary */
+    /* "FLASH" is the internal Flash memory of the Arduino Due Processor, emulated EEPROM, etc. */
     setup_FLASH();
 
-    // Add the SPI FRAM Click Board in Socket C
+    /* create the "SPI_FRAM" dictionary             */
+    /* Add the SPI FRAM "Click" Board in Socket C   */
     setup_SPI_FRAM();
 
-    // Add the I2C EEPROM Click Board in Socket D
+    /* create the "I2C_EEPROM" dictionary             */
+    /* Add the I2C EEPROM Click Board in Socket D   */
     setup_I2C_EEPROM();
 
-    // Add some useful commands
+    /* Add some useful commands the embedis command line interpreter (CLI */
     setup_commands();
-    LOG( String() + F("[ type 'commands' to get a list... ]") );    
+    LOG( String() + F("[ Embedis : Type 'commands' to get a listing of commands ]") );    
 }
 
 void loop() 
 {
     embedis.process();
+    /* give delay - for any internal RTOS to switch context */
     delay(20);
 }
 

@@ -3,10 +3,8 @@
 ## Examples for Arduino101
 
 Just starting support for the Arduino101 platform.
-It compiles and executes, however the CurieEEPROM emulation in Flash,
+It compiles and executes, however the CurrieEEPROM emulation in Flash,
 doesn't appear to be "writing" data correctly yet - not sure where the problem lies...
-I'll work on it when I have time.
-The rest of the Embedis system is working, just not CurieEEPROM...
 
 ## Contributors
 

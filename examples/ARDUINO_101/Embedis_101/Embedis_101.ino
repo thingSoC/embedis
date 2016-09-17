@@ -18,25 +18,16 @@
 #include <Embedis.h>
 
 /* Test for Arduino101 platform - need special examples for those */
-#if defined(ARDUINO_ARC32_TOOLS)
-#include "CurieEEPROM.h"
+#if defined(ARDUINO_ARCH_ARC32)
+  #include "CurieEEPROM.h"
 #else
-#error "Please use the specific example for your board type as it has no native EEPROM - this generic example won't work for it."
+  #error "Please use the specific example for your board type this example is for the Arduino101/Curie Architecture"
 #endif
 
 // Embedis will run on the Serial port. Use the Arduino
 // serial monitor and send "COMMANDS" to get started.
 // Make sure "No line ending" is -not- selected. All others work.
 Embedis embedis(Serial);
-
-/* If E2END isn't defined you can manually set this. 
- * Set to 1024 bytes by default if undefined 
- */
-#ifndef E2END
-  #define E2END 1023
-  #warning "EEPROM size set to 1024 by default!"
-#endif  
-const size_t CUR_EEPROM_SIZE = E2END + 1;
 
 void setup() 
 {
@@ -46,11 +37,13 @@ void setup()
     }
     Serial.println("Embedis: enter 'commands' to list the available commands");    
     Serial.println("Embedis: select 'Both NL & CR' as your line ending");
-    
+
+    Serial.println("Embedis: Note : CurieEEPROM function on Arduino101 not working yet!");
+
     // Create a key-value Dictionary in EEPROM
     Embedis::dictionary( 
         "EEPROM",
-        CUR_EEPROM_SIZE,
+        1024,
         [](size_t pos) -> char { return EEPROM.read8(pos); },
         [](size_t pos, char value) { EEPROM.write8(pos, value); }
     );

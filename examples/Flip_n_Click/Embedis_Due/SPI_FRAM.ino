@@ -56,10 +56,10 @@ void setup_SPI_FRAM(const String& dict)
   pinMode(FRAM_WRTP, OUTPUT);
   digitalWrite(FRAM_WRTP, HIGH);
   if (fram.begin()) {
-    LOG( String() + F("[ Found SPI_FRAM ]") );
+    LOG( String() + F("[ Embedis : Found SPI_FRAM ]") );
     fram.writeEnable(false);
   } else {
-    LOG( String() + F("[ No SPI_FRAM found ... check your connections and address setting! ]") );
+    LOG( String() + F("[ Embedis : No SPI_FRAM found ... check your connections and address setting! ]") );
     while (1);
   }
 
@@ -69,4 +69,5 @@ void setup_SPI_FRAM(const String& dict)
         [](size_t pos, char value) { fram.writeEnable(true); fram.write8(pos, value); fram.writeEnable(false); },
         []() { }
     );
+        LOG( String() + F("[ Embedis : SPI_FRAM dictionary installed ]") );
 }

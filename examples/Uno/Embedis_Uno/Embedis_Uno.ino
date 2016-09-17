@@ -18,7 +18,7 @@
 #include <Embedis.h>
 
 /* Test for platforms that have no native or emulated EEPROM - need special examples for those */
-#if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_SAMD) || defined(__ARDUINO_X86__) || defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARC32_TOOLS)
+#if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_SAMD) || defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ARC32) || defined(__ARDUINO_X86__)
 #error "Please use the specific example for your board type as it has no native EEPROM - this generic example won't work for it."
 #else
 #include <EEPROM.h>
@@ -44,16 +44,22 @@ void setup()
     while (!Serial) {
       ; // wait for serial port to connect. Needed for native USB (Leo, Teensy, etc)
     }
-    Serial.println("Embedis: enter 'commands' to list the available commands");    
-    Serial.println("Embedis: select 'Both NL & CR' as your line ending");
-    
+    /* We use "LOG" instead of "serial.println", to create a LOG channel */
+    /* Use SUBSCRIBE LOG to get these messages                           */
+    LOG( String() + F(" ") );
+    LOG( String() + F("[ Embedis : Arduino Uno (AVR Arch) Sketch ]") );
+    LOG( String() + F("[ Embedis : select 115200 Baud and 'Both NL & CR' as your line ending ]") );
+   
     // Create a key-value Dictionary in EEPROM
     Embedis::dictionary( "EEPROM",
         EEPROM_SIZE,
         [](size_t pos) -> char { return EEPROM.read(pos); },
         [](size_t pos, char value) { EEPROM.write(pos, value); }
     );
-    
+    LOG( String() + F("[ Embedis : EEPROM dictionary installed ]") );
+    LOG( String() + F("[ Embedis : EEPROM dictionary selected ]") );
+
+    // Let's add some useful commands as an example...
     // Add pinMode command to mirror Arduino's
     Embedis::command( F("pinMode"), [](Embedis* e) {
         if (e->argc != 3) return e->response(Embedis::ARGS_ERROR);
@@ -101,9 +107,28 @@ void setup()
         e->response(':', analogRead(pin));
     });
 
+    /* okay, done setting up new dictionary and commands... */
+    LOG( String() + F("[ Embedis : Type 'commands' to get a listing of commands ]") );    
 }
 
 void loop() 
 {
     embedis.process();
+    /* give delay - for any internal RTOS to switch context */
+    delay(20);
+}
+
+// This will log to an embedis channel called "log".
+// Use SUBSCRIBE LOG to get these messages.
+// Logs are also printed to Serial until an empty message is received.
+void LOG(const String& message) {
+    static bool inSetup = true;
+    if (inSetup) {
+        if (!message.length()) {
+            inSetup = false;
+            return;
+        }
+        SERIAL_PORT_MONITOR.println(message);
+    }
+    Embedis::publish("log", message);
 }

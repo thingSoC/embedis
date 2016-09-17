@@ -31,9 +31,9 @@ void setup_I2C_EEPROM(const String& dict)
 {
   uint8_t ext_i2c_eepromStatus = ext_i2c_eeprom.begin(twiClock400kHz);
   if (ext_i2c_eepromStatus) {
-    LOG( String() + F("[ No I2C_EEPROM found ... check your connections and address setting! ]") );
+    LOG( String() + F("[ Embedis : No I2C_EEPROM found ... check your connections and address setting! ]") );
   } else {
-    LOG( String() + F("[ Found I2C_EEPROM ]") );
+    LOG( String() + F("[ Embedis : Found I2C_EEPROM ]") );
   }
 
     Embedis::dictionary( dict,
@@ -42,5 +42,6 @@ void setup_I2C_EEPROM(const String& dict)
         [](size_t pos, char value) { ext_i2c_eeprom.write(pos, value); },
         []() { }
     );
+    LOG( String() + F("[ Embedis : I2C_EEPROM dictionary installed ]") );
 }
 
