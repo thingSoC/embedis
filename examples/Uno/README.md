@@ -4,6 +4,7 @@
 
 The Arduino IDE now has he capability to support many different CPU architectures and boards.
 These examples are specifically for the Arduino Uno.
+They also work with the other AVR varients like the Arduino Pro, Mini, Leonardo, Mega, etc. 
 
 ## Contributors
 

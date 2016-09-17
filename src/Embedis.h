@@ -28,55 +28,10 @@
    I have looked at many examples, but if anyone has a better,
    more canonical way to do this, please, please show me...
 */
-
-/* Arduino Version Specific */
-#if defined(ARDUINO)
-    /* it's NEW! */
-    inline void * operator new (size_t size, void * ptr) throw() {
-      (void)size;
-      return ptr;
-    }
-  #if (ARDUINO >= 100)
-    /* newer Arduino IDE Version */
-    #include "Arduino.h"
-  #else
-   /* older Arduino IDE Version */
-   #include "WProgram.h"
-  #endif
-#else
-   /* NOT the Arduino IDE... */
-   /* (i.e. Travis Testing Framework */
-   #include <new>
-#endif
-
-/* Architecture Specific */
-#if defined(ARDUINO_ARCH_AVR)
-   // AVR specific code
-   // break down further by cpu model if necessary
-   #include "avr/pgmspace.h"
-#elif defined(ARDUINO_ARCH_SAM)
-  // SAM-specific code
-  // break down further by cpu model if necessary 
-#elif defined(ARDUINO_ARCH_SAMD)
-  // SAMD-specific code
-  // break down further by cpu model if necessary
-#elif defined(ARDUINO_ARCH_ARC32)
-  // Arduino101 Arc Core Specific
-#elif defined(CORE_TEENSY)
-  // Teensy specific
-  // this is not ideal, maybe use "_ARCH_" when available
-  // break down further by cpu model if necessary 
-  #include "avr/pgmspace.h"
-#elif defined(ESP_H)
-  // ESP8266 specific
-  // this is not ideal, maybe use "_ARCH_" when available
-#elif defined(__X86__)
-  // Edison, Galileo, x86 specific
-#else
-  // untested architecture, it might work...
-  //#pragma message ( "Core Architecture not Recognized - untested... " )
-  #include "avr/pgmspace.h"
-#endif
+/* Non-Specific (i.e.generic) Includes */
+/* these should generally work everywhere... */
+#include <stddef.h>
+#include <stdint.h>
 
 /* C/C++ Compiler Specific */
 #if   defined ( __CC_ARM )
@@ -106,13 +61,65 @@
 
 #endif
 
-/* Non-Specific (i.e.generic) Includes */
-/* stuff below should generally work everywhere... */
-#include <stddef.h>
-#include <stdint.h>
-#include "WString.h"
-#include "Stream.h"
+/* Architecture Specific */
+#if defined(ARDUINO_ARCH_AVR)
+   /* AVR specific code - break down further by cpu model if necessary */
+   // #pragma message ( "AVR Architecture Selected" )
+   #include "avr/pgmspace.h"
+#elif defined(ARDUINO_ARCH_SAM)
+   /* SAM3X specific code - break down further by cpu model if necessary */
+   // #pragma message ( "SAM3X Architecture Selected" )
+#elif defined(ARDUINO_ARCH_SAMD)
+   /* SAMD specific code - break down further by cpu model if necessary */
+   // #pragma message ( "SAMD Architecture Selected" )
+#elif defined(ARDUINO_ARCH_ARC32)
+   /* Currie/101 specific code - break down further by cpu model if necessary */
+   // #pragma message ( "ARC32/Currie Architecture Selected" )
+#elif defined(ARDUINO_ARCH_ESP8266)
+   /* ESP8266 specific code - break down further by cpu model if necessary */
+   // #pragma message ( "ESP8266 Architecture Selected" )
+#elif defined(CORE_TEENSY)
+   /* Teensy3.x specific code - break down further by cpu model if necessary */
+   /* this is not ideal, should change to use "_ARCH_" */ 
+   // #pragma message ( "Teensy Core Architecture Selected" )
+  #include "avr/pgmspace.h"
+#elif defined(__X86__)
+   /* Edison, Galileo, x86 specific code - break down further by cpu model if necessary */
+   /* this is not ideal, should change to use "_ARCH_" */ 
+   // #pragma message ( "X86 Architecture Selected" )
+#else
+  /* untested architecture, it might work, but likely not... */
+  // #pragma message "Core Architecture not Recognized - untested... "
+  #include "avr/pgmspace.h"
+#endif
 
+/* Arduino Version Specific */
+#if defined(ARDUINO)
+    #include "WString.h"
+    #include "Stream.h"
+    /* it's NEW! */
+	/* "<new>" doesn't seem to be supported on all platforms/compilers           */
+	/* this should likely be selected per compiler and not by Arduino IDE...     */
+	/* but this works, until I can track down all the difference in compilers... */
+	inline void * operator new(size_t size, void * ptr) {
+      (void)size;
+      return ptr;
+    }
+  #if (ARDUINO >= 100)
+    /* newer Arduino IDE Version */
+    #include "Arduino.h"
+  #else
+   /* older Arduino IDE Version */
+   #include "WProgram.h"
+  #endif
+#else
+   /* NOT the Arduino IDE... */
+   /* (i.e. Travis Testing Framework */
+   /* these files generally need to be provided to the testing framework */
+   #include "WString.h"
+   #include "Stream.h"
+   #include <new>
+#endif
 
 /* embedis class */
 class Embedis {

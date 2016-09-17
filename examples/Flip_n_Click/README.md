@@ -3,7 +3,7 @@
 ## Examples for SAM3X - MikroElectronica Flip-n-Click
 
 The Arduino IDE now has he capability to support many different CPU architectures and boards.
-These examples are specifically for the MikroElectronica Flip-n-Click.
+These examples are specifically for the MikroElectronica Flip-n-Click, and the Arduino Due.
 
 ## Contributors
 
