@@ -20,25 +20,91 @@
 #ifdef __cplusplus
 
 
-// Arduino is like a box of chocolates.
-// You never know what you're going to get.
-#if __cplusplus < 201103L
+/* Arduino is like a box of chocolates,
+   You never know what you're going to get...
+   
+   could be any compiler, version, or c/c++ libraries,
+   could be any processor architecture, board, configuration, ...
+   I have looked at many examples, but if anyone has a better,
+   more canonical way to do this, please, please show me...
+*/
+/* Arduino Version Specific */
+#if (ARDUINO >= 100)
+ #include "Arduino.h"
+#else
+ #include "WProgram.h"
+#endif
+
+/* Architecture Specific */
+#if defined(ARDUINO_ARCH_AVR)
+   // AVR specific code
+   // break down further by cpu model if necessary
+   #include "avr/pgmspace.h"
+#elif defined(ARDUINO_ARCH_SAM)
+  // SAM-specific code
+  // break down further by cpu model if necessary 
+#elif defined(ARDUINO_ARCH_SAMD)
+  // SAMD-specific code
+  // break down further by cpu model if necessary
+#elif defined(ARDUINO_ARCH_ARC32)
+  // Arduino101 Arc Core Specific
+#elif defined(CORE_TEENSY)
+  // Teensy specific
+  // this is not ideal, maybe use "_ARCH_" when available
+  // break down further by cpu model if necessary 
+  #include "avr/pgmspace.h"
+#elif defined(ESP_H)
+  // ESP8266 specific
+  // this is not ideal, maybe use "_ARCH_" when available
+#elif defined(__X86__)
+  // Edison, Galileo, x86 specific
+#else
+  // untested architecture, it might work...
+  #pragma message ( "Core Architecture not Recognized - untested... " )
+#endif
+
+/* C/C++ Compiler Specific */
+#if   defined ( __CC_ARM )
+  #define __ASM            __asm                                      /*!< asm keyword for ARM Compiler          */
+  #define __INLINE         __inline                                   /*!< inline keyword for ARM Compiler       */
+  #define __STATIC_INLINE  static __inline
+#elif defined ( __ICCARM__ )
+  #define __ASM            __asm                                      /*!< asm keyword for IAR Compiler          */
+  #define __INLINE         inline                                     /*!< inline keyword for IAR Compiler. Only available in High optimization mode! */
+  #define __STATIC_INLINE  static inline
+#elif defined ( __TMS470__ )
+  #define __ASM            __asm                                      /*!< asm keyword for TI CCS Compiler       */
+  #define __STATIC_INLINE  static inline
+#elif defined ( __GNUC__ )
+  #define __ASM            __asm                                      /*!< asm keyword for GNU Compiler          */
+  #define __INLINE         inline                                     /*!< inline keyword for GNU Compiler       */
+  #define __STATIC_INLINE  static inline
+  /* Obsolete versions for now...
+     #include <cstddef>
+     #include <cstdint>
+     #include <new>
+   */
+#elif defined ( __TASKING__ )
+  #define __ASM            __asm                                      /*!< asm keyword for TASKING Compiler      */
+  #define __INLINE         inline                                     /*!< inline keyword for TASKING Compiler   */
+  #define __STATIC_INLINE  static inline
+
+#endif
+
+/* Non-Specific (i.e.generic) Includes */
+/* stuff below should generally work everywhere... */
 #include <stddef.h>
 #include <stdint.h>
+#include "WString.h"
+#include "Stream.h"
+
+/* it's NEW! */
 inline void * operator new (size_t size, void * ptr) {
     (void)size;
     return ptr;
 }
-#else
-#include <cstddef>
-#include <cstdint>
-#include <new>
-#endif
 
-#include "WString.h"
-#include "Stream.h"
-
-
+/* embedis class */
 class Embedis {
 protected:
 

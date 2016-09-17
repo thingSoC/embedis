@@ -16,21 +16,38 @@
 */
 
 #include <Embedis.h>
+
+/* Test for platforms that have no native or emulated EEPROM - need special examples for those */
+#if defined(ARDUINO_ARCH_SAM) || defined(ARDUINO_ARCH_SAMD) || defined(__ARDUINO_X86__) || defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARC32_TOOLS)
+#error "Please use the specific example for your board type as it has no native EEPROM - this generic example won't work for it."
+#else
 #include <EEPROM.h>
+#endif
 
 // Embedis will run on the Serial port. Use the Arduino
 // serial monitor and send "COMMANDS" to get started.
 // Make sure "No line ending" is -not- selected. All others work.
 Embedis embedis(Serial);
 
-// If E2END isn't defined you can manually set this.
+/* If E2END isn't defined you can manually set this. 
+ * Set to 1024 bytes by default if undefined 
+ */
+#ifndef E2END
+  #define E2END 1023
+  #warning "EEPROM size set to 1024 by default!"
+#endif  
 const size_t EEPROM_SIZE = E2END + 1;
 
 void setup() 
 {
     Serial.begin(115200);
+    while (!Serial) {
+      ; // wait for serial port to connect. Needed for native USB (Leo, Teensy, etc)
+    }
+    Serial.println("Embedis: enter 'commands' to list the available commands");    
+    Serial.println("Embedis: select 'Both NL & CR' as your line ending");
     
-    // Add a key-value store.
+    // Create a key-value Dictionary in EEPROM
     Embedis::dictionary( "EEPROM",
         EEPROM_SIZE,
         [](size_t pos) -> char { return EEPROM.read(pos); },

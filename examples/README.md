@@ -5,7 +5,7 @@
 The Arduino IDE now has he capability to support many different CPU architectures and boards.
 The generic Embedis example uses the builtin EEPROM however many other add ons are possible..
 
-If you have a different board (and/or CPU architecture) you will need to use one of the examples specifically for that board.
+If you have a different board (and/or CPU architecture) you will need to use one of the examples specifically for that architecture or board.
 
 ## Contributors
 
