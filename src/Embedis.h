@@ -29,11 +29,13 @@
    more canonical way to do this, please, please show me...
 */
 /* Arduino Version Specific */
+/*
 #if (ARDUINO >= 100)
  #include "Arduino.h"
 #else
  #include "WProgram.h"
 #endif
+*/
 
 /* Architecture Specific */
 #if defined(ARDUINO_ARCH_AVR)
@@ -61,6 +63,7 @@
 #else
   // untested architecture, it might work...
   #pragma message ( "Core Architecture not Recognized - untested... " )
+  #include "avr/pgmspace.h"
 #endif
 
 /* C/C++ Compiler Specific */
