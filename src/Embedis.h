@@ -30,13 +30,23 @@
 */
 
 /* Arduino Version Specific */
-/*
-#if (ARDUINO >= 100)
- #include "Arduino.h"
+#if defined(ARDUINO)
+  #if (ARDUINO >= 100)
+    /* newer Arduino IDE Version */
+    #include "Arduino.h"
+    /* it's NEW! */
+    inline void * operator new (size_t size, void * ptr) throw() {
+      (void)size;
+      return ptr;
+    }
+  #else
+   /* older Arduino IDE Version */
+   #include "WProgram.h"
+  #endif
 #else
- #include "WProgram.h"
+   /* NOT the Arduino IDE... */
+   /* (i.e. Travis Testing Framework */
 #endif
-*/
 
 /* Architecture Specific */
 #if defined(ARDUINO_ARCH_AVR)
@@ -63,7 +73,7 @@
   // Edison, Galileo, x86 specific
 #else
   // untested architecture, it might work...
-  #pragma message ( "Core Architecture not Recognized - untested... " )
+  //#pragma message ( "Core Architecture not Recognized - untested... " )
   #include "avr/pgmspace.h"
 #endif
 
@@ -83,7 +93,7 @@
   #define __ASM            __asm                                      /*!< asm keyword for GNU Compiler          */
   #define __INLINE         inline                                     /*!< inline keyword for GNU Compiler       */
   #define __STATIC_INLINE  static inline
-  /* Obsolete versions for now...
+  /* Obsolete versions are stubbed out for now...
      #include <cstddef>
      #include <cstdint>
      #include <new>
@@ -102,11 +112,6 @@
 #include "WString.h"
 #include "Stream.h"
 
-/* it's NEW! */
-inline void * operator new (size_t size, void * ptr) throw() {
-    (void)size;
-    return ptr;
-}
 
 /* embedis class */
 class Embedis {
