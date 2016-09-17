@@ -103,7 +103,7 @@
 #include "Stream.h"
 
 /* it's NEW! */
-inline void * operator new (size_t size, void * ptr) {
+inline void * operator new (size_t size, void * ptr) throw() {
     (void)size;
     return ptr;
 }
