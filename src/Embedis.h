@@ -83,10 +83,11 @@
    /* this is not ideal, should change to use "_ARCH_" */ 
    // #pragma message ( "Teensy Core Architecture Selected" )
   #include "avr/pgmspace.h"
-#elif defined(__X86__)
+#elif defined(__ARDUINO_X86__)
    /* Edison, Galileo, x86 specific code - break down further by cpu model if necessary */
    /* this is not ideal, should change to use "_ARCH_" */ 
    // #pragma message ( "X86 Architecture Selected" )
+   #include "avr/pgmspace.h"
 #else
   /* untested architecture, it might work, but likely not... */
   // #pragma message "Core Architecture not Recognized - untested... "

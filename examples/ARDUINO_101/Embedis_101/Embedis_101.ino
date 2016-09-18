@@ -35,10 +35,12 @@ void setup()
     while (!Serial) {
       ; // wait for serial port to connect. Needed for native USB (Leo, Teensy, etc)
     }
-    Serial.println("Embedis: enter 'commands' to list the available commands");    
-    Serial.println("Embedis: select 'Both NL & CR' as your line ending");
-
-    Serial.println("Embedis: Note : CurieEEPROM function on Arduino101 not working yet!");
+    /* We use "LOG" instead of "serial.println", to create a LOG channel */
+    /* Use SUBSCRIBE LOG to get these messages                           */
+    LOG( String() + F(" ") );
+    LOG( String() + F("[ Embedis : ESP8266 Sketch ]") );
+    LOG( String() + F("[ Embedis : select 115200 Baud and 'Both NL & CR' as your line ending ]") );
+    LOG( String() + F("[ Embedis : Note Bene! CurieEEPROM write function not working yet (we're working on it) ]") );
 
     // Create a key-value Dictionary in EEPROM
     Embedis::dictionary( 
@@ -47,7 +49,9 @@ void setup()
         [](size_t pos) -> char { return EEPROM.read8(pos); },
         [](size_t pos, char value) { EEPROM.write8(pos, value); }
     );
-    
+    LOG( String() + F("[ Embedis : EEPROM dictionary installed ]") );
+    LOG( String() + F("[ Embedis : EEPROM dictionary selected ]") );
+   
     // Add pinMode command to mirror Arduino's
     Embedis::command( F("pinMode"), [](Embedis* e) {
         if (e->argc != 3) return e->response(Embedis::ARGS_ERROR);
@@ -95,9 +99,28 @@ void setup()
         e->response(':', analogRead(pin));
     });
 
+    /* okay, done setting up new dictionary and commands... */
+    LOG( String() + F("[ Embedis : Type 'commands' to get a listing of commands ]") );
 }
 
 void loop() 
 {
     embedis.process();
+    /* give delay - for any internal RTOS to switch context */
+    delay(20);
+}
+
+// This will log to an embedis channel called "log".
+// Use SUBSCRIBE LOG to get these messages.
+// Logs are also printed to Serial until an empty message is received.
+void LOG(const String& message) {
+    static bool inSetup = true;
+    if (inSetup) {
+        if (!message.length()) {
+            inSetup = false;
+            return;
+        }
+        SERIAL_PORT_MONITOR.println(message);
+    }
+    Embedis::publish("log", message);
 }
