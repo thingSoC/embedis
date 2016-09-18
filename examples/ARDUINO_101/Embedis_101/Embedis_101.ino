@@ -18,10 +18,8 @@
 #include <Embedis.h>
 
 /* Test for Arduino101 platform - need special examples for those */
-#if defined(ARDUINO_ARCH_ARC32)
-  #include "CurieEEPROM.h"
-#else
-  #error "Please use the specific example for your board type this example is for the Arduino101/Curie Architecture"
+#if !defined(ARDUINO_ARCH_ARC32)
+  #error "Please use the specific example for your board type this example is for the Arduino101 (Intel Curie) Architecture"
 #endif
 
 // Embedis will run on the Serial port. Use the Arduino
@@ -38,69 +36,20 @@ void setup()
     /* We use "LOG" instead of "serial.println", to create a LOG channel */
     /* Use SUBSCRIBE LOG to get these messages                           */
     LOG( String() + F(" ") );
-    LOG( String() + F("[ Embedis : ESP8266 Sketch ]") );
+    LOG( String() + F("[ Embedis : Arduino101 (Intel Curie) Sketch ]") );
     LOG( String() + F("[ Embedis : select 115200 Baud and 'Both NL & CR' as your line ending ]") );
-    LOG( String() + F("[ Embedis : Note Bene! CurieEEPROM write function not working yet (we're working on it) ]") );
 
-    // Create a key-value Dictionary in EEPROM
-    Embedis::dictionary( 
-        "EEPROM",
-        1024,
-        [](size_t pos) -> char { return EEPROM.read8(pos); },
-        [](size_t pos, char value) { EEPROM.write8(pos, value); }
-    );
-    LOG( String() + F("[ Embedis : EEPROM dictionary installed ]") );
-    LOG( String() + F("[ Embedis : EEPROM dictionary selected ]") );
-   
-    // Add pinMode command to mirror Arduino's
-    Embedis::command( F("pinMode"), [](Embedis* e) {
-        if (e->argc != 3) return e->response(Embedis::ARGS_ERROR);
-        int pin = String(e->argv[1]).toInt();
-        String argv3(e->argv[2]);
-        argv3.toUpperCase();
-        int mode;
-        if (argv3 == "INPUT") mode = INPUT;
-        else if (argv3 == "OUTPUT") mode = OUTPUT;
-        else if (argv3 == "INPUT_PULLUP") mode = INPUT_PULLUP;
-        else return e->response(Embedis::ARGS_ERROR);
-        pinMode(pin, mode);
-        e->response(Embedis::OK);
-    });
+    /* create the "SRAM" dictionary (internal RAM)  */
+    setup_SRAM();
 
-    // Add digitalWrite command to mirror Arduino's
-    Embedis::command( F("digitalWrite"), [](Embedis* e) {
-        if (e->argc != 3) return e->response(Embedis::ARGS_ERROR);
-        int pin = String(e->argv[1]).toInt();
-        String argv3(e->argv[2]);
-        argv3.toUpperCase();
-        int mode;
-        if (argv3 == "HIGH") mode = HIGH;
-        else if (argv3 == "LOW") mode = LOW;
-        else mode = argv3.toInt();
-        digitalWrite(pin, mode);
-        e->response(Embedis::OK);
-    });
+    /* create the "EEPROM" dictionary (internal EEPROM) */
+    setup_EEPROM();
 
-    // Add digitalRead command to mirror Arduino's
-    Embedis::command( F("digitalRead"), [](Embedis* e) {
-        if (e->argc != 2) return e->response(Embedis::ARGS_ERROR);
-        int pin = String(e->argv[1]).toInt();
-        if (digitalRead(pin)) {
-            e->response(F("HIGH"));
-        } else {
-            e->response(F("LOW"));
-        }
-    });
+    /* create the "ROM" dictionary (internal FLASH - Read-Only)  */
+    setup_ROM();
 
-    // Add analogRead command to mirror Arduino's
-    Embedis::command( F("analogRead"), [](Embedis* e) {
-        if (e->argc != 2) return e->response(Embedis::ARGS_ERROR);
-        int pin = String(e->argv[1]).toInt();
-        e->response(':', analogRead(pin));
-    });
-
-    /* okay, done setting up new dictionary and commands... */
-    LOG( String() + F("[ Embedis : Type 'commands' to get a listing of commands ]") );
+    /* Add some useful commands the embedis command line interpreter (CLI */
+    setup_commands();
 }
 
 void loop() 
