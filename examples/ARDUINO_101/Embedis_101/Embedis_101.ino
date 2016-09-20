@@ -45,9 +45,6 @@ void setup()
     /* create the "EEPROM" dictionary (internal EEPROM) */
     setup_EEPROM();
 
-    /* create the "ROM" dictionary (internal FLASH - Read-Only)  */
-    setup_ROM();
-
     /* Add some useful commands the embedis command line interpreter (CLI */
     setup_commands();
 }

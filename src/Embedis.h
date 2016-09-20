@@ -66,23 +66,43 @@
    /* AVR specific code - break down further by cpu model if necessary */
    // #pragma message ( "AVR Architecture Selected" )
    #include "avr/pgmspace.h"
+    /* it's NEW! */
+	/* "<new>" doesn't seem to be supported on all platforms/compilers           */
+	/* this should likely be selected per compiler and not by Arduino IDE...     */
+	/* but this works, until I can track down all the difference in compilers... */
+	inline void * operator new(size_t size, void * ptr) {
+      (void)size;
+      return ptr;
+    }
 #elif defined(ARDUINO_ARCH_SAM)
    /* SAM3X specific code - break down further by cpu model if necessary */
    // #pragma message ( "SAM3X Architecture Selected" )
+  #include <new>
 #elif defined(ARDUINO_ARCH_SAMD)
    /* SAMD specific code - break down further by cpu model if necessary */
    // #pragma message ( "SAMD Architecture Selected" )
+  #include <new>
 #elif defined(ARDUINO_ARCH_ARC32)
    /* Currie/101 specific code - break down further by cpu model if necessary */
    // #pragma message ( "ARC32/Currie Architecture Selected" )
+    /* it's NEW! */
+	/* "<new>" doesn't seem to be supported on all platforms/compilers           */
+	/* this should likely be selected per compiler and not by Arduino IDE...     */
+	/* but this works, until I can track down all the difference in compilers... */
+	inline void * operator new(size_t size, void * ptr) {
+      (void)size;
+      return ptr;
+    }
 #elif defined(ARDUINO_ARCH_ESP8266)
    /* ESP8266 specific code - break down further by cpu model if necessary */
    // #pragma message ( "ESP8266 Architecture Selected" )
+  #include <new>
 #elif defined(CORE_TEENSY)
    /* Teensy3.x specific code - break down further by cpu model if necessary */
    /* this is not ideal, should change to use "_ARCH_" */ 
    // #pragma message ( "Teensy Core Architecture Selected" )
   #include "avr/pgmspace.h"
+  #include <new>
 #elif defined(__ARDUINO_X86__)
    /* Edison, Galileo, x86 specific code - break down further by cpu model if necessary */
    /* this is not ideal, should change to use "_ARCH_" */ 
@@ -92,20 +112,13 @@
   /* untested architecture, it might work, but likely not... */
   // #pragma message "Core Architecture not Recognized - untested... "
   #include "avr/pgmspace.h"
+  #include <new>
 #endif
 
 /* Arduino Version Specific */
 #if defined(ARDUINO)
     #include "WString.h"
     #include "Stream.h"
-    /* it's NEW! */
-	/* "<new>" doesn't seem to be supported on all platforms/compilers           */
-	/* this should likely be selected per compiler and not by Arduino IDE...     */
-	/* but this works, until I can track down all the difference in compilers... */
-	inline void * operator new(size_t size, void * ptr) {
-      (void)size;
-      return ptr;
-    }
   #if (ARDUINO >= 100)
     /* newer Arduino IDE Version */
     #include "Arduino.h"
@@ -117,9 +130,9 @@
    /* NOT the Arduino IDE... */
    /* (i.e. Travis Testing Framework */
    /* these files generally need to be provided to the testing framework */
+   /* if it is not within the Arduino IDE, which is why they are called out here */
    #include "WString.h"
    #include "Stream.h"
-   #include <new>
 #endif
 
 /* embedis class */
