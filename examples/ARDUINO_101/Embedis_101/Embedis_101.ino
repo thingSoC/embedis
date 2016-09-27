@@ -39,11 +39,11 @@ void setup()
     LOG( String() + F("[ Embedis : Arduino101 (Intel Curie) Sketch ]") );
     LOG( String() + F("[ Embedis : select 115200 Baud and 'Both NL & CR' as your line ending ]") );
 
-    /* create the "SRAM" dictionary (internal RAM)  */
-    setup_SRAM();
-
     /* create the "EEPROM" dictionary (internal EEPROM) */
     setup_EEPROM();
+
+    /* create the "SRAM" dictionary (internal RAM)  */
+    setup_SRAM();
 
     /* Add some useful commands the embedis command line interpreter (CLI */
     setup_commands();

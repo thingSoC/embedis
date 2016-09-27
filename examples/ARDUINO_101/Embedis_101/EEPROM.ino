@@ -26,11 +26,7 @@
 // e.g. embedis-> select EEPROM
 // The Embedis default database is "EEPROM", using the internal EEPROM memory.
 //
-#if defined(ARDUINO_ARCH_ARC32)
-  #include "CurieEEPROM.h"
-#else
-  #include <EEPROM.h>
-#endif
+#include <EEPROM.h>
 
 // Set your particular EEPROM size, which may want to be less than the physical device size.
 // As an example, a 16K byte EEPROM might use only the first 4096 bytes to
@@ -54,12 +50,12 @@ void setup_EEPROM(const String& dict)
     EEPROM.begin();
     Embedis::dictionary( dict,
         emEEPROM_SIZE,
-        [](size_t pos) -> char { return EEPROM.read8(pos); },
-        [](size_t pos, char value) { EEPROM.write8(pos, value); },
+        [](size_t pos) -> char { return EEPROM.read(pos); },
+        [](size_t pos, char value) { EEPROM.write(pos, value); },
         []() { delay(10); }
     );
         LOG( String() + F("[ Embedis : EEPROM dictionary installed ]") );
         LOG( String() + F("[ Embedis : EEPROM dictionary selected ]") );
-        LOG( String() + F("[ Embedis : Note Bene! CurieEEPROM is NOT writing data yet - we're working on it! ]") );
+        LOG( String() + F("[ Embedis : Note Bene! EEPROM 'Set' takes a long time on Arduino101... (wait for it!)]") );
 }
 

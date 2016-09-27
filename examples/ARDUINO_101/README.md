@@ -2,9 +2,14 @@
 
 ## Examples for Arduino101
 
-Just starting support for the Arduino101 platform.
-It compiles and executes, however the CurrieEEPROM emulation in Flash,
-doesn't appear to be "writing" data correctly yet - not sure where the problem lies...
+Initial support for the Arduino101 platform.
+
+Notes: 
+ 1) Tested good on 9/26/2016 with configuration:  
+    IntelCurieBoard (Arduino101) Version 1.0.7 on Arduino Version 1.6.9  
+    "set" (EEPROM Write) takes a LONG TIME to return - like 20-30 secs  
+    so there is still something funky with "CurieEEPROM" we think...  
+
 
 ## Contributors
 
