@@ -50,5 +50,7 @@ void setup_EEPROM(const String& dict)
         [](size_t pos, char value) { EEPROM.write(pos, value); },
         []() { EEPROM.commit(); }
     );
+    LOG( String() + F("[ Embedis : EEPROM dictionary installed ]") );
+    LOG( String() + F("[ Embedis : EEPROM dictionary selected ]") );
 }
 

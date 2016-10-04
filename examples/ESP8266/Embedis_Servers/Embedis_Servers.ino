@@ -66,9 +66,12 @@
    ======================================================================================
 */
 
+#if !defined(ARDUINO_ARCH_ESP8266)
+#error "This Sketch is for the ESP8266/ESP32 Platform only..., untested on others..."
+#endif
+
 #include <ESP8266WiFi.h>
 #include "Embedis.h"
-
 Embedis embedis(Serial); /* the LOG/console Serial monitor */
 
 static uint8_t led;      /* a blinky LED (GPIO output)     */
@@ -79,19 +82,22 @@ void setup()
     Serial.begin(115200);
     delay(50);
     LOG( String() + F(" ") );
-    LOG( String() + F("[ Embedis Servers Sketch ]") );
+    LOG( String() + F("[ ==================================================== ]") );
+    LOG( String() + F("[ Embedis : WWW/Telnet/CLI Servers Sketch for ESP8266! ]") );
+    LOG( String() + F("[ ==================================================== ]") );
     
     setup_EEPROM();   // keep this second, the configuration settings are loaded here
-    setup_commands();
     setup_vcc();
+    setup_commands();
     setup_webserver();
     setup_telnet();
+
     
     // setup the LED pin based on the Embedis key "led_pin"
     String led_pin_number = setting_led_pin();
     led = (uint8_t) led_pin_number.toInt();
     pinMode(led, OUTPUT);
-    LOG( String() + F("Platform led_pin_number: ") +  led_pin_number + F(" led_pin: ") + led);
+    LOG( String() + F("[ Embedis : Platform led_pin_number: ") +  led_pin_number + F(" led_pin: ") + led + F(" ]"));
 }
 
 void loop() 

@@ -86,5 +86,7 @@ void setup_commands()
         int pin = String(e->argv[1]).toInt();
         e->response(':', analogRead(pin));
     });
-
+    
+    LOG( String() + F("[ Embedis : Additional commands installed ]") );    
+    LOG( String() + F("[ Embedis : Type 'commands' to get a listing of commands ]") );    
 }

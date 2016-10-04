@@ -30,14 +30,15 @@ ESP8266WebServer server80( 80 );
 class LogRequestHandler : public RequestHandler {
 public:
     virtual bool canHandle(HTTPMethod method, String uri) {
-        String ls("Webserver ");
+        String ls("[ Embedis : Webserver ");
+        String ps(" ] ");
         if (method == HTTP_GET) ls += "GET ";
         if (method == HTTP_POST) ls += "POST ";
         if (method == HTTP_PUT) ls += "PUT ";
         if (method == HTTP_PATCH) ls += "PATCH  ";
         if (method == HTTP_DELETE) ls += "DELETE ";
         if (method == HTTP_OPTIONS) ls += "OPTIONS ";
-        LOG(ls + uri);
+        LOG(ls + uri + ps);
         return false;
     }
 };
@@ -54,9 +55,9 @@ void setup_webserver(const String& root)
     // SPIFFS.begin() can crash so we log something before trying.
     // If crashing or failing here you probably didn't upload the filesystem.
     // https://github.com/esp8266/arduino-esp8266fs-plugin/releases
-    LOG(F("Mounting SPIFFS Filesystem"));
-    if (SPIFFS.begin()) LOG(F("SPIFFS Filesystem Ready"));
-    else LOG(F("Filesystem Failure"));
+    LOG(F("[ Embedis : Mounting SPIFFS Filesystem ]"));
+    if (SPIFFS.begin()) LOG(F("[ Embedis : SPIFFS Filesystem Ready ]"));
+    else LOG(F("[ Embedis : SPIFFS Filesystem Mount Failure! ] "));
 
     // handlers added after LogRequestHandler will be logged
     server80.addHandler(new LogRequestHandler);
@@ -64,12 +65,12 @@ void setup_webserver(const String& root)
     server80.serveStatic("", SPIFFS, root.c_str(), "");
 
     server80.begin();
-    String ws = F("Started HTTP Server");
+    String ws = F("[ Embedis : Started HTTP Server ]");
     if (root.length()) ws = ws + F(" serving ") + root;
     LOG(ws);
     String passphrase = setting_login_passphrase();
     if (passphrase == setting_default_passphrase()) {
-        LOG(String("HTTP Server Authentication (User/Pass) : ") + setting_login_name() + " / " + passphrase);
+        LOG(String("[ Embedis : HTTP Server Authentication (User/Pass) : ") + setting_login_name() + " / " + passphrase + F(" ] "));
     }
 }
 

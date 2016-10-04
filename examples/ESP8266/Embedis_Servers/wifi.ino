@@ -53,14 +53,14 @@ int loop_wifi() {
     if (loop_wifi_state == 1) {
         String ap_ssid = setting_ap_ssid();
         String ap_passphrase = setting_ap_passphrase();
-        LOG( String() + F("Started WiFi Access Point (AP_SSID) : ") + ap_ssid);
+        LOG( String() + F("[ Embedis : Started WiFi Access Point (AP_SSID) : ") + ap_ssid + F(" ] ") );
         if (ap_passphrase == setting_default_passphrase()) {
-            LOG( String() + F("WiFi Access Point Passphrase (AP_PASS) : ") + ap_passphrase);
+            LOG( String() + F("[ Embedis : WiFi Access Point Passphrase (AP_PASS) : ") + ap_passphrase + F(" ] ") );
         }
         WiFi.mode(WIFI_AP);
         WiFi.softAP(ap_ssid.c_str(), ap_passphrase.c_str());
         dnsServer.start(53, "*", WiFi.softAPIP());
-        LOG( String() + F("WiFi Access Point IP Address : ") + WiFi.softAPIP().toString() );
+        LOG( String() + F("[ Embedis : WiFi Access Point IP Address : ") + WiFi.softAPIP().toString() + F(" ] ") );
         LOG(" "); // End setup logging
         ++loop_wifi_state;
         return 0;
@@ -81,7 +81,7 @@ int loop_wifi() {
         if (WiFi.status() == WL_IDLE_STATUS) {
             WiFi.disconnect();
         } else {
-            LOG(String() + F("Connecting to: ") + ssid);
+            LOG(String() + F("[Embedis : Connecting to: ") + ssid + F(" ] "));
             timeout = millis() + TIMEOUT;
             ++loop_wifi_state;
         }
@@ -92,18 +92,18 @@ int loop_wifi() {
             loop_wifi_state = 4;
         }
         else if (millis() > timeout) {
-            LOG(F("Unable to connect."));
+            LOG(F("[Embedis : ERROR - Unable to connect Wi-Fi! ] "));
             loop_wifi_state = 1;
         }
         return 0;
     }
     if (loop_wifi_state == 4) {
         if (WiFi.status() == WL_CONNECTED) {
-            LOG( String() + F("Connected. IP: ") + WiFi.localIP().toString() );
+            LOG( String() + F("[ Embedis : Connected. IP: ") + WiFi.localIP().toString() + F(" ] ") );
             String hostname = setting_mdns_hostname();
             if (hostname.length()) {
                 if(mdns.begin ( hostname.c_str(), WiFi.localIP() ) ) {
-                    LOG( String() + F("MDNS: ") +  hostname + F(".local"));
+                    LOG( String() + F("[ Embedis : MDNS: ") + hostname + F(".local ] ") );
                 }
             }
             LOG(""); // End setup logging

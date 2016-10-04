@@ -39,6 +39,9 @@ void setup_vcc(const String& name)
     Embedis::hardware( name,
     [](Embedis* e) { e->response(read_vcc()); },
     0);
+    LOG( String() + F("[ Embedis : Additional hardware installed ]") );    
+    LOG( String() + F("[ Embedis : Type 'hardware' to get a listing of new hardware ]") );    
+
 }
 
 String read_vcc() 

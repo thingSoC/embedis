@@ -35,7 +35,7 @@ void setup_telnet()
     server23 = WiFiServer(23);
     server23.begin();
     server23.setNoDelay(true);
-    LOG("Started Telnet Server");
+    LOG( String() + F("[ Embedis : Started Telnet Server ]") );    
 }
 
 String temp_telnet_passphrase;
