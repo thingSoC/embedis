@@ -5,7 +5,7 @@
 [![Github Issues](https://img.shields.io/github/issues/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis/issues)
 [![Github License](https://img.shields.io/github/license/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis)
 [![Github stars](https://img.shields.io/github/stars/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis)
-[![Github download](https://img.shields.io/github/downloads/thingSoC/total.svg)](https://github.com/thingSoC/embedis)
+[![Github download](https://img.shields.io/github/downloads/thingSoC/embedis/total.svg)](https://github.com/thingSoC/embedis)
 
 Embedis is an open source library for creating simple embedded dictionary servers.
 Embedis is used for embedding key-value dictionaries into the
