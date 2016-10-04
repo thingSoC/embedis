@@ -1,4 +1,7 @@
-# Embedis - Embedded Dictionary Server [![Build Status](https://travis-ci.org/thingSoC/embedis.png?branch=master)](https://travis-ci.org/thingSoC/embedis)
+# Embedis - Embedded Dictionary Server 
+
+[![Build Status](https://travis-ci.org/thingSoC/embedis.png?branch=master)](https://travis-ci.org/thingSoC/embedis)
+[![Github version](https://img.shields.io/github/release/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis/releases)
 
 Embedis is an open source library for creating simple embedded dictionary servers.
 Embedis is used for embedding key-value dictionaries into the
