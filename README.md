@@ -1,7 +1,7 @@
 # Embedis - Embedded Dictionary Server 
 
 [![Build Status](https://travis-ci.org/thingSoC/embedis.png?branch=master)](https://travis-ci.org/thingSoC/embedis)
-[![Github Releases](https://img.shields.io/github/release/thingSoC/embedis/embedis.svg)](https://github.com/thingSoC/embedis/releases)
+[![Github Releases](https://img.shields.io/github/release/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis/releases)
 [![Github Issues](https://img.shields.io/github/issues/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis/issues)
 [![Github License](https://img.shields.io/github/license/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis)
 [![Github stars](https://img.shields.io/github/stars/thingSoC/embedis.svg)](https://github.com/thingSoC/embedis)
