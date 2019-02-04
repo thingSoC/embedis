@@ -97,6 +97,10 @@
    /* ESP8266 specific code - break down further by cpu model if necessary */
    // #pragma message ( "ESP8266 Architecture Selected" )
   #include <new>
+#elif defined(ARDUINO_ARCH_ESP32)
+   /* ESP32 specific code - break down further by cpu model if necessary */
+   // #pragma message ( "ESP32 Architecture Selected" )
+  #include <new>
 #elif defined(CORE_TEENSY)
    /* Teensy3.x specific code - break down further by cpu model if necessary */
    /* this is not ideal, should change to use "_ARCH_" */ 
